@@ -5,6 +5,6 @@ public typealias Handler = (Message) -> Void
 public protocol Transport {
 
     func send(message: Message);
-    func watch(_ handler: Handler);
+    func listen(_ handler: Handler);
 
 }
