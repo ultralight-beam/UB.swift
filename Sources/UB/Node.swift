@@ -12,6 +12,14 @@ public class Node {
             return
         }
 
+        transport.listen { msg in
+            guard let service = services[msg.proto] else {
+                return
+            }
+
+            service.handle(msg)
+        }
+
         transports[id] = transport
     }
 
