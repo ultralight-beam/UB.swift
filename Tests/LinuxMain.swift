@@ -1,7 +1,8 @@
 import XCTest
 
-import UB_swiftTests
+import UBTests
 
 var tests = [XCTestCaseEntry]()
-tests += UB_swiftTests.allTests()
+tests += UBTests.__allTests()
+
 XCTMain(tests)
