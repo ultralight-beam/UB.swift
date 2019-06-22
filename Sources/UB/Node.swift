@@ -16,8 +16,8 @@ public class Node {
     public func add(transport: Transport) {
         let id = String(describing: transport)
 
-        if let _ = transports[id] {
-            return
+        if transports[id] != nil {
+            return // @TODO: Maybe errors?
         }
 
         transport.listen { msg in
@@ -36,7 +36,7 @@ public class Node {
     /// - Parameters:
     ///     - transport: The identifier of the *Transport* to remove.
     public func remove(transport: String) {
-        guard let _ = transports[transport] else {
+        guard transports[transport] != nil else {
             return
         }
 
@@ -48,8 +48,8 @@ public class Node {
     /// - Parameters:
     ///     - service: The new *Service* to add.
     public func add(service: Service) {
-        if let _ = services[service.type] {
-            return
+        if services[service.type] != nil {
+            return // @TODO: Maybe errors?
         }
 
         services[service.type] = service
@@ -60,7 +60,7 @@ public class Node {
     /// - Parameters:
     ///     - service: The *UBID* of the service to remove.
     public func remove(service: UBID) {
-        guard let _ = services[service] else {
+        guard services[service] != nil else {
             return
         }
 
