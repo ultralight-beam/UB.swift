@@ -1,10 +1,13 @@
 import Foundation
 
-/// An ultralight beam nodes, handles the interaction with transports and services.
+/// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
 
-    private var transports: Dictionary<String, Transport> = Dictionary()
-    private var services: Dictionary<UBID, Service> = Dictionary()
+    /// The known transports for the node.
+    private(set) public var transports: Dictionary<String, Transport> = Dictionary()
+
+    /// The known services for a node.
+    private(set) public var services: Dictionary<UBID, Service> = Dictionary()
 
     /// Adds a new transport to the list of known transports.
     ///
