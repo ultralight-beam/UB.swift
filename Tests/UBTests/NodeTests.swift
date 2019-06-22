@@ -11,7 +11,7 @@ final class NodeTests: XCTestCase {
 
         let data = node.transports.first!
         XCTAssert(data.key == String(describing: transport))
-        XCTAssert((data.value as! Transport) === transport)
+        XCTAssert((data.value as? Transport) === transport)
     }
 
     func testRemoveTransport() {
@@ -36,7 +36,7 @@ final class NodeTests: XCTestCase {
 
         let data = node.services.first!
         XCTAssert(data.key == service.type)
-        XCTAssert((data.value as! Service) === service)
+        XCTAssert((data.value as? Service) === service)
     }
 
     func testRemoveService() {
