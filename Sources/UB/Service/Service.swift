@@ -1,5 +1,7 @@
 import Foundation
 
+/// Services are used to implement specific handling for messages.
+/// Each service does one specific thing and handles all incoming messages for that service.
 public protocol Service {
 
     var type: UBID { get }
