@@ -9,6 +9,5 @@ class Service: UB.Service {
         }
     }
 
-    func handle(_ message: Message) {
-    }
+    func handle(_ message: Message) { }
 }
