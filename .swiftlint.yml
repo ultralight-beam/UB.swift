@@ -1,3 +1,8 @@
+included:
+  - Sources
+  - Tests
+excluded:
+  - Tests/UBTests/stubs
 file_name:
   excluded:
     - XCTestManifests.swift
