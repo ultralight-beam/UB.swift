@@ -10,9 +10,7 @@ matrix:
     - stage: test
       script: make test
     - stage: lint
-      script: 
-        - make xcodeproj
-        - make lint
+      script: make xcodeproj && make lint
     - allow_failures:
         - stage: lint
 
