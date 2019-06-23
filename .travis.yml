@@ -11,8 +11,9 @@ jobs:
     - script:
         - make xcode
         - make lint
+      env: ALLOW_FAILURE=true
   allow_failures:
-    - script: make lint
+    - env: ALLOW_FAILURE=true
 
 notifications:
   email: false
