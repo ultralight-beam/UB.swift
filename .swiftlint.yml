@@ -1,0 +1,5 @@
+file_name:
+  excluded:
+    - Package.swift
+    - LinuxMain.swift
+    - TestHelpers.swift
