@@ -4,10 +4,10 @@ import Foundation
 public class Node {
 
     /// The known transports for the node.
-    private(set) public var transports: Dictionary<String, Transport> = Dictionary()
+    private(set) public var transports = [String: Transport]()
 
     /// The known services for a node.
-    private(set) public var services: Dictionary<UBID, Service> = Dictionary()
+    private(set) public var services = [UBID: Service]()
 
     /// Adds a new transport to the list of known transports.
     ///
