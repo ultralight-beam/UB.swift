@@ -3,8 +3,8 @@ included:
   - Tests
 excluded:
   - Tests/UBTests/stubs
+  - Tests/UBTests/XCTestManifests.swift
 file_name:
   excluded:
-    - XCTestManifests.swift
     - Package.swift
     - LinuxMain.swift

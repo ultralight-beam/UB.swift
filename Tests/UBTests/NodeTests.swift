@@ -4,8 +4,8 @@ import XCTest
 final class NodeTests: XCTestCase {
 
     func testAddTransport() {
-        let transport = Transport();
-        let node = UB.Node();
+        let transport = Transport()
+        let node = UB.Node()
 
         node.add(transport: transport)
 
@@ -15,8 +15,8 @@ final class NodeTests: XCTestCase {
     }
 
     func testRemoveTransport() {
-        let transport = Transport();
-        let node = UB.Node();
+        let transport = Transport()
+        let node = UB.Node()
 
         node.add(transport: transport)
 
@@ -29,8 +29,8 @@ final class NodeTests: XCTestCase {
     }
 
     func testAddService() {
-        let service = Service();
-        let node = UB.Node();
+        let service = Service()
+        let node = UB.Node()
 
         node.add(service: service)
 
@@ -40,8 +40,8 @@ final class NodeTests: XCTestCase {
     }
 
     func testRemoveService() {
-        let service = Service();
-        let node = UB.Node();
+        let service = Service()
+        let node = UB.Node()
 
         node.add(service: service)
 
