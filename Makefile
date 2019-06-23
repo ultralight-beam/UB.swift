@@ -1,4 +1,4 @@
-.PHONY: documentation test link
+.PHONY: documentation test link xcode
 
 test:
 	swift test
@@ -10,3 +10,5 @@ documentation:
 	jazzy
 	rm -rf build/
 
+xcode:
+	swift package generate-xcodeproj
