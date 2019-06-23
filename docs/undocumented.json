@@ -8,13 +8,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Service/Service.swift",
-      "line": 7,
-      "symbol": "Service.type",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Types.swift",
       "line": 4,
       "symbol": "UBID",
