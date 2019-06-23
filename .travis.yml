@@ -4,16 +4,9 @@ osx_image: xcode10.1
 xcode_project: UB.xcodeproj
 xcode_scheme: UB.Package
 
-matrix:
-  fast_finish: true
-  include:
-    - stage: test
-      script: make test
-    - allow_failures:
-        - stage: lint
-          script: 
-            - make xcodeproj
-            - make lint
+jobs:
+  include: 
+    script: make test
 
 notifications:
   email: false
