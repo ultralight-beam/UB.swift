@@ -1,0 +1,18 @@
+os: osx
+language: swift
+osx_image: xcode10.1
+xcode_project: UB.xcodeproj
+xcode_scheme: UB.Package
+
+matrix:
+  fast_finish: true
+  include:
+    - stage: test
+      script: swift test
+    - allow_failures:
+        stage: lint
+        script: swiftlint
+
+
+notifications:
+  email: false
