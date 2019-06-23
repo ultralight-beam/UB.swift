@@ -7,7 +7,7 @@ lint:
 	swiftlint
 
 documentation:
-	jazzy
+	jazzy --github_url https://github.com/ultralight-beam/UB.swift
 	rm -rf build/
 
 xcode:
