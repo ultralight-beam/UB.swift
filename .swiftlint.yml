@@ -1,5 +1,5 @@
 file_name:
   excluded:
+    - XCTestManifests.swift
     - Package.swift
     - LinuxMain.swift
-    - TestHelpers.swift
