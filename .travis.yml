@@ -4,7 +4,12 @@ osx_image: xcode10.1
 xcode_project: UB.xcodeproj
 xcode_scheme: UB.Package
 
-script: swift test
+jobs:
+  include:
+    - stage: test
+      script: swift test
+    - stage: lint
+      script: swiftlint
 
 notifications:
   email: false
