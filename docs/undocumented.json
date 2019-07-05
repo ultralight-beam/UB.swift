@@ -8,6 +8,20 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Transport/BluetoothTransport.swift",
+      "line": 11,
+      "symbol": "BluetoothTransport.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Transport/BluetoothTransport.swift",
+      "line": 27,
+      "symbol": "BluetoothTransport.centralManagerDidUpdateState(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Types.swift",
       "line": 4,
       "symbol": "UBID",
