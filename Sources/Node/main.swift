@@ -24,39 +24,37 @@
 
 import IOBluetooth
 
-class BluetoothDevices {
-    
-    let bluetoothDeviceInquiryDelegate = BluetoothDeviceInquiryDelegate()
-    let inquery = IOBluetoothDeviceInquiry(delegate: bluetoothDeviceInquiryDelegate);
-    
-    func pairedDevices() {
-        print("Bluetooth devices:")
-        guard let devices = IOBluetoothDevice.pairedDevices() else {
-            print("No devices")
-            return
-        }
-        for item in devices {
-            if let device = item as? IOBluetoothDevice {
-                print("Name: \(device.name)")
-                print("Paired?: \(device.isPaired())")
-                print("Connected?: \(device.isConnected())")
-            }
-        }
-    }
-    func scanForDevices() -> IOReturn {
-         return inquery.start()
+class Delegate: IOBluetoothDeviceInquiryDelegate {
+
+    func deviceInquiryStarted(_ sender: IOBluetoothDeviceInquiry!) {
+        print("started")
+
     }
     
-    func getDevices() -> [Any] {
-         return inquery.foundDevices();
+    func deviceInquiryDeviceFound(_ sender: IOBluetoothDeviceInquiry!, device: IOBluetoothDevice!) {
+        print(device.name)
+        print("found")
+
     }
+    func deviceInquiryUpdatingDeviceNamesStarted(_ sender: IOBluetoothDeviceInquiry!, devicesRemaining: UInt32) {
+        print("updating")
+
+    }
+ 
+    func deviceInquiryDeviceNameUpdated(_ sender: IOBluetoothDeviceInquiry!, device: IOBluetoothDevice!, devicesRemaining: UInt32) {
+        print("updated")
+
+    }
+    
+    func deviceInquiryComplete(_ sender: IOBluetoothDeviceInquiry!, error: IOReturn, aborted: Bool) {
+        print("complete")
+    }
+    
 }
 
-var bt = BluetoothDevices()
-//bt.pairedDevices()
+let delegate = Delegate()
+let inquery = IOBluetoothDeviceInquiry(delegate: delegate)
 
-print("SCAN \(bt.scanForDevices())")
-
-print("devs \(bt.getDevices())")
+inquery?.start()
 
 RunLoop.current.run()
