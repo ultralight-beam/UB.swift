@@ -54,6 +54,7 @@ class Delegate: IOBluetoothDeviceInquiryDelegate {
 
 let delegate = Delegate()
 let inquery = IOBluetoothDeviceInquiry(delegate: delegate)
+inquery?.searchType = kIOBluetoothDeviceSearchClassic.rawValue
 
 inquery?.start()
 
