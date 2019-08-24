@@ -1,13 +1,17 @@
 import Foundation
 
+// @todo figure out architecture to support new forwarding algorithm.
+
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
 
     /// The known transports for the node.
     private(set) public var transports = [String: Transport]()
-
-    /// The known services for a node.
-    private(set) public var services = [UBID: Service]()
+    
+    /// The nodes delegate.
+    public var delegate: NodeDelegate?
+    
+    public init() { }
 
     /// Adds a new transport to the list of known transports.
     ///
@@ -21,11 +25,10 @@ public class Node {
         }
 
         transport.listen { msg in
-            guard let service = services[msg.proto] else {
-                return
-            }
-
-            service.handle(msg)
+            
+            // @todo delegate should return something where we handle retransmission.
+            
+            delegate?.node(self, didReceiveMessage: msg)
         }
 
         transports[id] = transport
@@ -42,28 +45,17 @@ public class Node {
 
         transports.removeValue(forKey: transport)
     }
-
-    /// Adds a new service to the list of known services.
+    
+    /// Sends a message through the current transports.
     ///
     /// - Parameters:
-    ///     - service: The new *Service* to add.
-    public func add(service: Service) {
-        if services[service.type] != nil {
-            return // @TODO: Maybe errors?
+    ///     - message: The message to send.
+    public func send(_ message: Message) {
+        // @todo this is naive
+        transports.forEach { (_, transport) in
+            transport.send(message: message)
         }
-
-        services[service.type] = service
     }
-
-    /// Removes a service from the list of known services.
-    ///
-    /// - Parameters:
-    ///     - service: The *UBID* of the service to remove.
-    public func remove(service: UBID) {
-        guard services[service] != nil else {
-            return
-        }
-
-        services.removeValue(forKey: service)
-    }
+    
+    // @todo create a message send loop with retransmissions and shit
 }
