@@ -70,4 +70,16 @@ public class Node {
 
         services.removeValue(forKey: service)
     }
+    
+    
+    /// Sends a message through the current transports.
+    ///
+    /// - Parameters:
+    ///     - message: The message to send.
+    public func send(_ message: Message) {
+        // @todo this is naive
+        transports.forEach { (_, transport) in
+            transport.send(message: message)
+        }
+    }
 }
