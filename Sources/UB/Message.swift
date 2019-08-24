@@ -1,10 +1,10 @@
 import Foundation
 
 public struct Message {
-    let proto: UBID
-    let to: Addr
-    let from: Addr
-    let message: Data
+    public let proto: UBID
+    public let to: Addr
+    public let from: Addr
+    public let message: Data
 }
 
 // @todo encoding and decoding
