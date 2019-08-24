@@ -33,6 +33,7 @@ extension Transport: IOBluetoothDeviceInquiryDelegate {
 
     func deviceInquiryDeviceFound(_ sender: IOBluetoothDeviceInquiry!, device: IOBluetoothDevice!) {
         print(device.name)
+        let result = device.openConnection()
         print("found")
 
     }
