@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
 	spec.version = '0.1.0'
 	spec.authors = {'Eric Tu' => 'eric@chainsafe.io', 'Dean Eigenmann' => 'dean@status.im'}
 	spec.homepage = 'https://github.com/ultralight-beam/UB.swift'
-	spec.license = { :type => 'MIT' }
+	spec.license = { :type => 'Apache' }
 	spec.source = { :git => 'https://github.com/ultralight-beam/UB.swift.git', :tag => 'v0.1.0'}
 	spec.source_files = 'Sources/UB/*.swift'
 	spec.summary = 'MANETs'
