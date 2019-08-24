@@ -8,6 +8,7 @@ class Transport: UB.Transport {
     init() {
         inquery = IOBluetoothDeviceInquiry(delegate: nil)
         inquery.delegate = self
+        inquery.updateNewDeviceNames = true
         inquery.setSearchCriteria(
             BluetoothServiceClassMajor(kBluetoothServiceClassMajorAny),
             majorDeviceClass: BluetoothDeviceClassMajor(kBluetoothDeviceClassMajorAny),
