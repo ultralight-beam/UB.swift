@@ -6,6 +6,8 @@ public typealias Handler = (Message) -> Void
 /// Transports are used to send messages between nodes using different methods, e.g. wifi direct or bluetooth.
 public protocol Transport {
 
+    func peers() -> [Addr]
+
     /// Send implements a function to send messages between nodes using the transport.
     ///
     /// - Parameters:
