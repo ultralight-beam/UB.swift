@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 	spec.name = 'UB'
 	spec.version = '0.1.0'
-	spec.authors = {'Eric Tu' => 'eric@chainsafe.io', 'Dean Eigenmann' => 'dean@status.io'}
+	spec.authors = {'Eric Tu' => 'eric@chainsafe.io', 'Dean Eigenmann' => 'dean@status.im'}
 	spec.homepage = 'https://github.com/ultralight-beam/UB.swift'
 	spec.license = { :type => 'MIT' }
 	spec.source = { :git => 'https://github.com/ultralight-beam/UB.swift.git', :tag => 'v0.1.0'}
