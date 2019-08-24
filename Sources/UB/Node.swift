@@ -1,5 +1,7 @@
 import Foundation
 
+// @todo figure out architecture to support new forwarding algorithm.
+
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
 
@@ -8,6 +10,8 @@ public class Node {
 
     /// The known services for a node.
     private(set) public var services = [UBID: Service]()
+    
+    public init() { }
 
     /// Adds a new transport to the list of known transports.
     ///
