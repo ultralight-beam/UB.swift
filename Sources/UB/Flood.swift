@@ -4,7 +4,7 @@
 
 import Foundation
 
-class BruteForce {
+class Flood {
 
     private(set) public var syncState: [SyncState]
     private var transport: Transport
