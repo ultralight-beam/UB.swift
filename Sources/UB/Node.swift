@@ -82,4 +82,6 @@ public class Node {
             transport.send(message: message)
         }
     }
+    
+    // @todo create a message send loop with retransmissions and shit
 }
