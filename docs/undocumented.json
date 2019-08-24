@@ -1,41 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Message.swift",
-      "line": 3,
-      "symbol": "Message",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Message.swift",
-      "line": 4,
-      "symbol": "Message.proto",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Message.swift",
-      "line": 5,
-      "symbol": "Message.to",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Message.swift",
-      "line": 6,
-      "symbol": "Message.from",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Message.swift",
-      "line": 7,
-      "symbol": "Message.message",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Node.swift",
       "line": 14,
       "symbol": "Node.init()",
