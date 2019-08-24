@@ -1,9 +1,8 @@
-import IOBluetooth
+import Foundation
 import UB
 
 let node = UB.Node()
-let transport = Transport()
 
-node.add(transport: transport)
+node.add(transport: Transport())
 
 RunLoop.current.run()
