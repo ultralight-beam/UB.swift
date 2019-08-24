@@ -8,6 +8,11 @@ class Transport: UB.Transport {
     init() {
         inquery = IOBluetoothDeviceInquiry(delegate: nil)
         inquery.delegate = self
+        inquery.setSearchCriteria(
+            BluetoothServiceClassMajor(kBluetoothServiceClassMajorAny),
+            majorDeviceClass: BluetoothDeviceClassMajor(kBluetoothDeviceClassMajorAny),
+            minorDeviceClass: BluetoothDeviceClassMinor(kBluetoothDeviceClassMinorAny)
+        )
     }
 
     func send(message: UB.Message) {
