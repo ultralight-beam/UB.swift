@@ -1,8 +1,6 @@
 import UB
 import IOBluetooth
 
-// @todo add IOBluetooth stuff
-
 class Transport: UB.Transport {
     
     let inquery: IOBluetoothDeviceInquiry
