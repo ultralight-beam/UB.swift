@@ -10,11 +10,11 @@ class Transport: UB.Transport {
         inquery.delegate = self
     }
 
-    func send(message: Message) {
+    func send(message: UB.Message) {
         
     }
 
-    func listen(_ handler: Handler) {
+    func listen(_ handler: UB.Handler) {
         inquery.start()
     }
 }
