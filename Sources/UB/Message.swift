@@ -1,10 +1,19 @@
 import Foundation
 
+/// Message represents the message sent between nodes.
 public struct Message {
-    let proto: UBID
-    let to: Addr
-    let from: Addr
-    let message: Data
+    
+    /// The message protocol.
+    public let proto: UBID
+    
+    /// The recipient of the message.
+    public let to: Addr
+    
+    /// The sender of the message.
+    public let from: Addr
+    
+    /// The raw message data.
+    public let message: Data
 }
 
 // @todo encoding and decoding

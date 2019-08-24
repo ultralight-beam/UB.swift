@@ -14,7 +14,7 @@
     <a title="Node Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (87% documented)</p>
+        <p><a href="../index.html"> Docs</a> (95% documented)</p>
         <p class="header-right"><a href="https://github.com/ultralight-beam/UB.swift"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -40,7 +40,7 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/Service.html">Service</a>
+                <a href="../Protocols/NodeDelegate.html">NodeDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/Transport.html">Transport</a>
@@ -51,13 +51,16 @@
             <a href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:2UB7MessageV">Message</a>
+                <a href="../Structs/Message.html">Message</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Typealiases.html">Type Aliases</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:2UB4Addra">Addr</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:2UB7Handlera">Handler</a>
               </li>
@@ -114,9 +117,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2UB4NodeC8servicesSDySays5UInt8VGAA7Service_pGvp"></a>
-                    <a name="//apple_ref/swift/Property/services" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB4NodeC8servicesSDySays5UInt8VGAA7Service_pGvp">services</a>
+                    <a name="/s:2UB4NodeC8delegateAA0B8Delegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB4NodeC8delegateAA0B8Delegate_pSgvp">delegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -124,14 +127,41 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The known services for a node.</p>
+                        <p>The nodes delegate.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">private(set)</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">services</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a></span> <span class="p">:</span> <span class="kt"><a href="../Protocols/Service.html">Service</a></span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/NodeDelegate.html">NodeDelegate</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB4NodeCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB4NodeCACycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -233,9 +263,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2UB4NodeC3add7serviceyAA7Service_p_tF"></a>
-                    <a name="//apple_ref/swift/Method/add(service:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB4NodeC3add7serviceyAA7Service_p_tF">add(service:)</a>
+                    <a name="/s:2UB4NodeC4sendyyAA7MessageVF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB4NodeC4sendyyAA7MessageVF">send(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -243,14 +273,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds a new service to the list of known services.</p>
+                        <p>Sends a message through the current transports.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nv">service</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Service.html">Service</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt"><a href="../Structs/Message.html">Message</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -261,58 +291,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>service</em>
+                                <em>message</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The new <em>Service</em> to add.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB4NodeC6remove7serviceySays5UInt8VG_tF"></a>
-                    <a name="//apple_ref/swift/Method/remove(service:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB4NodeC6remove7serviceySays5UInt8VG_tF">remove(service:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Removes a service from the list of known services.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">service</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>service</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <em>UBID</em> of the service to remove.</p>
+                                  <p>The message to send.</p>
                                 </div>
                               </td>
                             </tr>
@@ -327,7 +311,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-06-23)</p>
+          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-08-24)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

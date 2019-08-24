@@ -27,29 +27,4 @@ final class NodeTests: XCTestCase {
 
         XCTAssert(node.transports.values.isEmpty)
     }
-
-    func testAddService() {
-        let service = Service()
-        let node = UB.Node()
-
-        node.add(service: service)
-
-        let data = node.services.first!
-        XCTAssert(data.key == service.type)
-        XCTAssert((data.value as? Service) === service)
-    }
-
-    func testRemoveService() {
-        let service = Service()
-        let node = UB.Node()
-
-        node.add(service: service)
-
-        let data = node.services.first!
-        XCTAssert(data.key == service.type)
-
-        node.remove(service: service.type)
-
-        XCTAssert(node.services.values.isEmpty)
-    }
 }
