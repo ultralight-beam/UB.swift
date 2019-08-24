@@ -36,7 +36,10 @@ class BruteForce {
     }
 
     public func receiveAck(msg: Message) {
-
+        guard let index = syncState.firstIndex(where: {$0.msg == msg}) else {
+            throw("Error, acking a message that doesnt exist in cache")
+        }
+        syncState.remove(at: index)
     }
 
     public func send(msg: Message) {
@@ -49,19 +52,29 @@ class BruteForce {
     }
 
     private func sendMsg(msg: Message) {
-        if cacheContains(msg: <#T##Message##UB.Message#>) {
+        guard let index = syncState.firstIndex(where: { $0.msg == msg }) else {
+            syncState.append(SyncState(
+                    msg: msg,
+                    count: 0,
+                    lastSeen: NSDate().timeIntervalSince1970
+            ))
             return
         }
+        syncState[index].count += 1
+        syncState[index].lastSeen = NSDate().timeIntervalSince1970
+
         transport.peers().forEach { peer in
             transport.send(message: msg)
         }
     }
 
     private func sendAck(msg: Message) {
-        if !cacheContains(msg: <#T##Message##UB.Message#>) {
-            return
+        guard let index = syncState.firstIndex(where: {$0.msg == msg}) else {
+            throw("Error, acking a message that doesnt exist in cache")
         }
+        syncState.remove(at: index)
 
+        transport.send(message: msg) /// this means that the ack message needs to be crafted beforehand
     }
 
     private func cacheContains(msg: Message) -> Bool {
