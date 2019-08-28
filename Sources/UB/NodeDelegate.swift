@@ -2,7 +2,7 @@ import Foundation
 
 /// NodeDelegate is used to handle the receiving of messages.
 public protocol NodeDelegate {
-    
+
     /// Called when a node receives a message.
     ///
     /// - Parameters:
