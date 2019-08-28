@@ -19,7 +19,11 @@ public class Node {
     private(set) public var transports = [String: Transport]()
 
     /// The nodes current operating status.
-    private(set) public var status = Status.off
+    private(set) public var status = Status.off {
+        didSet {
+            delegate?.node(self, didChangeStatus: status)
+        }
+    }
 
     /// The nodes delegate.
     public var delegate: NodeDelegate?
