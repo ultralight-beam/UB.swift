@@ -7,6 +7,7 @@ public class Node {
 
     /// Represents a nodes operating status
     public enum Status {
+
         /// Indicates that a node is currently not sending or receiving messages.
         case off
 
