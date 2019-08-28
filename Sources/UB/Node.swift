@@ -71,9 +71,9 @@ public class Node {
         }
 
         transport.listen { msg in
-            
+
             // @todo delegate should return something where we handle retransmission.
-            
+
             delegate?.node(self, didReceiveMessage: msg)
         }
 
@@ -91,7 +91,7 @@ public class Node {
 
         transports.removeValue(forKey: transport)
     }
-    
+
     /// Sends a message through the current transports.
     ///
     /// - Parameters:
@@ -102,6 +102,6 @@ public class Node {
             transport.send(message: message)
         }
     }
-    
+
     // @todo create a message send loop with retransmissions and shit
 }

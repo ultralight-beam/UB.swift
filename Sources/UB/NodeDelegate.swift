@@ -9,7 +9,7 @@ public protocol NodeDelegate: class {
     ///     - node: The node that received the message.
     ///     - status: The updated status.
     func node(_ node: Node, didChangeStatus status: Node.Status)
-    
+
     /// Called when a node receives a message.
     ///
     /// - Parameters:
