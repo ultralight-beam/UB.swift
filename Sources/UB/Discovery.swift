@@ -1,7 +1,7 @@
 import Foundation
 
 /// Discovery is used to find peers as well as advertise oneself.
-protocol Discovery {
+public protocol Discovery {
 
     // @todo options or some shit?
 
