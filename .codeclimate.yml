@@ -1,3 +1,5 @@
 exclude_patterns:
 - "docs/"
-
+plugins:
+  swiftlint:
+    enabled: true
