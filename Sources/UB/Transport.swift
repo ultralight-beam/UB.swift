@@ -6,7 +6,7 @@ public typealias Handler = (Message) -> Void
 /// Transports are used to send messages between nodes using different methods, e.g. wifi direct or bluetooth.
 public protocol Transport {
 
-    /// Peers contains a list of a transports known peers, this does not mean they are connected.
+    /// Contains a list of a transports known peers, this does not mean they are connected.
     var peers: [Addr] { get }
 
     /// Send implements a function to send messages between nodes using the transport.
