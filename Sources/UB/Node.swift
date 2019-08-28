@@ -5,23 +5,53 @@ import Foundation
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
 
+    /// Represents a nodes operating status
+    public enum Status {
+        /// Indicates that a node is currently not sending or receiving messages.
+        case off
+
+        /// Indicates that a node is `on` and able to send and receive messages.
+        case on
+    }
+
     /// The known transports for the node.
     private(set) public var transports = [String: Transport]()
-    
+
+    /// The nodes current operating status.
+    private(set) public var status = Status.off
+
     /// The nodes delegate.
     public var delegate: NodeDelegate?
 
     private var discovery: Discovery?
-    
+
+    private let queue = DispatchQueue(label: "com.ub.NodeQueue", attributes: .concurrent)
+
     public init() { }
 
-    public func run() {
-        for (_, transport) in transports {
-            discovery?.advertise(transport: transport)
-            discovery?.find(transport: transport)
+    /// Starts the node, making it advertise on all the known transports as well as find peers.
+    /// The node will start receiving messages.
+    public func start() {
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            for (_, transport) in self.transports {
+                self.discovery?.advertise(transport: transport)
+                self.discovery?.find(transport: transport)
+            }
+
+            // @todo peer and shit?
         }
 
-        // @todo peer and shit?
+        status = .on
+    }
+
+    /// Stops listening to transports meaning the node will stop receiving messages.
+    public func stop() {
+        queue.suspend()
+        status = .off
     }
 
     /// Adds a new transport to the list of known transports.

@@ -2,15 +2,8 @@
   "warnings": [
     {
       "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Node.swift",
-      "line": 16,
+      "line": 30,
       "symbol": "Node.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Node.swift",
-      "line": 18,
-      "symbol": "Node.run()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }
