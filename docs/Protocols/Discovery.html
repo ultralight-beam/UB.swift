@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Message Structure Reference</title>
+    <title>Discovery Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/Message" class="dashAnchor"></a>
-    <a title="Message Structure Reference"></a>
+    <a name="//apple_ref/swift/Protocol/Discovery" class="dashAnchor"></a>
+    <a title="Discovery Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">UB Docs</a> (92% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">UB Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Message Structure Reference
+        Discovery Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -77,14 +77,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Message</h1>
+            <h1>Discovery</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Message</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Discovery</span></code></pre>
 
                 </div>
               </div>
-            <p>Message represents the message sent between nodes.</p>
+            <p>Discovery is used to find peers as well as advertise oneself.</p>
 
           </section>
           <section class="section task-group-section">
@@ -93,9 +93,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2UB7MessageV5protoSays5UInt8VGvp"></a>
-                    <a name="//apple_ref/swift/Property/proto" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB7MessageV5protoSays5UInt8VGvp">proto</a>
+                    <a name="/s:2UB9DiscoveryP9advertise9transportyAA9Transport_p_tF"></a>
+                    <a name="//apple_ref/swift/Method/advertise(transport:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9DiscoveryP9advertise9transportyAA9Transport_p_tF">advertise(transport:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -103,14 +103,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The message protocol.</p>
+                        <p>Advertises oneself as a peer for a specific transport.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">proto</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">advertise</span><span class="p">(</span><span class="nv">transport</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Transport.html">Transport</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -120,9 +120,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2UB7MessageV2toSays5UInt8VGvp"></a>
-                    <a name="//apple_ref/swift/Property/to" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB7MessageV2toSays5UInt8VGvp">to</a>
+                    <a name="/s:2UB9DiscoveryP4find9transportyAA9Transport_p_tF"></a>
+                    <a name="//apple_ref/swift/Method/find(transport:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9DiscoveryP4find9transportyAA9Transport_p_tF">find(transport:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -130,68 +130,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The recipient of the message.</p>
+                        <p>Finds eligible peers for a specific transport.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">to</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB7MessageV4fromSays5UInt8VGvp"></a>
-                    <a name="//apple_ref/swift/Property/from" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB7MessageV4fromSays5UInt8VGvp">from</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The sender of the message.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">from</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB7MessageV7message10Foundation4DataVvp"></a>
-                    <a name="//apple_ref/swift/Property/message" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB7MessageV7message10Foundation4DataVvp">message</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The raw message data.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">Data</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">find</span><span class="p">(</span><span class="nv">transport</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Transport.html">Transport</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
