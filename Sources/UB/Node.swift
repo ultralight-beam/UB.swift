@@ -10,8 +10,19 @@ public class Node {
     
     /// The nodes delegate.
     public var delegate: NodeDelegate?
+
+    private var discovery: Discovery?
     
     public init() { }
+
+    public func run() {
+        for (_, transport) in transports {
+            discovery?.advertise(transport: transport)
+            discovery?.find(transport: transport)
+        }
+
+        // @todo peer and shit?
+    }
 
     /// Adds a new transport to the list of known transports.
     ///
