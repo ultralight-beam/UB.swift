@@ -26,7 +26,7 @@ public class Node {
     }
 
     /// The nodes delegate.
-    public var delegate: NodeDelegate?
+    public weak var delegate: NodeDelegate?
 
     private var discovery: Discovery?
 
