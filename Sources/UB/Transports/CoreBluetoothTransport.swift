@@ -14,7 +14,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private var perp: CBPeripheral? // make this an array for multiple devices
     private var peripherals: [CBPeripheral?] = [] // make this an array for multiple devices
     
-    public override convenience init(){
+    public override convenience init() {
         self.init(centralManager: CBCentralManager(delegate: nil, queue: nil),
                   peripheralManager: CBPeripheralManager(delegate: nil, queue: nil))
         centralManager?.delegate = self
@@ -137,8 +137,17 @@ extension CoreBluetoothTransport: CBPeripheralDelegate{
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for characteristic in service.characteristics! {
             print("Characteristic: \(characteristic)")
+            peripheral.readValue(for: characteristic)
+
         }
     }
+    
+    // called when reading a value from peripheral
+    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        let data = Data(bytes: characteristic.value!)
+        print("Characteristic Value: \(data.hexEncodedString())")
+    }
+
     
     
 }
@@ -147,5 +156,18 @@ extension CoreBluetoothTransport: CBPeripheralDelegate{
 extension CoreBluetoothTransport {
     public func startScanning() {
     
+    }
+}
+
+
+extension Data {
+    struct HexEncodingOptions: OptionSet {
+        let rawValue: Int
+        static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
+    }
+    
+    func hexEncodedString(options: HexEncodingOptions = []) -> String {
+        let format = options.contains(.upperCase) ? "%02hhX" : "%02hhx"
+        return map { String(format: format, $0) }.joined()
     }
 }
