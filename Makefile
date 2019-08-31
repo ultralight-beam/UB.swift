@@ -7,7 +7,7 @@ lint:
 	swiftlint
 
 autocorrect:
-	swiftlint
+	swiftlint autocorrect
 
 docs:
 	jazzy --author "Ultralight Beam" --author_url http://ultralightbeam.io  --github_url https://github.com/ultralight-beam/UB.swift
