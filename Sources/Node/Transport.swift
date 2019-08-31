@@ -2,9 +2,9 @@ import UB
 import IOBluetooth
 
 class Transport: UB.Transport {
-    
+
     let inquery: IOBluetoothDeviceInquiry
-    
+
     init() {
         inquery = IOBluetoothDeviceInquiry(delegate: nil)
         inquery.delegate = self
@@ -17,7 +17,7 @@ class Transport: UB.Transport {
     }
 
     func send(message: UB.Message) {
-        
+
     }
 
     func listen(_ handler: UB.Handler) {
