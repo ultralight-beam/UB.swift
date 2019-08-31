@@ -12,19 +12,19 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private var testServiceID2 = CBUUID(string: "0xBBBB")
     
     private var perp: CBPeripheral? // make this an array for multiple devices
-
+    private var peripherals: [CBPeripheral?] = [] // make this an array for multiple devices
     
     public override convenience init(){
-        self.init(cbManager: CBCentralManager(delegate: nil, queue: nil),
-                  periphManager: CBPeripheralManager(delegate: nil, queue: nil))
+        self.init(centralManager: CBCentralManager(delegate: nil, queue: nil),
+                  peripheralManager: CBPeripheralManager(delegate: nil, queue: nil))
         centralManager?.delegate = self
         peripheralManager?.delegate = self
     }
     
-    public init(cbManager: CBCentralManager, periphManager: CBPeripheralManager) {
+    public init(centralManager: CBCentralManager, peripheralManager: CBPeripheralManager) {
         super.init()
-        centralManager = cbManager
-        peripheralManager = periphManager
+        self.centralManager = centralManager
+        self.peripheralManager = peripheralManager
 
     }
     
@@ -49,12 +49,19 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        <#code#>
+//        if (peripheral.state == .poweredOn){
+//
+//            let advertisementData = String(format: "%@|%d|%d", userData.name, userData.avatarId, userData.colorId)
+//            peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey:[SERVICE_UUID],
+//                                                CBAdvertisementDataLocalNameKey: advertisementData])
+//        }
     }
 }
 
 
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
+    
+    /// Lets us know if Bluetooth is in correct state to start.
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
             
@@ -70,8 +77,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
             print("Bluetooth status is POWERED OFF")
         case .poweredOn:
             print("Bluetooth status is POWERED ON")
-            
-            centralManager?.scanForPeripherals(withServices: nil)
+            centralManager?.scanForPeripherals(withServices: [testServiceID])
             
         }
     }
@@ -81,24 +87,19 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
                         advertisementData: [String : Any],
                         rssi RSSI: NSNumber) {
         if let x = peripheral.name {
+            perp = peripheral
+            perp?.delegate = self
+            peripherals.append(perp)
 
-            //peripheral.discoverServices(nil)
-            //            perp = peripheral;
-            if x == "Blank"{
-                perp = peripheral
-                perp?.delegate = self
-
-                print(x)
-                decodePeripheralState(peripheralState: peripheral.state)
-                centralManager?.connect(perp!)
-            }
+            print("LOLZ ", x)
+            decodePeripheralState(peripheralState: peripheral.state)
+            centralManager?.connect(perp!)
         }
     }
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         
-        // STEP 8: look for services of interest on peripheral
-        print("gunna start discoverSerivces")
+        // look for services of interest on peripheral
         perp?.discoverServices(nil)
         
     }
