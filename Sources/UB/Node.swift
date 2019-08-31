@@ -9,7 +9,7 @@ public class Node {
     private(set) public var transports = [String: Transport]()
 
     /// The nodes delegate.
-    public var delegate: NodeDelegate?
+    public weak var delegate: NodeDelegate?
 
     public init() { }
 
