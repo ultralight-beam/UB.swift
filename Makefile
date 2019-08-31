@@ -1,4 +1,4 @@
-.PHONY: documentation test link xcode linuxmain
+.PHONY: documentation test link xcode linuxmain autocorrect
 
 test:
 	swift test
@@ -6,7 +6,10 @@ test:
 lint:
 	swiftlint
 
-documentation:
+autocorrect:
+	swiftlint
+
+docs:
 	jazzy --author "Ultralight Beam" --author_url http://ultralightbeam.io  --github_url https://github.com/ultralight-beam/UB.swift
 	rm -rf build/
 
