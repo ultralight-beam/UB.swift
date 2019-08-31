@@ -77,48 +77,35 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
             print("Bluetooth status is POWERED OFF")
         case .poweredOn:
             print("Bluetooth status is POWERED ON")
-            centralManager?.scanForPeripherals(withServices: [testServiceID])
+            centralManager?.scanForPeripherals(withServices: [testServiceID, testServiceID2])
             
         }
     }
     
+    // Try to connect to discovered devices
     public func centralManager(_ central: CBCentralManager,
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
                         rssi RSSI: NSNumber) {
-        if let x = peripheral.name {
             perp = peripheral
             perp?.delegate = self
             peripherals.append(perp)
-
-            print("LOLZ ", x)
+            print(peripherals.count)
             decodePeripheralState(peripheralState: peripheral.state)
             centralManager?.connect(perp!)
-        }
     }
     
+    // When connected to a devices, ask for the Services
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        
         // look for services of interest on peripheral
-        perp?.discoverServices(nil)
-        
-    }
-    
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        print("servicessssss ")
-        for service in peripheral.services! {
-            
-                print("Service: \(service)")
-                
-                // STEP 9: look for characteristics of interest
-                // within services of interest
-                //peripheral.discoverCharacteristics(nil, for: service)
-            
-        }
+        perp?.discoverServices([testServiceID, testServiceID2])
     }
     
     
     
+    // Handle Disconnections
+    public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+    }
     
     func decodePeripheralState(peripheralState: CBPeripheralState) {
         
@@ -137,6 +124,22 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 }
 
 extension CoreBluetoothTransport: CBPeripheralDelegate{
+    // ask for Characteristics for each Service of interest
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("servicessssss ")
+        for service in peripheral.services! {
+            print("Service: \(service)")
+            peripheral.discoverCharacteristics(nil, for: service)
+        }
+    }
+    
+    // called with characteristics
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        for characteristic in service.characteristics! {
+            print("Characteristic: \(characteristic)")
+        }
+    }
+    
     
 }
 
