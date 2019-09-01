@@ -3,7 +3,7 @@ import CoreBluetooth
 
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
-public class CoreBluetoothTransport: NSObject, Transport {
+public class CoreBluetoothTransport: NSObject {
     
     private var centralManager: CBCentralManager?
     private var peripheralManager: CBPeripheralManager?
@@ -28,6 +28,9 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     }
     
+}
+
+extension CoreBluetoothTransport: Transport {
     
     /// Send implements a function to send messages between nodes using Bluetooth
     ///
