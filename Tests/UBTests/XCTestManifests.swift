@@ -6,9 +6,7 @@ extension NodeTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__NodeTests = [
-        ("testAddService", testAddService),
         ("testAddTransport", testAddTransport),
-        ("testRemoveService", testRemoveService),
         ("testRemoveTransport", testRemoveTransport),
     ]
 }
