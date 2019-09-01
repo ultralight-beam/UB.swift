@@ -51,13 +51,27 @@ extension CoreBluetoothTransport: Transport {
 }
 
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
+    
+    // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-//        if (peripheral.state == .poweredOn){
-//
-//            let advertisementData = String(format: "%@|%d|%d", userData.name, userData.avatarId, userData.colorId)
-//            peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey:[SERVICE_UUID],
-//                                                CBAdvertisementDataLocalNameKey: advertisementData])
-//        }
+        if (peripheral.state == .poweredOn){
+
+            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey:[testServiceID, testServiceID2],
+                                                CBAdvertisementDataLocalNameKey: nil])
+        }
+    }
+    
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+        
+        for request in requests {
+            if let value = request.value {
+                
+                let messageText = String(data: value, encoding: String.Encoding.utf8) as String!
+                print(messageText!)
+                //appendMessageToChat(message: Message(text: messageText!, isSent: false))
+            }
+            peripheral.respond(to: request, withResult: .success)
+        }
     }
 }
 
@@ -140,17 +154,23 @@ extension CoreBluetoothTransport: CBPeripheralDelegate{
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for characteristic in service.characteristics! {
             print("Characteristic: \(characteristic)")
-            peripheral.readValue(for: characteristic)
+            //peripheral.readValue(for: characteristic)
+            if characteristic.uuid == testServiceID {
+                print("Sending some good shit")
+                let data = Data(bytes: [97,98,99])
+                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withResponse)
+            }
 
         }
     }
     
-    // called when reading a value from peripheral
-    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        let data = Data(bytes: characteristic.value!)
-        print("Characteristic Value: \(data.hexEncodedString())")
-    }
+//    // called when reading a value from peripheral characteristic data field.
+//    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+//        let data = Data(bytes: characteristic.value!)
+//        print("Characteristic Value: \(data.hexEncodedString())")
+//    }
 
+    
     
     
 }
