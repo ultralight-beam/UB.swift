@@ -1,4 +1,4 @@
-.PHONY: documentation test link xcode linuxmain autocorrect
+.PHONY: documentation test lint xcode linuxmain autocorrect
 
 test:
 	swift test
