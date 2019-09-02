@@ -55,19 +55,35 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if (peripheral.state == .poweredOn){
+            
+            let WR_UUID = CBUUID(string: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
+            let WR_PROPERTIES: CBCharacteristicProperties = .write
+            let WR_PERMISSIONS: CBAttributePermissions = .writeable
+            
+            let serialService = CBMutableService(type: testServiceID, primary: true)
+            
+            let writeCharacteristics = CBMutableCharacteristic(type: WR_UUID,
+                                                               properties: WR_PROPERTIES, value: nil,
+                                                               permissions: WR_PERMISSIONS)
+            serialService.characteristics = [writeCharacteristics]
+            peripheral.add(serialService)
 
-            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey:[testServiceID, testServiceID2],
+            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [testServiceID, testServiceID2],
                                                 CBAdvertisementDataLocalNameKey: nil])
         }
     }
     
     public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
-        
+        print("Got a message! Ding!")
         for request in requests {
             if let value = request.value {
                 
-                let messageText = String(data: value, encoding: String.Encoding.utf8) as String!
-                print(messageText!)
+                if let messageText = String(data: value, encoding: String.Encoding.utf8) as String!{
+                    print("GOOOOTEEMMM   \(messageText)")
+
+                } else {
+                    print("failed to decode string of \(value.hexEncodedString())")
+                }
                 //appendMessageToChat(message: Message(text: messageText!, isSent: false))
             }
             peripheral.respond(to: request, withResult: .success)
@@ -155,11 +171,11 @@ extension CoreBluetoothTransport: CBPeripheralDelegate{
         for characteristic in service.characteristics! {
             print("Characteristic: \(characteristic)")
             //peripheral.readValue(for: characteristic)
-            if characteristic.uuid == testServiceID {
+//            if characteristic.uuid == testServiceID {
                 print("Sending some good shit")
-                let data = Data(bytes: [97,98,99])
-                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withResponse)
-            }
+                let data = Data(bytes: [97,98,99,100])
+                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
+//            }
 
         }
     }
