@@ -15,8 +15,10 @@ public class CoreBluetoothTransport: NSObject {
     private var peripherals: [CBPeripheral?] = [] // make this an array for multiple devices
     
     public override convenience init() {
-        self.init(centralManager: CBCentralManager(delegate: nil, queue: nil),
-                  peripheralManager: CBPeripheralManager(delegate: nil, queue: nil))
+        self.init(
+            centralManager: CBCentralManager(delegate: nil, queue: nil),
+            peripheralManager: CBPeripheralManager(delegate: nil, queue: nil)
+        )
         centralManager?.delegate = self
         peripheralManager?.delegate = self
     }
