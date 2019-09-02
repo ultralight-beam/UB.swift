@@ -4,10 +4,8 @@ included:
 excluded:
   - Tests/UBTests/stubs
   - Tests/UBTests/XCTestManifests.swift
-file_name:
-  excluded:
-    - Package.swift
-    - LinuxMain.swift
+  - Package.swift
+  - Tests/LinuxMain.swift
 identifier_name:
   excluded:
     - id
