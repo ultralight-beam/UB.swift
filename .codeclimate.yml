@@ -1,6 +1,6 @@
 exclude_patterns:
-- "docs/"
-- "Package.swift"
+  - "docs/"
+  - "Package.swift"
 plugins:
   swiftlint:
     enabled: true
