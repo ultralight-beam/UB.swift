@@ -58,4 +58,52 @@ final class NodeTests: XCTestCase {
             XCTFail("send target did not match")
         }
     }
+
+    func testDoesNotSendWhenNoPeerOrServiceInMessage() {
+        let transport = Transport()
+        let node = UB.Node()
+
+        node.add(transport: transport)
+
+        let id = Addr(repeating: 1, count: 3)
+        let peer = Peer(id: id, services: [])
+        transport.add(peer: peer)
+
+        let message = Message(
+            proto: UBID(repeating: 0, count: 0),
+            recipient: Addr(repeating: 1, count: 0),
+            from: Addr(repeating: 2, count: 3),
+            origin: Addr(repeating: 2, count: 3),
+            message: Data(repeating: 0, count: 3)
+        )
+
+        node.send(message)
+
+        XCTAssertEqual(0, transport.sent.count)
+    }
+
+    func testSendsToAllPeersWhenExactMatchNotFound() {
+        let transport = Transport()
+        let node = UB.Node()
+
+        node.add(transport: transport)
+
+        let id = Addr(repeating: 1, count: 3)
+
+        transport.add(peer: Peer(id: Addr(repeating: 2, count: 3), services: []))
+        transport.add(peer: Peer(id: Addr(repeating: 3, count: 3), services: []))
+        transport.add(peer: Peer(id: Addr(repeating: 4, count: 3), services: []))
+
+        let message = Message(
+            proto: UBID(repeating: 1, count: 1),
+            recipient: id,
+            from: Addr(repeating: 4, count: 3),
+            origin: Addr(repeating: 3, count: 3),
+            message: Data(repeating: 0, count: 3)
+        )
+
+        node.send(message)
+
+        XCTAssertEqual(2, transport.sent.count)
+    }
 }

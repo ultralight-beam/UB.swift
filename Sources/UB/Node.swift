@@ -56,6 +56,9 @@ public class Node {
 
             // @todo this is ugly split into functions
             // @todo ensure that messages are delivered?
+            if message.recipient.count == 0 && message.proto.count == 0 {
+                return
+            }
 
             // what this does is try to send a message to an exact target or broadcast it to all peers
             if message.recipient.count != 0 {
@@ -66,7 +69,7 @@ public class Node {
 
             // what this does is send a message to anyone that implements a specific service
             if message.proto.count != 0 {
-                let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto}) }
+                let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto }) }
                 if filtered.count > 0 {
                     return filtered.forEach {
                         if $0.id == message.from {
@@ -79,7 +82,7 @@ public class Node {
             }
 
             peers.forEach {
-                if $0.id == message.from {
+                if $0.id == message.from || $0.id == message.origin {
                     return
                 }
 
