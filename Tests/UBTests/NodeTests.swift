@@ -27,4 +27,35 @@ final class NodeTests: XCTestCase {
 
         XCTAssert(node.transports.values.isEmpty)
     }
+
+    func testSendToSinglePeer() {
+        let transport = Transport()
+        let node = UB.Node()
+
+        node.add(transport: transport)
+
+        let id = Addr(repeating: 1, count: 3)
+        let peer = Peer(id: id, services: [])
+        transport.add(peer: peer)
+
+        let message = Message(
+            proto: UBID(repeating: 1, count: 1),
+            recipient: id,
+            from: Addr(repeating: 2, count: 3),
+            origin: Addr(repeating: 2, count: 3),
+            message: Data(repeating: 0, count: 3)
+        )
+
+        node.send(message)
+
+        let sent = transport.sent.first!
+
+        if sent.0 != message {
+            XCTFail("sent message did not match")
+        }
+
+        if sent.1 != id {
+            XCTFail("send target did not match")
+        }
+    }
 }
