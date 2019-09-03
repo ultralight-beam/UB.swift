@@ -69,12 +69,20 @@ public class Node {
                 let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto}) }
                 if filtered.count > 0 {
                     return filtered.forEach {
+                        if $0.id == message.from {
+                            return
+                        }
+
                         transport.send(message: message, to: $0.id)
                     }
                 }
             }
 
             peers.forEach {
+                if $0.id == message.from {
+                    return
+                }
+
                 transport.send(message: message, to: $0.id)
             }
         }

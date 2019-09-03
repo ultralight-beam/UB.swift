@@ -12,6 +12,10 @@ public struct Message {
     /// The sender of the message.
     public let from: Addr
 
+    /// The origin of the message, or the original sender.
+    /// Differs from the `sender` as that changes on every hop.
+    public let origin: Addr
+
     /// The raw message data.
     public let message: Data
 }
