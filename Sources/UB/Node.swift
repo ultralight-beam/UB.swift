@@ -51,9 +51,32 @@ public class Node {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(_ message: Message) {
-        // @todo this is naive
         transports.forEach { (_, transport) in
-            transport.send(message: message)
+            let peers = transport.peers
+
+            // @todo this is ugly split into functions
+            // @todo ensure that messages are delivered?
+
+            // what this does is try to send a message to an exact target or broadcast it to all peers
+            if message.recipient.count != 0 {
+                if peers.contains(where: { $0.id == message.recipient }) {
+                    return transport.send(message: message, to: message.recipient)
+                }
+            }
+
+            // what this does is send a message to anyone that implements a specific service
+            if message.proto.count != 0 {
+                let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto}) }
+                if filtered.count > 0 {
+                    return filtered.forEach {
+                        transport.send(message: message, to: $0.id)
+                    }
+                }
+            }
+
+            peers.forEach {
+                transport.send(message: message, to: $0.id)
+            }
         }
     }
 

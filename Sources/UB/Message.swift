@@ -7,7 +7,7 @@ public struct Message {
     public let proto: UBID
 
     /// The recipient of the message.
-    public let to: Addr
+    public let recipient: Addr
 
     /// The sender of the message.
     public let from: Addr
