@@ -60,25 +60,10 @@ public class Node {
             }
 
             // what this does is try to send a message to an exact target or broadcast it to all peers
-            if message.recipient.count != 0 {
-                if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: message, to: message.recipient)
-                }
-            }
+            sendMessageRecipient(message: message, peers: peers, transport: transport)
 
             // what this does is send a message to anyone that implements a specific service
-            if message.proto.count != 0 {
-                let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto }) }
-                if filtered.count > 0 {
-                    return filtered.forEach {
-                        if $0.id == message.from {
-                            return
-                        }
-
-                        transport.send(message: message, to: $0.id)
-                    }
-                }
-            }
+            sendMessageToServiceProviders(message: message, peers: peers, transport: transport)
 
             peers.forEach {
                 if $0.id == message.from || $0.id == message.origin {
@@ -87,6 +72,32 @@ public class Node {
 
                 transport.send(message: message, to: $0.id)
             }
+        }
+    }
+
+    private func sendMessageToServiceProviders(message: Message, peers: [Peer], transport: Transport) {
+        if message.proto.count == 0 {
+            return
+        }
+
+        peers
+            .filter { $0.services.contains(where: { $0 == message.proto }) }
+            .forEach {
+                mif $0.id == message.from {
+                    return
+                }
+
+                transport.send(message: message, to: $0.id)
+            }
+    }
+
+    private func sendMessageRecipient(message: Message, peers: [Peer], transport: Transport) {
+        if message.recipient.count == 0 {
+            return
+        }
+
+        if peers.contains(where: { $0.id == message.recipient }) {
+            transport.send(message: message, to: message.recipient)
         }
     }
 
