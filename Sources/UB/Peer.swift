@@ -3,7 +3,6 @@ import Foundation
 // @todo clean this up properly, currently very rough for testing purposes.
 
 public class Peer {
-
     public let id: Addr
     public let services: [UBID]
 
@@ -11,5 +10,4 @@ public class Peer {
         self.id = id
         self.services = services
     }
-
 }

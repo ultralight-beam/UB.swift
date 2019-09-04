@@ -2,7 +2,6 @@ import Foundation
 import UB
 
 class Transport: UB.Transport {
-
     private(set) var sent: [(Message, Addr)] = []
 
     var peers: [Peer] = []
@@ -11,5 +10,5 @@ class Transport: UB.Transport {
         sent.append((message, to))
     }
 
-    func listen(_ handler: Handler) { }
+    func listen(_: Handler) {}
 }

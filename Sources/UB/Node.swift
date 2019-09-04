@@ -4,14 +4,13 @@ import Foundation
 
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
-
     /// The known transports for the node.
-    private(set) public var transports = [String: Transport]()
+    public private(set) var transports = [String: Transport]()
 
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
-    public init() { }
+    public init() {}
 
     /// Adds a new transport to the list of known transports.
     ///
@@ -51,12 +50,12 @@ public class Node {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(_ message: Message) {
-        transports.forEach { (_, transport) in
+        transports.forEach { _, transport in
             let peers = transport.peers
 
             // @todo this is ugly split into functions
             // @todo ensure that messages are delivered?
-            if message.recipient.count == 0 && message.proto.count == 0 {
+            if message.recipient.count == 0, message.proto.count == 0 {
                 return
             }
 

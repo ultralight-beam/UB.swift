@@ -5,7 +5,6 @@ public typealias Handler = (Message) -> Void
 
 /// Transports are used to send messages between nodes using different methods, e.g. wifi direct or bluetooth.
 public protocol Transport {
-
     ///  The peers a specific transport can send messages to.
     var peers: [Peer] { get }
 
@@ -21,5 +20,4 @@ public protocol Transport {
     /// - Parameters:
     ///     - handler: The message handler to handle received messages.
     func listen(_ handler: Handler)
-
 }
