@@ -25,9 +25,13 @@ public class Node {
 
         transport.listen { msg in
 
+            // @todo message should probably be created here
+
             // @todo delegate should return something where we handle retransmission.
 
             delegate?.node(self, didReceiveMessage: msg)
+
+            // @todo if node delegate doesn't return anything success, send out the message?
         }
 
         transports[id] = transport
