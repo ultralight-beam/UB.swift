@@ -131,4 +131,34 @@ final class NodeTests: XCTestCase {
         XCTAssertEqual(transport.sent[0].1, transport.peers[0].id)
         XCTAssertEqual(transport.sent[1].1, transport.peers[1].id)
     }
+
+    func testSendsToAllPeersWhenServiceIsOnlyProvidedByOrigin() {
+        let transport = Transport()
+        let node = UB.Node()
+
+        node.add(transport: transport)
+
+        let id = UBID(repeating: 3, count: 2)
+        let origin = Addr(repeating: 2, count: 3)
+
+        transport.peers.append(Peer(id: origin, services: [id]))
+        transport.peers.append(Peer(id: Addr(repeating: 3, count: 3), services: []))
+        transport.peers.append(Peer(id: Addr(repeating: 4, count: 3), services: []))
+        transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
+
+        let message = Message(
+            proto: id,
+            recipient: Addr(repeating: 1, count: 3),
+            from: origin,
+            origin: origin,
+            message: Data(repeating: 0, count: 3)
+        )
+
+        node.send(message)
+
+        XCTAssertEqual(3, transport.sent.count)
+        XCTAssertEqual(transport.sent[0].1, transport.peers[1].id)
+        XCTAssertEqual(transport.sent[1].1, transport.peers[2].id)
+        XCTAssertEqual(transport.sent[2].1, transport.peers[3].id)
+    }
 }

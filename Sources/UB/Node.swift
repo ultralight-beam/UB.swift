@@ -73,22 +73,29 @@ public class Node {
             if message.proto.count != 0 {
                 let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
                 if filtered.count > 0 {
-                    return send(message, transport: transport, peers: filtered)
+                    let sends = send(message, transport: transport, peers: filtered)
+                    if sends > 0 {
+                        return
+                    }
                 }
             }
 
-            send(message, transport: transport, peers: peers)
+            _ = send(message, transport: transport, peers: peers)
         }
     }
 
-    private func send(_ message: Message, transport: Transport, peers: [Peer]) {
+    private func send(_ message: Message, transport: Transport, peers: [Peer]) -> Int {
+        var sends = 0
         peers.forEach {
             if $0.id == message.from || $0.id == message.origin {
                 return
             }
 
+            sends += 1
             transport.send(message: message, to: $0.id)
         }
+
+        return sends
     }
 
     // @todo create a message send loop with retransmissions and shit
