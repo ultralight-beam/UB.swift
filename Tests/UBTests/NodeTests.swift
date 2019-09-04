@@ -115,7 +115,7 @@ final class NodeTests: XCTestCase {
 
         transport.peers.append(Peer(id: Addr(repeating: 2, count: 3), services: [id]))
         transport.peers.append(Peer(id: Addr(repeating: 3, count: 3), services: [id]))
-        transport.peers.append(Peer(id: Addr(repeating: 4, count: 3), services: []))
+        transport.peers.append(Peer(id: Addr(repeating: 4, count: 3), services: [id]))
         transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
 
         let message = Message(
