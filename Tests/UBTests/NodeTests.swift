@@ -121,7 +121,7 @@ final class NodeTests: XCTestCase {
             proto: id,
             recipient: Addr(repeating: 1, count: 3),
             from: Addr(repeating: 4, count: 3),
-            origin: Addr(repeating: 3, count: 3),
+            origin: Addr(repeating: 5, count: 3),
             message: Data(repeating: 0, count: 3)
         )
 
