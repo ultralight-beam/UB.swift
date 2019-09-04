@@ -2,7 +2,7 @@ import Foundation
 
 // @todo clean this up properly, currently very rough for testing purposes.
 
-/// Represents a peer for a specific transport.
+/// Peer represents the nodes a transport can communicate with.
 public class Peer {
     /// The peers `id`.
     public let id: Addr
