@@ -50,15 +50,15 @@ public class Node {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(_ message: Message) {
+        if message.recipient.count == 0, message.proto.count == 0 {
+            return
+        }
+
         transports.forEach { _, transport in
             let peers = transport.peers
 
             // @todo this is ugly split into functions
             // @todo ensure that messages are delivered?
-            if message.recipient.count == 0, message.proto.count == 0 {
-                return
-            }
-
             // what this does is try to send a message to an exact target or broadcast it to all peers
             if message.recipient.count != 0 {
                 if peers.contains(where: { $0.id == message.recipient }) {
