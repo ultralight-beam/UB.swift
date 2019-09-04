@@ -12,7 +12,7 @@ public class Peer {
 
     /// The init function for a peer.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///     - id: The peers `id`
     ///     - services: The services a peer can knows.
     init(id: Addr, services: [UBID]) {
