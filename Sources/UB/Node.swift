@@ -89,32 +89,5 @@ public class Node {
             }
         }
     }
-
-    private func sendMessageToServiceProviders(message: Message, peers: [Peer], transport: Transport) {
-        if message.proto.count == 0 {
-            return
-        }
-
-        peers
-            .filter { $0.services.contains(where: { $0 == message.proto }) }
-            .forEach {
-                if $0.id == message.from {
-                    return
-                }
-
-                transport.send(message: message, to: $0.id)
-            }
-    }
-
-    private func sendMessageRecipient(message: Message, peers: [Peer], transport: Transport) {
-        if message.recipient.count == 0 {
-            return
-        }
-
-        if peers.contains(where: { $0.id == message.recipient }) {
-            transport.send(message: message, to: message.recipient)
-        }
-    }
-
     // @todo create a message send loop with retransmissions and shit
 }
