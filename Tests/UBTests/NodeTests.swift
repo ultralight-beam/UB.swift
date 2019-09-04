@@ -65,8 +65,7 @@ final class NodeTests: XCTestCase {
 
         node.add(transport: transport)
 
-        let id = Addr(repeating: 1, count: 3)
-        let peer = Peer(id: id, services: [])
+        let peer = Peer(id: Addr(repeating: 1, count: 3), services: [])
         transport.peers.append(peer)
 
         let message = Message(
@@ -82,13 +81,11 @@ final class NodeTests: XCTestCase {
         XCTAssertEqual(0, transport.sent.count)
     }
 
-    func testSendsToAllPeersWhenExactMatchNotFound() {
+    func testSendsToAllPeersExceptOriginWhenExactMatchNotFound() {
         let transport = Transport()
         let node = UB.Node()
 
         node.add(transport: transport)
-
-        let id = Addr(repeating: 1, count: 3)
 
         transport.peers.append(Peer(id: Addr(repeating: 2, count: 3), services: []))
         transport.peers.append(Peer(id: Addr(repeating: 3, count: 3), services: []))
@@ -97,7 +94,7 @@ final class NodeTests: XCTestCase {
 
         let message = Message(
             proto: UBID(repeating: 1, count: 1),
-            recipient: id,
+            recipient: Addr(repeating: 1, count: 3),
             from: Addr(repeating: 4, count: 3),
             origin: Addr(repeating: 3, count: 3),
             message: Data(repeating: 0, count: 3)
@@ -106,5 +103,33 @@ final class NodeTests: XCTestCase {
         node.send(message)
 
         XCTAssertEqual(2, transport.sent.count)
+    }
+
+    func testSendsToAllPeersWithSameServiceId() {
+        let transport = Transport()
+        let node = UB.Node()
+
+        node.add(transport: transport)
+
+        let id = UBID(repeating: 3, count: 2)
+
+        transport.peers.append(Peer(id: Addr(repeating: 2, count: 3), services: [id]))
+        transport.peers.append(Peer(id: Addr(repeating: 3, count: 3), services: [id]))
+        transport.peers.append(Peer(id: Addr(repeating: 4, count: 3), services: []))
+        transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
+
+        let message = Message(
+            proto: id,
+            recipient: Addr(repeating: 1, count: 3),
+            from: Addr(repeating: 4, count: 3),
+            origin: Addr(repeating: 3, count: 3),
+            message: Data(repeating: 0, count: 3)
+        )
+
+        node.send(message)
+
+        XCTAssertEqual(2, transport.sent.count)
+        XCTAssertEqual(transport.sent[0].1, transport.peers[0].id)
+        XCTAssertEqual(transport.sent[1].1, transport.peers[1].id)
     }
 }
