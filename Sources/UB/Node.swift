@@ -83,7 +83,7 @@ public class Node {
         peers
             .filter { $0.services.contains(where: { $0 == message.proto }) }
             .forEach {
-                mif $0.id == message.from {
+                if $0.id == message.from {
                     return
                 }
 
