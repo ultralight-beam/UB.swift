@@ -2,7 +2,6 @@ import Foundation
 
 /// Message represents the message sent between nodes.
 public struct Message {
-
     /// The message protocol.
     public let proto: UBID
 
