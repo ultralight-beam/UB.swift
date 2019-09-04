@@ -1,8 +1,7 @@
-import XCTest
 @testable import UB
+import XCTest
 
 final class NodeTests: XCTestCase {
-
     func testAddTransport() {
         let transport = Transport()
         let node = UB.Node()

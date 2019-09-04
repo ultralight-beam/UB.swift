@@ -2,8 +2,7 @@ import Foundation
 import UB
 
 class Transport: UB.Transport {
+    func send(message _: Message) {}
 
-    func send(message: Message) { }
-
-    func listen(_ handler: Handler) { }
+    func listen(_: Handler) {}
 }
