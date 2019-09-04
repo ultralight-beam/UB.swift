@@ -57,7 +57,6 @@ public class Node {
         transports.forEach { _, transport in
             let peers = transport.peers
 
-            // @todo this is ugly split into functions
             // @todo ensure that messages are delivered?
             // what this does is try to send a message to an exact target or broadcast it to all peers
             if message.recipient.count != 0 {
