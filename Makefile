@@ -1,4 +1,4 @@
-.PHONY: docs test lint xcode linuxmain autocorrect
+.PHONY: docs format test lint xcode linuxmain autocorrect
 
 test:
 	swift test
@@ -18,3 +18,6 @@ xcode:
 
 linuxmain:
 	swift test --generate-linuxmain
+
+format:
+	swiftformat .
