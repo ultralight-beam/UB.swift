@@ -60,10 +60,25 @@ public class Node {
             }
 
             // what this does is try to send a message to an exact target or broadcast it to all peers
-            sendMessageRecipient(message: message, peers: peers, transport: transport)
+            if message.recipient.count != 0 {
+                if peers.contains(where: { $0.id == message.recipient }) {
+                    return transport.send(message: message, to: message.recipient)
+                }
+            }
 
-            // what this does is send a message to anyone that implements a specific service
-            sendMessageToServiceProviders(message: message, peers: peers, transport: transport)
+            // what this does is send a message to anyone that implements a specific service	            /
+            if message.proto.count != 0 {
+                let filtered = peers.filter { $0.services.contains(where: { $0 == message.proto }) }
+                if filtered.count > 0 {
+                    return filtered.forEach {
+                        if $0.id == message.from {
+                            return
+                        }
+
+                        transport.send(message: message, to: $0.id)
+                    }
+                }
+            }
 
             peers.forEach {
                 if $0.id == message.from || $0.id == message.origin {
