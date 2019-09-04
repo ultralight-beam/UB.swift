@@ -77,6 +77,7 @@ public class Node {
 
                         transport.send(message: message, to: $0.id)
                     }
+                }
             }
 
             peers.forEach {
