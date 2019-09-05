@@ -1,0 +1,4 @@
+# file options
+
+--exclude Tests/UBTests/XCTestManifests.swift,Snapshots
+

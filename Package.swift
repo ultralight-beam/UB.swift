@@ -29,6 +29,7 @@ let package = Package(
             dependencies: ["UB"]),
         .testTarget(
             name: "UBTests",
-            dependencies: ["UB"]),
+            dependencies: ["UB"]
+        ),
     ]
 )
