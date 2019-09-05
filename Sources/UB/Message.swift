@@ -36,10 +36,10 @@ extension Message {
 
     func toProto() -> msg {
         return msg.with {
-            $0.protocol = Data(bytes: self.proto)
-            $0.recipient = Data(bytes: self.recipient)
-            $0.origin = Data(bytes: self.origin)
-            $0.body = Data(bytes: self.message)
+            $0.protocol = Data(self.proto)
+            $0.recipient = Data(self.recipient)
+            $0.origin = Data(self.origin)
+            $0.body = Data(self.message)
         }
     }
 }
