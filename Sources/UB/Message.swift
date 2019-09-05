@@ -26,7 +26,7 @@ extension Message {
     /// - Parameters
     ///     - protobuf: The protocol buffer.
     ///     - from: The protocol buffer.
-    init(protobuf: msg, from: Addr) {
+    init(protobuf: Packet, from: Addr) {
         proto = UBID(protobuf.protocol)
         recipient = Addr(protobuf.recipient)
         self.from = from
@@ -34,8 +34,8 @@ extension Message {
         message = protobuf.body
     }
 
-    func toProto() -> msg {
-        return msg.with {
+    func toProto() -> Packet {
+        return Packet.with {
             $0.protocol = Data(self.proto)
             $0.recipient = Data(self.recipient)
             $0.origin = Data(self.origin)
