@@ -8,11 +8,12 @@ let package = Package(
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "UB",
-            targets: ["UB"]),
+            targets: ["UB"]
+        ),
         .executable(
             name: "Main",
             targets: ["Main"]
-        )
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,10 +24,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "UB",
-            dependencies: []),
-	.target(
+            dependencies: []
+        ),
+        .target(
             name: "Main",
-            dependencies: ["UB"]),
+            dependencies: ["UB"]
+        ),
         .testTarget(
             name: "UBTests",
             dependencies: ["UB"]

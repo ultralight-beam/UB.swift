@@ -1,11 +1,10 @@
-import Foundation
 import CoreBluetooth
+import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject {
-
-    private var centralManager: CBCentralManager?
-    private var peripheralManager: CBPeripheralManager?
+    private let centralManager: CBCentralManager
+    private let peripheralManager: CBPeripheralManager
 
     private var testServiceID = CBUUID(string: "0xAAAA")
     private var testServiceID2 = CBUUID(string: "0xBBBB")
@@ -13,31 +12,28 @@ public class CoreBluetoothTransport: NSObject {
     private var perp: CBPeripheral? // make this an array for multiple devices
     private var peripherals: [CBPeripheral?] = [] // make this an array for multiple devices
 
-    public override convenience init() {
+    public convenience override init() {
         self.init(
             centralManager: CBCentralManager(delegate: nil, queue: nil),
             peripheralManager: CBPeripheralManager(delegate: nil, queue: nil)
         )
-        centralManager?.delegate = self
-        peripheralManager?.delegate = self
     }
 
     public init(centralManager: CBCentralManager, peripheralManager: CBPeripheralManager) {
-        super.init()
         self.centralManager = centralManager
         self.peripheralManager = peripheralManager
-
+        super.init()
+        self.centralManager.delegate = self
+        self.peripheralManager.delegate = self
     }
-
 }
 
 extension CoreBluetoothTransport: Transport {
-
     /// Send implements a function to send messages between nodes using Bluetooth
     ///
     /// - Parameters:
     ///     - message: The message to send.
-    public func send(message: Message) {
+    public func send(message _: Message) {
         print("A")
     }
 
@@ -45,18 +41,15 @@ extension CoreBluetoothTransport: Transport {
     ///
     /// - Parameters:
     ///     - handler: The message handler to handle received messages.
-    public func listen(_ handler: (Message) -> Void) {
+    public func listen(_: (Message) -> Void) {
         print("B")
     }
-
 }
 
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
-
     // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        if (peripheral.state == .poweredOn) {
-
+        if peripheral.state == .poweredOn {
             let WR_UUID = CBUUID(string: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             let WR_PROPERTIES: CBCharacteristicProperties = .write
             let WR_PERMISSIONS: CBAttributePermissions = .writeable
@@ -70,7 +63,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             peripheral.add(serialService)
 
             peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [testServiceID, testServiceID2],
-                                                CBAdvertisementDataLocalNameKey: nil])
+                                         CBAdvertisementDataLocalNameKey: nil])
         }
     }
 
@@ -78,14 +71,13 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         print("Got a message! Ding!")
         for request in requests {
             if let value = request.value {
-
-                if let messageText = String(data: value, encoding: String.Encoding.utf8) as String! {
+                if let messageText = String(data: value, encoding: String.Encoding.utf8) as! String? {
                     print("GOOOOTEEMMM   \(messageText)")
 
                 } else {
                     print("failed to decode string of \(value.hexEncodedString())")
                 }
-                //appendMessageToChat(message: Message(text: messageText!, isSent: false))
+                // appendMessageToChat(message: Message(text: messageText!, isSent: false))
             }
             peripheral.respond(to: request, withResult: .success)
         }
@@ -93,11 +85,9 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 }
 
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
-
     /// Lets us know if Bluetooth is in correct state to start.
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
-
         case .unknown:
             print("Bluetooth status is UNKNOWN")
         case .resetting:
@@ -110,36 +100,33 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
             print("Bluetooth status is POWERED OFF")
         case .poweredOn:
             print("Bluetooth status is POWERED ON")
-            centralManager?.scanForPeripherals(withServices: [testServiceID, testServiceID2])
-
+            centralManager.scanForPeripherals(withServices: [testServiceID, testServiceID2])
         }
     }
 
     // Try to connect to discovered devices
-    public func centralManager(_ central: CBCentralManager,
-                        didDiscover peripheral: CBPeripheral,
-                        advertisementData: [String: Any],
-                        rssi RSSI: NSNumber) {
-            perp = peripheral
-            perp?.delegate = self
-            peripherals.append(perp)
-            print(peripherals.count)
-            decodePeripheralState(peripheralState: peripheral.state)
-            centralManager?.connect(perp!)
+    public func centralManager(_: CBCentralManager,
+                               didDiscover peripheral: CBPeripheral,
+                               advertisementData _: [String: Any],
+                               rssi _: NSNumber) {
+        perp = peripheral
+        perp?.delegate = self
+        peripherals.append(perp)
+        print(peripherals.count)
+        decodePeripheralState(peripheralState: peripheral.state)
+        centralManager.connect(perp!)
     }
 
     // When connected to a devices, ask for the Services
-    public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+    public func centralManager(_: CBCentralManager, didConnect _: CBPeripheral) {
         // look for services of interest on peripheral
         perp?.discoverServices([testServiceID, testServiceID2])
     }
 
     // Handle Disconnections
-    public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-    }
+    public func centralManager(_: CBCentralManager, didDisconnectPeripheral _: CBPeripheral, error _: Error?) {}
 
     func decodePeripheralState(peripheralState: CBPeripheralState) {
-
         switch peripheralState {
         case .disconnected:
             print("Peripheral state: disconnected")
@@ -150,13 +137,12 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         case .disconnecting:
             print("Peripheral state: disconnecting")
         }
-
     }
 }
 
 extension CoreBluetoothTransport: CBPeripheralDelegate {
     // ask for Characteristics for each Service of interest
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
         print("servicessssss ")
         for service in peripheral.services! {
             print("Service: \(service)")
@@ -165,16 +151,19 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     }
 
     // called with characteristics
-    public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+    public func peripheral(
+        _ peripheral: CBPeripheral,
+        didDiscoverCharacteristicsFor service: CBService,
+        error _: Error?
+    ) {
         for characteristic in service.characteristics! {
             print("Characteristic: \(characteristic)")
-            //peripheral.readValue(for: characteristic)
+            // peripheral.readValue(for: characteristic)
 //            if characteristic.uuid == testServiceID {
-                print("Sending some good shit")
-                let data = Data(bytes: [97, 98, 99, 100])
-                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
+            print("Sending some good shit")
+            let data = Data(bytes: [97, 98, 99, 100])
+            peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
 //            }
-
         }
     }
 
@@ -183,11 +172,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 //        let data = Data(bytes: characteristic.value!)
 //        print("Characteristic Value: \(data.hexEncodedString())")
 //    }
-
 }
 
 extension CoreBluetoothTransport {
-    public func startScanning() {
-
-    }
+    public func startScanning() {}
 }
