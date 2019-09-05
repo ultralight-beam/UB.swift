@@ -2,6 +2,7 @@ included:
   - Sources
   - Tests
 excluded:
+  - Sources/UB/Protobuf/
   - Tests/UBTests/stubs
   - Tests/UBTests/XCTestManifests.swift
   - Package.swift

@@ -1,6 +1,7 @@
 exclude_patterns:
   - "docs/"
   - "Package.swift"
+  - "Sources/UB/Protobuf/"
 plugins:
   swiftlint:
     enabled: true

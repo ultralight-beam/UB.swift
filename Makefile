@@ -1,7 +1,18 @@
-.PHONY: docs format test lint xcode linuxmain autocorrect
+.PHONY: docs format test lint xcode linuxmain autocorrect wipe test build
 
-test:
-	swift test
+APP="UB"
+CONSTRUCT=xcodebuild -workspace $(APP).xcworkspace -scheme $(APP)-Package clean
+
+install_deps:
+	pod install
+
+wipe:
+	rm -rf .build $(APP).xcodeproj $(APP).xcworkspace Package.pins Pods Podfile.lock
+test: wipe xcode install_deps
+	$(CONSTRUCT) test | xcpretty
+
+build: wipe xcode install_deps
+	$(CONSTRUCT) build | xcpretty
 
 lint:
 	swiftlint
@@ -14,6 +25,7 @@ docs:
 	rm -rf build/
 
 xcode:
+	swift package fetch
 	swift package generate-xcodeproj
 
 linuxmain:
