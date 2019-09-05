@@ -7,7 +7,11 @@ extension NodeTests {
     // to regenerate.
     static let __allTests__NodeTests = [
         ("testAddTransport", testAddTransport),
+        ("testDoesNotSendWhenNoPeerOrServiceInMessage", testDoesNotSendWhenNoPeerOrServiceInMessage),
         ("testRemoveTransport", testRemoveTransport),
+        ("testSendsToAllPeersExceptOriginWhenExactMatchNotFound", testSendsToAllPeersExceptOriginWhenExactMatchNotFound),
+        ("testSendsToAllPeersWithSameServiceId", testSendsToAllPeersWithSameServiceId),
+        ("testSendToSinglePeer", testSendToSinglePeer),
     ]
 }
 
