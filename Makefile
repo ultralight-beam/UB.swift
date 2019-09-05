@@ -25,7 +25,7 @@ docs:
 	rm -rf build/
 
 xcode:
-	swift package fetch
+	swift package resolve
 	swift package generate-xcodeproj
 
 linuxmain:

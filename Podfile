@@ -5,6 +5,9 @@ target 'UB' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
+  xcodeproj 'UB'
+  # workspace '../LibraryName'
+
   # Pods for UB
   pod 'SwiftProtobuf', '~> 1.0'
 
