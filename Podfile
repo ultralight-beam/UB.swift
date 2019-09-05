@@ -6,7 +6,6 @@ target 'UB' do
   use_frameworks!
 
   xcodeproj 'UB'
-  # workspace '../LibraryName'
 
   # Pods for UB
   pod 'SwiftProtobuf', '~> 1.0'
@@ -24,4 +23,3 @@ target 'UB' do
     end
   end
 end
-
