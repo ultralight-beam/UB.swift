@@ -10,7 +10,7 @@ public class Peer {
     /// The services a peer knows.
     public let services: [UBID]
 
-    /// The init function for a peer.
+    /// Initializes a Peer with a specified id and list of known services.
     ///
     /// - Parameters:
     ///     - id: The peers `id`
