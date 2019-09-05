@@ -8,9 +8,23 @@ public class CoreBluetoothTransport: NSObject {
 
     private var testServiceID = CBUUID(string: "0xAAAA")
     private var testServiceID2 = CBUUID(string: "0xBBBB")
+    
+    let receiveCharacteristic = CBMutableCharacteristic(
+        type:  CBUUID(string: "0002"),
+        properties: CBCharacteristicProperties.writeWithoutResponse,
+        value: nil,
+        permissions: CBAttributePermissions.writeable
+    )
 
+    var test: CBCharacteristic?
+    
     private var perp: CBPeripheral? // make this an array for multiple devices
-    private var peripherals: [CBPeripheral?] = [] // make this an array for multiple devices
+   // private var peripherals = [Addr:CBPeripheral?]() // make this an array for multiple devices
+    
+    
+    
+    private var outQueue = [(Message,Addr)]()
+    
 
     public convenience override init() {
         self.init(
@@ -29,12 +43,35 @@ public class CoreBluetoothTransport: NSObject {
 }
 
 extension CoreBluetoothTransport: Transport {
+    public var peers: [Peer] {
+        return []//centralManager.retrieveConnectedPeripherals(withServices: [testServiceID, testServiceID2])
+    }
+
     /// Send implements a function to send messages between nodes using Bluetooth
     ///
     /// - Parameters:
     ///     - message: The message to send.
-    public func send(message _: Message) {
-        print("A")
+    public func send(message: Message, to: Addr) {
+        // check bluetooth is running
+        
+        guard let uuid = String(bytes: to, encoding: .utf8) else {
+            print("Error: not a valid Byte sequence")
+            return
+        }
+        guard let toUUID = UUID(uuidString: uuid) else {
+            print("Error: not a valid UUID sequence")
+            return
+        }
+        let peripherals = centralManager.retrievePeripherals(withIdentifiers: [toUUID])
+        if peripherals.count == 0 {
+            print("Error: peripheral with uuid \(to) not found")
+            return
+        }
+        
+        let peripheral = peripherals[0]
+        print("NAME : \(peripheral)")
+        
+        peripheral.writeValue(message.message, for: test!, type: CBCharacteristicWriteType.withoutResponse)
     }
 
     /// Listen implements a function to receive messages being sent to a node.
@@ -111,9 +148,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
                                rssi _: NSNumber) {
         perp = peripheral
         perp?.delegate = self
-        peripherals.append(perp)
-        print(peripherals.count)
-        decodePeripheralState(peripheralState: peripheral.state)
+        decodePeripheralState(peripheralState: peripheral.state, peripheral: peripheral)
         centralManager.connect(perp!)
     }
 
@@ -126,12 +161,17 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     // Handle Disconnections
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral _: CBPeripheral, error _: Error?) {}
 
-    func decodePeripheralState(peripheralState: CBPeripheralState) {
+    func decodePeripheralState(peripheralState: CBPeripheralState, peripheral: CBPeripheral) {
         switch peripheralState {
         case .disconnected:
             print("Peripheral state: disconnected")
         case .connected:
             print("Peripheral state: connected")
+            if #available(OSX 10.13, *) {
+                print("UUID: \(peripheral.identifier)")
+            } else {
+                // Fallback on earlier versions
+            }
         case .connecting:
             print("Peripheral state: connecting")
         case .disconnecting:
@@ -156,13 +196,23 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didDiscoverCharacteristicsFor service: CBService,
         error _: Error?
     ) {
+        
         for characteristic in service.characteristics! {
-            print("Characteristic: \(characteristic)")
+            if characteristic.uuid == CBUUID(string: "0002"){
+                print("WE GOT THE RIGHT CHARACTERISTIC")
+                test = characteristic
+            }
+
             // peripheral.readValue(for: characteristic)
 //            if characteristic.uuid == testServiceID {
-            print("Sending some good shit")
-            let data = Data(bytes: [97, 98, 99, 100])
-            peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
+            //let data = Data(bytes: [97, 98, 99, 100])
+                print("Characteristic: \(characteristic)")
+
+//                print("Sending some good shit")
+//                let data = outQueue[0].0.message;
+//                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
+//                outQueue.remove(at:0)
+            
 //            }
         }
     }
