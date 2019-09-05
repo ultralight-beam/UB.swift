@@ -2,7 +2,6 @@ import Foundation
 
 /// Discovery is used to find peers as well as advertise oneself.
 public protocol Discovery {
-
     // @todo options or some shit?
 
     /// Advertises oneself as a peer for a specific transport.

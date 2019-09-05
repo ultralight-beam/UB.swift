@@ -2,7 +2,11 @@
   "warnings": [
     {
       "file": "/Users/deaneigenmann/Documents/UB.swift/Sources/UB/Node.swift",
+<<<<<<< HEAD
       "line": 35,
+=======
+      "line": 13,
+>>>>>>> master
       "symbol": "Node.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

@@ -1,8 +1,7 @@
 import Foundation
 
 /// NodeDelegate is used to handle the receiving of messages.
-public protocol NodeDelegate: class {
-
+public protocol NodeDelegate: AnyObject {
     /// Called when a nodes status is updated.
     ///
     /// - Parameters:
