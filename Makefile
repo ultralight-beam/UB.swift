@@ -8,6 +8,7 @@ install_deps:
 
 wipe:
 	rm -rf .build $(APP).xcodeproj $(APP).xcworkspace Package.pins Pods Podfile.lock
+
 test: wipe xcode install_deps
 	$(CONSTRUCT) test | xcpretty
 
