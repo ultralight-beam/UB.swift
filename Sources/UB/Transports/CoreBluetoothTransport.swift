@@ -3,28 +3,21 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject {
+
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
-    private var testServiceID = CBUUID(string: "0xAAAA")
-    private var testServiceID2 = CBUUID(string: "0xBBBB")
-    
+    static let ubServiceUUID = CBUUID(string: "0xAAAA")
+    static let receiveCharacteristicUUID = CBUUID(string: "0002")
+
     let receiveCharacteristic = CBMutableCharacteristic(
-        type:  CBUUID(string: "0002"),
+        type: receiveCharacteristicUUID,
         properties: CBCharacteristicProperties.writeWithoutResponse,
         value: nil,
         permissions: CBAttributePermissions.writeable
     )
 
-    var test: CBCharacteristic?
-    
-    private var perp: CBPeripheral? // make this an array for multiple devices
-   // private var peripherals = [Addr:CBPeripheral?]() // make this an array for multiple devices
-    
-    
-    
-    private var outQueue = [(Message,Addr)]()
-    
+    private var peripherals = [Addr: CBPeripheral]()
 
     public convenience override init() {
         self.init(
@@ -54,24 +47,32 @@ extension CoreBluetoothTransport: Transport {
     public func send(message: Message, to: Addr) {
         // check bluetooth is running
         
-        guard let uuid = String(bytes: to, encoding: .utf8) else {
-            print("Error: not a valid Byte sequence")
-            return
-        }
-        guard let toUUID = UUID(uuidString: uuid) else {
-            print("Error: not a valid UUID sequence")
-            return
-        }
-        let peripherals = centralManager.retrievePeripherals(withIdentifiers: [toUUID])
-        if peripherals.count == 0 {
+//        guard let uuid = String(bytes: to, encoding: .utf8) else {
+//            print("Error: not a valid Byte sequence")
+//            return
+//        }
+//        guard let toUUID = UUID(uuidString: uuid) else {
+//            print("Error: not a valid UUID sequence")
+//            return
+//        }
+//
+//
+//        let peripherals = centralManager.retrievePeripherals(withIdentifiers: [toUUID])
+//        if peripherals.count == 0 {
+//            print("Error: peripheral with uuid \(to) not found")
+//            return
+//        }
+//
+//        let peripheral = peripherals[0]
+//        print("NAME : \(peripheral)")
+
+        if let peripheral = peripherals[to] {
+            peripheral.writeValue(message.message, for: receiveCharacteristic, type: CBCharacteristicWriteType.withoutResponse)
+        } else {
             print("Error: peripheral with uuid \(to) not found")
-            return
+            // @todo error
         }
         
-        let peripheral = peripherals[0]
-        print("NAME : \(peripheral)")
-        
-        peripheral.writeValue(message.message, for: test!, type: CBCharacteristicWriteType.withoutResponse)
     }
 
     /// Listen implements a function to receive messages being sent to a node.
@@ -91,7 +92,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             let WR_PROPERTIES: CBCharacteristicProperties = .write
             let WR_PERMISSIONS: CBAttributePermissions = .writeable
 
-            let serialService = CBMutableService(type: testServiceID, primary: true)
+            let serialService = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
             let writeCharacteristics = CBMutableCharacteristic(type: WR_UUID,
                                                                properties: WR_PROPERTIES, value: nil,
@@ -99,7 +100,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             serialService.characteristics = [writeCharacteristics]
             peripheral.add(serialService)
 
-            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [testServiceID, testServiceID2],
+            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
                                          CBAdvertisementDataLocalNameKey: nil])
         }
     }
@@ -137,29 +138,30 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
             print("Bluetooth status is POWERED OFF")
         case .poweredOn:
             print("Bluetooth status is POWERED ON")
-            centralManager.scanForPeripherals(withServices: [testServiceID, testServiceID2])
+            centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
         }
     }
 
     // Try to connect to discovered devices
-    public func centralManager(_: CBCentralManager,
-                               didDiscover peripheral: CBPeripheral,
-                               advertisementData _: [String: Any],
-                               rssi _: NSNumber) {
-        perp = peripheral
-        perp?.delegate = self
+    public func centralManager(
+        _ central: CBCentralManager,
+        didDiscover peripheral: CBPeripheral,
+        advertisementData _: [String: Any],
+        rssi _: NSNumber
+    ) {
+        peripheral.delegate = self
         decodePeripheralState(peripheralState: peripheral.state, peripheral: peripheral)
-        centralManager.connect(perp!)
+        centralManager.connect(peripheral)
     }
 
     // When connected to a devices, ask for the Services
-    public func centralManager(_: CBCentralManager, didConnect _: CBPeripheral) {
-        // look for services of interest on peripheral
-        perp?.discoverServices([testServiceID, testServiceID2])
+    public func centralManager(_: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        peripheral.discoverServices([CoreBluetoothTransport.receiveCharacteristicUUID])
     }
 
-    // Handle Disconnections
-    public func centralManager(_: CBCentralManager, didDisconnectPeripheral _: CBPeripheral, error _: Error?) {}
+    public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
+        peripherals.removeValue(forKey: Addr(peripheral.identifier.bytes))
+    }
 
     func decodePeripheralState(peripheralState: CBPeripheralState, peripheral: CBPeripheral) {
         switch peripheralState {
@@ -181,49 +183,21 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 }
 
 extension CoreBluetoothTransport: CBPeripheralDelegate {
-    // ask for Characteristics for each Service of interest
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
-        print("servicessssss ")
-        for service in peripheral.services! {
-            print("Service: \(service)")
-            peripheral.discoverCharacteristics(nil, for: service)
+        guard let service = peripheral.services?.first(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) else {
+            return
         }
+
+        peripheral.discoverCharacteristics([CoreBluetoothTransport.receiveCharacteristicUUID], for: service)
     }
 
-    // called with characteristics
     public func peripheral(
         _ peripheral: CBPeripheral,
         didDiscoverCharacteristicsFor service: CBService,
         error _: Error?
     ) {
-        
-        for characteristic in service.characteristics! {
-            if characteristic.uuid == CBUUID(string: "0002"){
-                print("WE GOT THE RIGHT CHARACTERISTIC")
-                test = characteristic
-            }
-
-            // peripheral.readValue(for: characteristic)
-//            if characteristic.uuid == testServiceID {
-            //let data = Data(bytes: [97, 98, 99, 100])
-                print("Characteristic: \(characteristic)")
-
-//                print("Sending some good shit")
-//                let data = outQueue[0].0.message;
-//                peripheral.writeValue(data, for: characteristic, type: CBCharacteristicWriteType.withoutResponse)
-//                outQueue.remove(at:0)
-            
-//            }
+        if service.characteristics?.contains(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) ?? false {
+            peripherals[Addr(peripheral.identifier.bytes)] = peripheral
         }
     }
-
-//    // called when reading a value from peripheral characteristic data field.
-//    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-//        let data = Data(bytes: characteristic.value!)
-//        print("Characteristic Value: \(data.hexEncodedString())")
-//    }
-}
-
-extension CoreBluetoothTransport {
-    public func startScanning() {}
 }
