@@ -12,9 +12,9 @@ let message = Message(
 )
 
 let timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
-    print(UBBT.peripherals.count)
-    if UBBT.peripherals.count == 1 {
-        UBBT.send(message: message, to: Array(UBBT.peripherals.keys)[0])
+    print(UBBT.peers.count)
+    if UBBT.peers.count == 1 {
+        UBBT.send(message: message, to: UBBT.peers[0].id)
     }
 }
 

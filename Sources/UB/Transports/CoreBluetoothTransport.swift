@@ -2,7 +2,7 @@ import CoreBluetooth
 import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
-public class CoreBluetoothTransport: NSObject {
+public class CoreBluetoothTransport: NSObject, Transport {
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
@@ -11,9 +11,12 @@ public class CoreBluetoothTransport: NSObject {
 
     // make this nicer, we need this cause we need a reference to the peripheral?
     var perp: CBPeripheral?
+    
+    public fileprivate(set) var peers = [Peer]()
 
-    public private(set) var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
+    private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
 
+    /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
             centralManager: CBCentralManager(delegate: nil, queue: nil),
@@ -21,6 +24,11 @@ public class CoreBluetoothTransport: NSObject {
         )
     }
 
+    /// Initializes a CoreBluetoothTransport.
+    ///
+    /// - Parameters:
+    ///     - centralManager: The CoreBluetooth Central Manager to use.
+    ///     - peripheralManager: The CoreBluetooth Peripheral Manager to use.
     public init(centralManager: CBCentralManager, peripheralManager: CBPeripheralManager) {
         self.centralManager = centralManager
         self.peripheralManager = peripheralManager
@@ -28,13 +36,7 @@ public class CoreBluetoothTransport: NSObject {
         self.centralManager.delegate = self
         self.peripheralManager.delegate = self
     }
-}
-
-extension CoreBluetoothTransport: Transport {
-    public var peers: [Peer] {
-        return [] // centralManager.retrieveConnectedPeripherals(withServices: [testServiceID, testServiceID2])
-    }
-
+    
     /// Send implements a function to send messages between nodes using Bluetooth
     ///
     /// - Parameters:
@@ -99,21 +101,11 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
     /// Lets us know if Bluetooth is in correct state to start.
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .unknown:
-            print("Bluetooth status is UNKNOWN")
-        case .resetting:
-            print("Bluetooth status is RESETTING")
-        case .unsupported:
-            print("Bluetooth status is UNSUPPORTED")
-        case .unauthorized:
-            print("Bluetooth status is UNAUTHORIZED")
-        case .poweredOff:
-            print("Bluetooth status is POWERED OFF")
-        case .poweredOn:
-            print("Bluetooth status is POWERED ON")
+        if central.state == .poweredOn {
             centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
         }
+        
+        // @todo handling for other states
     }
 
     // Try to connect to discovered devices
@@ -125,7 +117,6 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     ) {
         perp = peripheral
         peripheral.delegate = self
-        decodePeripheralState(peripheralState: peripheral.state, peripheral: peripheral)
         centralManager.connect(peripheral)
     }
 
@@ -136,21 +127,10 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     }
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
-        peripherals.removeValue(forKey: Addr(peripheral.identifier.bytes))
-    }
-
-    func decodePeripheralState(peripheralState: CBPeripheralState, peripheral: CBPeripheral) {
-        switch peripheralState {
-        case .disconnected:
-            print("Peripheral state: disconnected")
-        case .connected:
-            print("Peripheral state: connected")
-            print("UUID: \(peripheral.identifier)")
-        case .connecting:
-            print("Peripheral state: connecting")
-        case .disconnecting:
-            print("Peripheral state: disconnecting")
-        }
+        let peer = Addr(peripheral.identifier.bytes)
+        
+        peripherals.removeValue(forKey: peer)
+        peers.removeAll(where: { $0.id == peer })
     }
 }
 
@@ -167,7 +147,9 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         error _: Error?
     ) {
         if let characteristic = service.characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
-            peripherals[Addr(peripheral.identifier.bytes)] = (peripheral, characteristic)
+            let id = Addr(peripheral.identifier.bytes)
+            peripherals[id] = (peripheral, characteristic)
+            peers.append(Peer(id: id, services: [UBID]())) // @TODO SERVICES
         }
     }
 }
