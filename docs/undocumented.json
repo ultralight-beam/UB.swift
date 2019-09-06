@@ -1,13 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Extensions/UUID+Bytes.swift",
-      "line": 4,
-      "symbol": "UUID.bytes",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Message.swift",
       "line": 21,
       "symbol": "Message.init(proto:recipient:from:origin:message:)",
@@ -18,69 +11,6 @@
       "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
       "line": 13,
       "symbol": "Node.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 63,
-      "symbol": "CoreBluetoothTransport.peripheralManagerDidUpdateState(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 83,
-      "symbol": "CoreBluetoothTransport.peripheralManager(_:didReceiveWrite:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 95,
-      "symbol": "CoreBluetoothTransport.centralManagerDidUpdateState(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 103,
-      "symbol": "CoreBluetoothTransport.centralManager(_:didDiscover:advertisementData:rssi:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 114,
-      "symbol": "CoreBluetoothTransport.centralManager(_:didConnect:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 118,
-      "symbol": "CoreBluetoothTransport.centralManager(_:didDisconnectPeripheral:error:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 127,
-      "symbol": "CoreBluetoothTransport.peripheral(_:didDiscoverServices:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 133,
-      "symbol": "CoreBluetoothTransport.peripheral(_:didDiscoverCharacteristicsFor:error:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 150,
-      "symbol": "CoreBluetoothTransport.peripheral(_:didModifyServices:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }

@@ -64,6 +64,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     }
 }
 
+/// :nodoc:
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if peripheral.state == .poweredOn {
@@ -96,6 +97,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     }
 }
 
+/// :nodoc:
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
@@ -125,6 +127,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     }
 }
 
+/// :nodoc:
 extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
         if let service = peripheral.services?.first(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
