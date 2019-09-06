@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CoreBluetoothTransport Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/CoreBluetoothTransport" class="dashAnchor"></a>
+    <a title="CoreBluetoothTransport Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">UB Docs</a> (73% documented)</p>
+        <p class="header-right"><a href="https://github.com/ultralight-beam/UB.swift"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">UB Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        CoreBluetoothTransport Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/CoreBluetoothTransport.html">CoreBluetoothTransport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Node.html">Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Peer.html">Peer</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/UUID.html">UUID</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/NodeDelegate.html">NodeDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Transport.html">Transport</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Message.html">Message</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:2UB4Addra">Addr</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:2UB7Handlera">Handler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>CoreBluetoothTransport</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CoreBluetoothTransport</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Transport.html">Transport</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>CoreBluetoothTransport is used to send and receieve message over Bluetooth</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB9TransportP5peersSayAA4PeerCGvp"></a>
+                    <a name="//apple_ref/swift/Property/peers" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9TransportP5peersSayAA4PeerCGvp">peers</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">var</span> <span class="nv">peers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Peer.html">Peer</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@UB@objc(cs)CoreBluetoothTransport(im)init"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@UB@objc(cs)CoreBluetoothTransport(im)init">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="k">override</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB22CoreBluetoothTransportC14centralManager010peripheralF0ACSo09CBCentralF0C_So012CBPeripheralF0Ctcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(centralManager:peripheralManager:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC14centralManager010peripheralF0ACSo09CBCentralF0C_So012CBPeripheralF0Ctcfc">init(centralManager:peripheralManager:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes a CoreBluetoothTransport.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">centralManager</span><span class="p">:</span> <span class="kt">CBCentralManager</span><span class="p">,</span> <span class="nv">peripheralManager</span><span class="p">:</span> <span class="kt">CBPeripheralManager</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>centralManager</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The CoreBluetooth Central Manager to use.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>peripheralManager</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The CoreBluetooth Peripheral Manager to use.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB22CoreBluetoothTransportC4send7message2toyAA7MessageV_Says5UInt8VGtF"></a>
+                    <a name="//apple_ref/swift/Method/send(message:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC4send7message2toyAA7MessageV_Says5UInt8VGtF">send(message:to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send implements a function to send messages between nodes using Bluetooth</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="kt"><a href="../Structs/Message.html">Message</a></span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The message to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB22CoreBluetoothTransportC6listenyyyAA7MessageVXEF"></a>
+                    <a name="//apple_ref/swift/Method/listen(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC6listenyyyAA7MessageVXEF">listen(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Listen implements a function to receive messages being sent to a node.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">listen</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/Message.html">Message</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>handler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The message handler to handle received messages.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheralManagerDidUpdateState:"></a>
+                    <a name="//apple_ref/swift/Method/peripheralManagerDidUpdateState(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheralManagerDidUpdateState:">peripheralManagerDidUpdateState(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">peripheralManagerDidUpdateState</span><span class="p">(</span><span class="n">_</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheralManager</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheralManager:didReceiveWriteRequests:"></a>
+                    <a name="//apple_ref/swift/Method/peripheralManager(_:didReceiveWrite:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheralManager:didReceiveWriteRequests:">peripheralManager(_:didReceiveWrite:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">peripheralManager</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="kt">CBPeripheralManager</span><span class="p">,</span> <span class="n">didReceiveWrite</span> <span class="nv">requests</span><span class="p">:</span> <span class="p">[</span><span class="kt">CBATTRequest</span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManagerDidUpdateState:"></a>
+                    <a name="//apple_ref/swift/Method/centralManagerDidUpdateState(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManagerDidUpdateState:">centralManagerDidUpdateState(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">centralManagerDidUpdateState</span><span class="p">(</span><span class="n">_</span> <span class="nv">central</span><span class="p">:</span> <span class="kt">CBCentralManager</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didDiscoverPeripheral:advertisementData:RSSI:"></a>
+                    <a name="//apple_ref/swift/Method/centralManager(_:didDiscover:advertisementData:rssi:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didDiscoverPeripheral:advertisementData:RSSI:">centralManager(_:didDiscover:advertisementData:rssi:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">centralManager</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">central</span><span class="p">:</span> <span class="kt">CBCentralManager</span><span class="p">,</span>
+    <span class="n">didDiscover</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">,</span>
+    <span class="n">advertisementData</span> <span class="nv">_</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Any</span><span class="p">],</span>
+    <span class="n">rssi</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">NSNumber</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didConnectPeripheral:"></a>
+                    <a name="//apple_ref/swift/Method/centralManager(_:didConnect:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didConnectPeripheral:">centralManager(_:didConnect:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">centralManager</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="kt">CBCentralManager</span><span class="p">,</span> <span class="n">didConnect</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didDisconnectPeripheral:error:"></a>
+                    <a name="//apple_ref/swift/Method/centralManager(_:didDisconnectPeripheral:error:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)centralManager:didDisconnectPeripheral:error:">centralManager(_:didDisconnectPeripheral:error:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">centralManager</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="kt">CBCentralManager</span><span class="p">,</span> <span class="n">didDisconnectPeripheral</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">,</span> <span class="n">error</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didDiscoverServices:"></a>
+                    <a name="//apple_ref/swift/Method/peripheral(_:didDiscoverServices:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didDiscoverServices:">peripheral(_:didDiscoverServices:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">peripheral</span><span class="p">(</span><span class="n">_</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">,</span> <span class="n">didDiscoverServices</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didDiscoverCharacteristicsForService:error:"></a>
+                    <a name="//apple_ref/swift/Method/peripheral(_:didDiscoverCharacteristicsFor:error:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didDiscoverCharacteristicsForService:error:">peripheral(_:didDiscoverCharacteristicsFor:error:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">peripheral</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">,</span>
+    <span class="n">didDiscoverCharacteristicsFor</span> <span class="nv">service</span><span class="p">:</span> <span class="kt">CBService</span><span class="p">,</span>
+    <span class="n">error</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didModifyServices:"></a>
+                    <a name="//apple_ref/swift/Method/peripheral(_:didModifyServices:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@CM@UB@objc(cs)CoreBluetoothTransport(im)peripheral:didModifyServices:">peripheral(_:didModifyServices:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">peripheral</span><span class="p">(</span><span class="n">_</span> <span class="nv">peripheral</span><span class="p">:</span> <span class="kt">CBPeripheral</span><span class="p">,</span> <span class="n">didModifyServices</span> <span class="nv">invalidatedServices</span><span class="p">:</span> <span class="p">[</span><span class="kt">CBService</span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-09-06)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

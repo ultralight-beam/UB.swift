@@ -57,6 +57,11 @@ public class CoreBluetoothTransport: NSObject, Transport {
     public func listen(_: (Message) -> Void) {
         print("B")
     }
+    
+    fileprivate func remove(peer: Addr) {
+        peripherals.removeValue(forKey: peer)
+        peers.removeAll(where: { $0.id == peer })
+    }
 }
 
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
@@ -116,10 +121,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     }
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
-        let peer = Addr(peripheral.identifier.bytes)
-
-        peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
+        remove(peer: Addr(peripheral.identifier.bytes))
     }
 }
 
@@ -149,10 +151,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
         if invalidatedServices.contains(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
-            let peer = Addr(peripheral.identifier.bytes)
-
-            peripherals.removeValue(forKey: peer)
-            peers.removeAll(where: { $0.id == peer })
+            remove(peer: Addr(peripheral.identifier.bytes))
         }
     }
 }
