@@ -1,4 +1,4 @@
-.PHONY: docs format test lint xcode linuxmain autocorrect wipe test build
+.PHONY: docs format test lint xcode linuxmain autocorrect clean test build
 
 APP="UB"
 CONSTRUCT=xcodebuild -workspace $(APP).xcworkspace -scheme $(APP)-Package clean
@@ -6,13 +6,13 @@ CONSTRUCT=xcodebuild -workspace $(APP).xcworkspace -scheme $(APP)-Package clean
 install_deps:
 	pod install
 
-wipe:
+clean:
 	rm -rf .build $(APP).xcodeproj $(APP).xcworkspace Package.pins Pods Podfile.lock
 
-test: wipe xcode install_deps
+test: clean xcode install_deps
 	$(CONSTRUCT) test | xcpretty
 
-build: wipe xcode install_deps
+build: clean xcode install_deps
 	$(CONSTRUCT) build | xcpretty
 
 lint:
