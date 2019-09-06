@@ -11,7 +11,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     // make this nicer, we need this cause we need a reference to the peripheral?
     var perp: CBPeripheral?
-    
+
     public fileprivate(set) var peers = [Peer]()
 
     private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
@@ -36,7 +36,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
         self.centralManager.delegate = self
         self.peripheralManager.delegate = self
     }
-    
+
     /// Send implements a function to send messages between nodes using Bluetooth
     ///
     /// - Parameters:
@@ -70,13 +70,13 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 properties: .writeWithoutResponse, value: nil,
                 permissions: .writeable
             )
-            
+
             service.characteristics = [characteristic]
             peripheral.add(service)
 
             peripheral.startAdvertising([
                 CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-                CBAdvertisementDataLocalNameKey: nil
+                CBAdvertisementDataLocalNameKey: nil,
             ])
         }
     }
@@ -104,7 +104,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         if central.state == .poweredOn {
             centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
         }
-        
+
         // @todo handling for other states
     }
 
@@ -128,7 +128,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
         let peer = Addr(peripheral.identifier.bytes)
-        
+
         peripherals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
     }
