@@ -61,20 +61,22 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if peripheral.state == .poweredOn {
-            let WR_UUID = CBUUID(string: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
-            let WR_PROPERTIES: CBCharacteristicProperties = .write
-            let WR_PERMISSIONS: CBAttributePermissions = .writeable
 
-            let serialService = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
+            let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
-            let writeCharacteristics = CBMutableCharacteristic(type: WR_UUID,
-                                                               properties: WR_PROPERTIES, value: nil,
-                                                               permissions: WR_PERMISSIONS)
-            serialService.characteristics = [writeCharacteristics]
-            peripheral.add(serialService)
+            let characteristic = CBMutableCharacteristic(
+                type: CoreBluetoothTransport.receiveCharacteristicUUID,
+                properties: .writeWithoutResponse, value: nil,
+                permissions: .writeable
+            )
+            
+            service.characteristics = [characteristic]
+            peripheral.add(service)
 
-            peripheral.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-                                         CBAdvertisementDataLocalNameKey: nil])
+            peripheral.startAdvertising([
+                CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
+                CBAdvertisementDataLocalNameKey: nil
+            ])
         }
     }
 
