@@ -76,7 +76,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 
             peripheral.startAdvertising([
                 CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-                CBAdvertisementDataLocalNameKey: nil,
+                CBAdvertisementDataLocalNameKey: nil
             ])
         }
     }
@@ -122,7 +122,6 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 
     // When connected to a devices, ask for the Services
     public func centralManager(_: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        perp = peripheral
         peripheral.discoverServices([CoreBluetoothTransport.ubServiceUUID])
     }
 
@@ -146,9 +145,14 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didDiscoverCharacteristicsFor service: CBService,
         error _: Error?
     ) {
-        if let characteristic = service.characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
-            let id = Addr(peripheral.identifier.bytes)
-            peripherals[id] = (peripheral, characteristic)
+        let id = Addr(peripheral.identifier.bytes)
+        if peripherals[id] != nil {
+            return
+        }
+
+        let characteristics = service.characteristics
+        if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
+            peripherals[id] = (peripheral, char)
             peers.append(Peer(id: id, services: [UBID]())) // @TODO SERVICES
         }
     }
