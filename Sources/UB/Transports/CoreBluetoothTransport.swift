@@ -6,17 +6,13 @@ public class CoreBluetoothTransport: NSObject {
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
-    static let ubServiceUUID = CBUUID(string: "0xAAAA")
+    static let ubServiceUUID = CBUUID(string: "AAAA")
     static let receiveCharacteristicUUID = CBUUID(string: "0002")
 
-    let receiveCharacteristic = CBMutableCharacteristic(
-        type: receiveCharacteristicUUID,
-        properties: CBCharacteristicProperties.writeWithoutResponse,
-        value: nil,
-        permissions: CBAttributePermissions.writeable
-    )
+    // make this nicer, we need this cause we need a reference to the peripheral?
+    var perp: CBPeripheral?
 
-    private var peripherals = [Addr: CBPeripheral]()
+    public private(set) var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
 
     public convenience override init() {
         self.init(
@@ -66,7 +62,7 @@ extension CoreBluetoothTransport: Transport {
 //        print("NAME : \(peripheral)")
 
         if let peripheral = peripherals[to] {
-            peripheral.writeValue(message.message, for: receiveCharacteristic, type: CBCharacteristicWriteType.withoutResponse)
+            peripheral.0.writeValue(message.message, for: peripheral.1, type: CBCharacteristicWriteType.withoutResponse)
         } else {
             print("Error: peripheral with uuid \(to) not found")
             // @todo error
@@ -147,6 +143,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         advertisementData _: [String: Any],
         rssi _: NSNumber
     ) {
+        perp = peripheral
         peripheral.delegate = self
         decodePeripheralState(peripheralState: peripheral.state, peripheral: peripheral)
         centralManager.connect(peripheral)
@@ -154,7 +151,8 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 
     // When connected to a devices, ask for the Services
     public func centralManager(_: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        peripheral.discoverServices([CoreBluetoothTransport.receiveCharacteristicUUID])
+        perp = peripheral
+        peripheral.discoverServices([CoreBluetoothTransport.ubServiceUUID])
     }
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
@@ -167,11 +165,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
             print("Peripheral state: disconnected")
         case .connected:
             print("Peripheral state: connected")
-            if #available(OSX 10.13, *) {
-                print("UUID: \(peripheral.identifier)")
-            } else {
-                // Fallback on earlier versions
-            }
+            print("UUID: \(peripheral.identifier)")
         case .connecting:
             print("Peripheral state: connecting")
         case .disconnecting:
@@ -194,8 +188,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didDiscoverCharacteristicsFor service: CBService,
         error _: Error?
     ) {
-        if service.characteristics?.contains(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) ?? false {
-            peripherals[Addr(peripheral.identifier.bytes)] = peripheral
+        if let characteristic = service.characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
+            peripherals[Addr(peripheral.identifier.bytes)] = (peripheral, characteristic)
         }
     }
 }
