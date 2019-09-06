@@ -81,7 +81,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         }
     }
 
-    public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+    public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         print("Got a message! Ding!")
         for request in requests {
             if let value = request.value {
@@ -147,6 +147,15 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
             peripherals[id] = (peripheral, char)
             peers.append(Peer(id: id, services: [UBID]())) // @TODO SERVICES
+        }
+    }
+
+    public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        if invalidatedServices.contains(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
+            let peer = Addr(peripheral.identifier.bytes)
+
+            peripherals.removeValue(forKey: peer)
+            peers.removeAll(where: { $0.id == peer })
         }
     }
 }
