@@ -85,15 +85,8 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         print("Got a message! Ding!")
         for request in requests {
             if let value = request.value {
-                if let messageText = String(data: value, encoding: String.Encoding.utf8) as! String? {
-                    print("GOOOOTEEMMM   \(messageText)")
-
-                } else {
-                    print("failed to decode string of \(value.hexEncodedString())")
-                }
-                // appendMessageToChat(message: Message(text: messageText!, isSent: false))
+                print(value)
             }
-            peripheral.respond(to: request, withResult: .success)
         }
     }
 }
