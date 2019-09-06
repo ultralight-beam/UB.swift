@@ -60,7 +60,6 @@ public class CoreBluetoothTransport: NSObject, Transport {
 }
 
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
-    // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if peripheral.state == .poweredOn {
             let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
@@ -86,13 +85,13 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         for request in requests {
             if let value = request.value {
                 print(value)
+                
             }
         }
     }
 }
 
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
-    /// Lets us know if Bluetooth is in correct state to start.
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
             centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
@@ -101,7 +100,6 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         // @todo handling for other states
     }
 
-    // Try to connect to discovered devices
     public func centralManager(
         _ central: CBCentralManager,
         didDiscover peripheral: CBPeripheral,
@@ -113,7 +111,6 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         centralManager.connect(peripheral)
     }
 
-    // When connected to a devices, ask for the Services
     public func centralManager(_: CBCentralManager, didConnect peripheral: CBPeripheral) {
         peripheral.discoverServices([CoreBluetoothTransport.ubServiceUUID])
     }
