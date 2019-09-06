@@ -76,7 +76,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 
             peripheral.startAdvertising([
                 CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-                CBAdvertisementDataLocalNameKey: nil
+                CBAdvertisementDataLocalNameKey: nil,
             ])
         }
     }
