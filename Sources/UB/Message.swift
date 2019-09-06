@@ -17,13 +17,13 @@ public struct Message: Equatable {
 
     /// The raw message data.
     public let message: Data
-    
-    public init (proto: UBID, recipient: Addr, from: Addr, origin: Addr, message: Data) {
+
+    public init(proto: UBID, recipient: Addr, from: Addr, origin: Addr, message: Data) {
         self.proto = proto
         self.recipient = recipient
         self.from = from
         self.origin = origin
-        self.message  = message
+        self.message = message
     }
 }
 

@@ -3,7 +3,6 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject {
-
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
@@ -37,7 +36,7 @@ public class CoreBluetoothTransport: NSObject {
 
 extension CoreBluetoothTransport: Transport {
     public var peers: [Peer] {
-        return []//centralManager.retrieveConnectedPeripherals(withServices: [testServiceID, testServiceID2])
+        return [] // centralManager.retrieveConnectedPeripherals(withServices: [testServiceID, testServiceID2])
     }
 
     /// Send implements a function to send messages between nodes using Bluetooth
@@ -46,7 +45,7 @@ extension CoreBluetoothTransport: Transport {
     ///     - message: The message to send.
     public func send(message: Message, to: Addr) {
         // check bluetooth is running
-        
+
 //        guard let uuid = String(bytes: to, encoding: .utf8) else {
 //            print("Error: not a valid Byte sequence")
 //            return
@@ -72,7 +71,6 @@ extension CoreBluetoothTransport: Transport {
             print("Error: peripheral with uuid \(to) not found")
             // @todo error
         }
-        
     }
 
     /// Listen implements a function to receive messages being sent to a node.
