@@ -61,7 +61,6 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     // Start Advertisement
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         if peripheral.state == .poweredOn {
-
             let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
             let characteristic = CBMutableCharacteristic(
