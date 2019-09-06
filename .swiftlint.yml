@@ -10,3 +10,5 @@ identifier_name:
   excluded:
     - id
     - to
+disabled_rules:
+    - trailing_comma
