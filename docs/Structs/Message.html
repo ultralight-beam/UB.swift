@@ -14,7 +14,7 @@
     <a title="Message Structure Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">UB Docs</a> (93% documented)</p>
+        <p><a href="../index.html">UB Docs</a> (96% documented)</p>
         <p class="header-right"><a href="https://github.com/ultralight-beam/UB.swift"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -242,7 +242,7 @@ Differs from the <code>sender</code> as that changes on every hop.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes a message with the passed data.</p>
 
                       </div>
                       <div class="declaration">
@@ -252,6 +252,74 @@ Differs from the <code>sender</code> as that changes on every hop.</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">proto</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a></span><span class="p">,</span> <span class="nv">recipient</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">,</span> <span class="nv">origin</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>proto</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The message protocol.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>recipient</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The recipient of the message.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>from</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The previous sender of the message.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>origin</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The origin of the message, or the original sender.
+      Differs from the <code>sender</code> as that changes on every hop.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The raw message data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </section>
                   </div>

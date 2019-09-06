@@ -1,13 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Message.swift",
-      "line": 21,
-      "symbol": "Message.init(proto:recipient:from:origin:message:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
       "line": 13,
       "symbol": "Node.init()",

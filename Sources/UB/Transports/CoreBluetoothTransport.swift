@@ -3,17 +3,16 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject, Transport {
+    public fileprivate(set) var peers = [Peer]()
+
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
-    static let ubServiceUUID = CBUUID(string: "AAAA")
-    static let receiveCharacteristicUUID = CBUUID(string: "0002")
+    private static let ubServiceUUID = CBUUID(string: "AAAA")
+    private static let receiveCharacteristicUUID = CBUUID(string: "0002")
 
     // make this nicer, we need this cause we need a reference to the peripheral?
-    var perp: CBPeripheral?
-
-    public fileprivate(set) var peers = [Peer]()
-
+    private var perp: CBPeripheral?
     private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
@@ -57,7 +56,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     public func listen(_: (Message) -> Void) {
         print("B")
     }
-    
+
     fileprivate func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
@@ -91,7 +90,6 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         for request in requests {
             if let value = request.value {
                 print(value)
-                
             }
         }
     }
