@@ -40,27 +40,6 @@ extension CoreBluetoothTransport: Transport {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(message: Message, to: Addr) {
-        // check bluetooth is running
-
-//        guard let uuid = String(bytes: to, encoding: .utf8) else {
-//            print("Error: not a valid Byte sequence")
-//            return
-//        }
-//        guard let toUUID = UUID(uuidString: uuid) else {
-//            print("Error: not a valid UUID sequence")
-//            return
-//        }
-//
-//
-//        let peripherals = centralManager.retrievePeripherals(withIdentifiers: [toUUID])
-//        if peripherals.count == 0 {
-//            print("Error: peripheral with uuid \(to) not found")
-//            return
-//        }
-//
-//        let peripheral = peripherals[0]
-//        print("NAME : \(peripheral)")
-
         if let peripheral = peripherals[to] {
             peripheral.0.writeValue(message.message, for: peripheral.1, type: CBCharacteristicWriteType.withoutResponse)
         } else {
