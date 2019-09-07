@@ -9,5 +9,5 @@ Pod::Spec.new do |spec|
 	spec.summary = 'MANETs'
 	spec.swift_version = '5.0'
         spec.ios.deployment_target = '9.0'
-        spec.osx.deployment_target = '10.11'
+        spec.osx.deployment_target = '10.13'
 end
