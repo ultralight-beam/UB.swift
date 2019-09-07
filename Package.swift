@@ -13,10 +13,6 @@ let package = Package(
             name: "UB",
             targets: ["UB"]
         ),
-        .executable(
-            name: "Main",
-            targets: ["Main"]
-        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -28,10 +24,6 @@ let package = Package(
         .target(
             name: "UB",
             dependencies: []
-        ),
-        .target(
-            name: "Main",
-            dependencies: ["UB"]
         ),
         .testTarget(
             name: "UBTests",

@@ -18,7 +18,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
     private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
-    
+
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
@@ -94,12 +94,12 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 // @todo
                 return
             }
-            
+
             guard let data = try? Packet(serializedData: value) else {
                 // @todo
                 return
             }
-            
+
             delegate?.transport(self, didReceiveMessage: Message(protobuf: data, from: Addr(request.central.identifier.bytes)))
         }
     }

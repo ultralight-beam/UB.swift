@@ -100,11 +100,10 @@ public class Node {
 /// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveMessage message: Message) {
-        
         // @todo message should probably be created here
-        
+
         // @todo delegate should return something where we handle retransmission.
-        
+
         // @todo if node delegate doesn't return anything success, send out the message?
         delegate?.node(self, didReceiveMessage: message)
     }
