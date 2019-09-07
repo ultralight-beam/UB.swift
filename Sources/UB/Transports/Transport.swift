@@ -13,11 +13,11 @@ public protocol Transport {
     /// - Parameters:
     ///     - message: The message to send.
     ///     - to: The node to which to send the message.
-    func send(message: Message, to: Addr)
+    func send(message: Data, to: Addr)
 
     /// Listen implements a function to receive messages being sent to a node.
     ///
     /// - Parameters:
     ///     - handler: The message handler to handle received messages.
-    func listen(_ handler: Handler)
+    func listen(_ handler: @escaping Handler)
 }

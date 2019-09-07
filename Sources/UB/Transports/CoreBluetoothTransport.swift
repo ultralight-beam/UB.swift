@@ -3,6 +3,7 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject, Transport {
+
     public fileprivate(set) var peers = [Peer]()
 
     private let centralManager: CBCentralManager
@@ -14,6 +15,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
     private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
+    
+    private var handler: Handler?
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
@@ -40,9 +43,10 @@ public class CoreBluetoothTransport: NSObject, Transport {
     ///
     /// - Parameters:
     ///     - message: The message to send.
-    public func send(message: Message, to: Addr) {
+    ///     - to: The recipient address of the message.
+    public func send(message: Data, to: Addr) {
         if let peripheral = peripherals[to] {
-            peripheral.0.writeValue(message.message, for: peripheral.1, type: CBCharacteristicWriteType.withoutResponse)
+            peripheral.0.writeValue(message, for: peripheral.1, type: CBCharacteristicWriteType.withoutResponse)
         } else {
             print("Error: peripheral with uuid \(to) not found")
             // @todo error
@@ -53,8 +57,9 @@ public class CoreBluetoothTransport: NSObject, Transport {
     ///
     /// - Parameters:
     ///     - handler: The message handler to handle received messages.
-    public func listen(_: (Message) -> Void) {
-        print("B")
+    public func listen(_ handler: @escaping Handler) {
+        // @todo other shit, only turn on peripheral characteristic at this point.
+        self.handler = handler
     }
 
     fileprivate func remove(peer: Addr) {
@@ -88,9 +93,17 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         print("Got a message! Ding!")
         for request in requests {
-            if let value = request.value {
-                print(value)
+            guard let value = request.value else {
+                // @todo
+                return
             }
+            
+            guard let data = try? Packet(serializedData: value) else {
+                // @todo
+                return
+            }
+            
+            handler?(Message(protobuf: data, from: Addr(request.central.identifier.bytes)))
         }
     }
 }

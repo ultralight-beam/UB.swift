@@ -1,4 +1,5 @@
 import Foundation
+import SwiftProtobuf
 
 // @todo figure out architecture to support new forwarding algorithm.
 
@@ -29,7 +30,7 @@ public class Node {
 
             // @todo delegate should return something where we handle retransmission.
 
-            delegate?.node(self, didReceiveMessage: msg)
+            self.delegate?.node(self, didReceiveMessage: msg)
 
             // @todo if node delegate doesn't return anything success, send out the message?
         }
@@ -58,6 +59,10 @@ public class Node {
             return
         }
 
+        guard let data = try? message.toProto().serializedData() else {
+            return
+        }
+
         transports.forEach { _, transport in
             let peers = transport.peers
 
@@ -65,7 +70,7 @@ public class Node {
             // what this does is try to send a message to an exact target or broadcast it to all peers
             if message.recipient.count != 0 {
                 if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: message, to: message.recipient)
+                    return transport.send(message: data, to: message.recipient)
                 }
             }
 
@@ -73,18 +78,18 @@ public class Node {
             if message.proto.count != 0 {
                 let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
                 if filtered.count > 0 {
-                    let sends = send(message, transport: transport, peers: filtered)
+                    let sends = send(message, data: data, transport: transport, peers: filtered)
                     if sends > 0 {
                         return
                     }
                 }
             }
 
-            _ = send(message, transport: transport, peers: peers)
+            _ = send(message, data: data, transport: transport, peers: peers)
         }
     }
 
-    private func send(_ message: Message, transport: Transport, peers: [Peer]) -> Int {
+    private func send(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
         var sends = 0
         peers.forEach {
             if $0.id == message.from || $0.id == message.origin {
@@ -92,7 +97,7 @@ public class Node {
             }
 
             sends += 1
-            transport.send(message: message, to: $0.id)
+            transport.send(message: data, to: $0.id)
         }
 
         return sends
