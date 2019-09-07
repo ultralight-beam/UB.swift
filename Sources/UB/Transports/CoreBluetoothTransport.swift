@@ -3,7 +3,10 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receieve message over Bluetooth
 public class CoreBluetoothTransport: NSObject, Transport {
+    /// The transports delegate.
+    public weak var delegate: TransportDelegate?
 
+    ///  The peers a specific transport can send messages to.
     public fileprivate(set) var peers = [Peer]()
 
     private let centralManager: CBCentralManager
@@ -16,8 +19,6 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private var perp: CBPeripheral?
     private var peripherals = [Addr: (CBPeripheral, CBCharacteristic)]()
     
-    private var handler: Handler?
-
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
@@ -54,12 +55,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     }
 
     /// Listen implements a function to receive messages being sent to a node.
-    ///
-    /// - Parameters:
-    ///     - handler: The message handler to handle received messages.
-    public func listen(_ handler: @escaping Handler) {
-        // @todo other shit, only turn on peripheral characteristic at this point.
-        self.handler = handler
+    public func listen() {
+        // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
     }
 
     fileprivate func remove(peer: Addr) {
@@ -103,7 +100,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 return
             }
             
-            handler?(Message(protobuf: data, from: Addr(request.central.identifier.bytes)))
+            delegate?.transport(self, didReceiveMessage: Message(protobuf: data, from: Addr(request.central.identifier.bytes)))
         }
     }
 }

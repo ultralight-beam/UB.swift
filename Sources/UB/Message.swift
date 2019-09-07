@@ -37,7 +37,6 @@ public struct Message: Equatable {
 }
 
 extension Message {
-
     /// Initializes a Message from a protocol buffer `msg` and a passed `from`.
     ///
     /// - Parameters
