@@ -9,4 +9,5 @@ Pod::Spec.new do |spec|
 	spec.summary = 'MANETs'
 	spec.swift_version = '5.0'
 	spec.platform = :ios, "9.0", :macos, '10.11'
+	spec.dependency 'SwiftProtobuf'
 end
