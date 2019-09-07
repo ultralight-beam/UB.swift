@@ -90,17 +90,12 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         print("Got a message! Ding!")
         for request in requests {
-            guard let value = request.value else {
+            guard let data = request.value else {
                 // @todo
                 return
             }
 
-            guard let data = try? Packet(serializedData: value) else {
-                // @todo
-                return
-            }
-
-            delegate?.transport(self, didReceiveMessage: Message(protobuf: data, from: Addr(request.central.identifier.bytes)))
+            delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
         }
     }
 }
