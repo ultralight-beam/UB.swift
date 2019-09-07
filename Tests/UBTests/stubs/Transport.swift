@@ -2,6 +2,8 @@ import Foundation
 import UB
 
 class Transport: UB.Transport {
+    weak var delegate: TransportDelegate?
+
     private(set) var sent: [(Message, Addr)] = []
 
     var peers: [Peer] = []
@@ -10,5 +12,5 @@ class Transport: UB.Transport {
         sent.append((message, to))
     }
 
-    func listen(_: Handler) {}
+    func listen() {}
 }

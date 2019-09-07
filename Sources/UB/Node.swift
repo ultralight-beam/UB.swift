@@ -23,18 +23,9 @@ public class Node {
             return // @TODO: Maybe errors?
         }
 
-        transport.listen { msg in
-
-            // @todo message should probably be created here
-
-            // @todo delegate should return something where we handle retransmission.
-
-            delegate?.node(self, didReceiveMessage: msg)
-
-            // @todo if node delegate doesn't return anything success, send out the message?
-        }
-
         transports[id] = transport
+        transports[id]?.delegate = self
+        transport.listen()
     }
 
     /// Removes a transport from the list of known transports.
@@ -99,4 +90,11 @@ public class Node {
     }
 
     // @todo create a message send loop with retransmissions and shit
+}
+
+/// :nodoc:
+extension Node: TransportDelegate {
+    public func transport(_: Transport, didReceiveMessage message: Message) {
+        delegate?.node(self, didReceiveMessage: message)
+    }
 }
