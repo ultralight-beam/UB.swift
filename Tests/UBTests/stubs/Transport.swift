@@ -2,9 +2,8 @@ import Foundation
 import UB
 
 class Transport: UB.Transport {
-    
     weak var delegate: TransportDelegate?
-    
+
     private(set) var sent: [(Message, Addr)] = []
 
     var peers: [Peer] = []

@@ -93,7 +93,7 @@ public class Node {
 }
 
 extension Node: TransportDelegate {
-    public func transport(_ transport: Transport, didReceiveMessage message: Message) {
+    public func transport(_: Transport, didReceiveMessage message: Message) {
         delegate?.node(self, didReceiveMessage: message)
     }
 }

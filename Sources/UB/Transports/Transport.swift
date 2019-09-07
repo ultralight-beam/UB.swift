@@ -4,7 +4,7 @@ import Foundation
 public protocol Transport {
     /// The transports delegate.
     var delegate: TransportDelegate? { get set }
-    
+
     ///  The peers a specific transport can send messages to.
     var peers: [Peer] { get }
 
