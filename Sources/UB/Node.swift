@@ -92,6 +92,7 @@ public class Node {
     // @todo create a message send loop with retransmissions and shit
 }
 
+/// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveMessage message: Message) {
         delegate?.node(self, didReceiveMessage: message)
