@@ -16,7 +16,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private static let receiveCharacteristicUUID = CBUUID(string: "0002")
 
     // make this nicer, we need this cause we need a reference to the peripheral?
-    private var peripherals = [Addr: (CBPeripheral, CBCharacteristic?)]()
+    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic?)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
@@ -45,8 +45,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     ///     - message: The message to send.
     ///     - to: The recipient address of the message.
     public func send(message: Data, to: Addr) {
-        if let peripheral = peripherals[to] {
-            peripheral.0.writeValue(message, for: peripheral.1!, type: CBCharacteristicWriteType.withoutResponse)
+        if let peer = peripherals[to] {
+            peer.peripheral.writeValue(message, for: peer.characteristic!, type: CBCharacteristicWriteType.withoutResponse)
         } else {
             print("Error: peripheral with uuid \(to) not found")
             // @todo error
