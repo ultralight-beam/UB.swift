@@ -8,5 +8,6 @@ Pod::Spec.new do |spec|
 	spec.source_files = 'Sources/UB/*.swift'
 	spec.summary = 'MANETs'
 	spec.swift_version = '5.0'
-	spec.platform = :ios, "9.0", :macos, '10.11'
+ 	spec.ios.deployment_target = '9.0'
+	spec.osx.deployment_target = '10.13'
 end
