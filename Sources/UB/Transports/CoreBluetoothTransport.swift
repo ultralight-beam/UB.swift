@@ -1,7 +1,7 @@
 import CoreBluetooth
 import Foundation
 
-/// CoreBluetoothTransport is used to send and receieve message over Bluetooth
+/// CoreBluetoothTransport is used to send and receive message over Bluetooth
 public class CoreBluetoothTransport: NSObject, Transport {
     /// The transports delegate.
     public weak var delegate: TransportDelegate?
