@@ -193,7 +193,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
             peripherals[id] = (peripheral, char)
             peripherals[id]?.peripheral.setNotifyValue(true, for: char)
-            peers.append(Peer(id: id, services: [UBID]())) // @TODO SERVICES
+            peers.append(Peer(id: id, services: [UBID]())) // @todo we may need to do some handshake to obtain services from a peer.
         }
     }
 
