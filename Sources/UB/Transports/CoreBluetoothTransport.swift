@@ -63,7 +63,11 @@ public class CoreBluetoothTransport: NSObject, Transport {
         }
 
         if let central = centrals[to] {
-            peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [central])
+            peripheralManager.updateValue(
+                message,
+                for: CoreBluetoothTransport.characteristic,
+                onSubscribedCentrals: [central]
+            )
         }
     }
 
