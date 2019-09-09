@@ -62,7 +62,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
         }
 
         if let central = centrals[to] {
-            peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [central])
+            print(peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [central]))
         }
     }
 
@@ -74,6 +74,17 @@ public class CoreBluetoothTransport: NSObject, Transport {
     fileprivate func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
+    }
+    
+    fileprivate func add(central: CBCentral) {
+        let id = Addr(central.identifier.bytes)
+
+        if centrals[id] != nil {
+            return
+        }
+        
+        centrals[id] = central
+        peers.append(Peer(id: id, services: [UBID]()))
     }
 }
 
@@ -101,11 +112,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             }
 
             delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
-
-            let central = request.central
-            let id = Addr(central.identifier.bytes)
-            centrals[id] = central
-            peers.append(Peer(id: id, services: [UBID]()))
+            add(central: request.central)
         }
     }
 
@@ -114,9 +121,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         central: CBCentral,
         didSubscribeTo _: CBCharacteristic
     ) {
-        let id = Addr(central.identifier.bytes)
-        centrals[id] = central
-        peers.append(Peer(id: id, services: [UBID]()))
+        add(central: central)
     }
 
     public func peripheralManager(
