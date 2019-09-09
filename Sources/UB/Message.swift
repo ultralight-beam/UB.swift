@@ -17,9 +17,7 @@ public struct Message: Equatable {
 
     /// The raw message data.
     public let message: Data
-}
 
-extension Message {
     /// Initializes a Message from a protocol buffer `msg` and a passed `from`.
     ///
     /// - Parameters
@@ -35,10 +33,10 @@ extension Message {
 
     func toProto() -> Packet {
         return Packet.with {
-            $0.protocol = Data(self.proto)
-            $0.recipient = Data(self.recipient)
-            $0.origin = Data(self.origin)
-            $0.body = Data(self.message)
+            $0.protocol = Data(proto)
+            $0.recipient = Data(recipient)
+            $0.origin = Data(origin)
+            $0.body = message
         }
     }
 }
