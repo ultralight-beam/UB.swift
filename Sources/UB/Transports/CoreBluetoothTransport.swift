@@ -11,6 +11,10 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
+    
+    private static let centralQueue = DispatchQueue(label: "com.UB.centralQueue", attributes: .concurrent)
+    private static let peripheralQueue = DispatchQueue(label: "com.UB.peripheralQueue", attributes: .concurrent)
+
 
     private static let ubServiceUUID = CBUUID(string: "AAAA")
     private static let receiveCharacteristicUUID = CBUUID(string: "0002")
@@ -22,8 +26,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
-            centralManager: CBCentralManager(delegate: nil, queue: nil),
-            peripheralManager: CBPeripheralManager(delegate: nil, queue: nil)
+            centralManager: CBCentralManager(delegate: nil, queue: CoreBluetoothTransport.centralQueue),
+            peripheralManager: CBPeripheralManager(delegate: nil, queue: CoreBluetoothTransport.peripheralQueue)
         )
     }
 
@@ -94,8 +98,9 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 // @todo
                 return
             }
-
-            delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
+            DispatchQueue.main.async { () -> Void in
+                self.delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
+            }
         }
     }
 }
