@@ -14,7 +14,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     private static let ubServiceUUID = CBUUID(string: "AAAA")
     private static let receiveCharacteristicUUID = CBUUID(string: "0002")
-    
+
     private static let characteristic = CBMutableCharacteristic(
         type: CoreBluetoothTransport.receiveCharacteristicUUID,
         properties: .writeWithoutResponse, value: nil,
@@ -23,7 +23,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
-    private var centrals = [Addr: (central: CBCentral, characteristic: CBCharacteristic)]()
+    private var centrals = [Addr: CBCentral]()
     private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
@@ -61,8 +61,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
             )
         }
 
-        if let peer = centrals[to] {
-            peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [peer.central])
+        if let central = centrals[to] {
+            peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [central])
         }
     }
 
@@ -101,16 +101,21 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             }
 
             delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
+
+            let central = request.central
+            let id = Addr(central.identifier.bytes)
+            centrals[id] = central
+            peers.append(Peer(id: id, services: [UBID]()))
         }
     }
 
     public func peripheralManager(
         _: CBPeripheralManager,
         central: CBCentral,
-        didSubscribeTo characteristic: CBCharacteristic
+        didSubscribeTo _: CBCharacteristic
     ) {
         let id = Addr(central.identifier.bytes)
-        centrals[id] = (central: central, characteristic: characteristic)
+        centrals[id] = central
         peers.append(Peer(id: id, services: [UBID]()))
     }
 
