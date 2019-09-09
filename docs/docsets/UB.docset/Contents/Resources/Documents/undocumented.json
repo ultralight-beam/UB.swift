@@ -6,13 +6,6 @@
       "symbol": "Node.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
-    },
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Transports/CoreBluetoothTransport.swift",
-      "line": 7,
-      "symbol": "CoreBluetoothTransport.peers",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
     }
   ],
   "source_directory": "/Users/deaneigenmann/Documents/ub/UB.swift"
