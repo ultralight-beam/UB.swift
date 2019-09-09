@@ -14,10 +14,16 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     private static let ubServiceUUID = CBUUID(string: "AAAA")
     private static let receiveCharacteristicUUID = CBUUID(string: "0002")
+    
+    private static let characteristic = CBMutableCharacteristic(
+        type: CoreBluetoothTransport.receiveCharacteristicUUID,
+        properties: .writeWithoutResponse, value: nil,
+        permissions: .writeable
+    )
 
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
-    private var centrals = [Addr: (central: CBCentralManager, characteristic: CBCharacteristic)]()
+    private var centrals = [Addr: (central: CBCentral, characteristic: CBCharacteristic)]()
     private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
@@ -56,7 +62,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
         }
 
         if let peer = centrals[to] {
-            peripheralManager.updateValue(data, for: peer.characteristic, onSubscribedCentrals: [peer.central])
+            peripheralManager.updateValue(message, for: CoreBluetoothTransport.characteristic, onSubscribedCentrals: [peer.central])
         }
     }
 
@@ -77,13 +83,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         if peripheral.state == .poweredOn {
             let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
-            let characteristic = CBMutableCharacteristic(
-                type: CoreBluetoothTransport.receiveCharacteristicUUID,
-                properties: .writeWithoutResponse, value: nil,
-                permissions: .writeable
-            )
-
-            service.characteristics = [characteristic]
+            service.characteristics = [CoreBluetoothTransport.characteristic]
             peripheral.add(service)
 
             peripheral.startAdvertising([
@@ -110,7 +110,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         didSubscribeTo characteristic: CBCharacteristic
     ) {
         let id = Addr(central.identifier.bytes)
-        centrals[id] = (central, characteristic)
+        centrals[id] = (central: central, characteristic: characteristic)
         peers.append(Peer(id: id, services: [UBID]()))
     }
 
@@ -122,7 +122,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         // @todo check that this is the characteristic
         let id = Addr(central.identifier.bytes)
         centrals.removeValue(forKey: id)
-        peers.removeAll(where: { $0.id == peer })
+        peers.removeAll(where: { $0.id == id })
     }
 }
 
@@ -192,6 +192,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didUpdateValueFor characteristic: CBCharacteristic,
         error _: Error?
     ) {
-        delegate?.transport(self, didReceiveData: characteristic.value, from: Addr(peripheral.identifier.bytes))
+        guard let value = characteristic.value else { return }
+        delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
     }
 }
