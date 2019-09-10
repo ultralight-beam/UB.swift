@@ -1,7 +1,6 @@
 .PHONY: docs format test lint xcode linuxmain autocorrect clean test build
 
 APP="UB"
-CONSTRUCT=xcodebuild -workspace $(APP).xcworkspace -scheme $(APP)-Package clean
 
 # Apple
 ifeq ($(shell uname),Darwin)
@@ -24,10 +23,10 @@ clean:
 	rm -rf .build $(APP).xcodeproj $(APP).xcworkspace Package.pins Pods Podfile.lock
 
 test: clean xcode install_deps
-	$(CONSTRUCT) test | $(XCPRETTY)
+	swift test | $(XCPRETTY)
 
 build: clean xcode install_deps
-	$(CONSTRUCT) build | $(XCPRETTY)
+	swift build | $(XCPRETTY)
 
 lint:
 	swiftlint
