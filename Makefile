@@ -15,7 +15,7 @@ ifeq ($(shell uname),Darwin)
 endif
 
 install_deps:
-	pod install
+	swift package resolve
 ifneq ($(XCPRETTY_STATUS),0)
 	@echo "xcpretty not found: Run \`gem install xcpretty\` for nicer xcodebuild output.\n"
 endif
@@ -40,7 +40,6 @@ docs:
 	rm -rf build/
 
 xcode:
-	swift package resolve
 	swift package generate-xcodeproj
 
 linuxmain:
