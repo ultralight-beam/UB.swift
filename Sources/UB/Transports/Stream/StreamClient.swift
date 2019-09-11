@@ -4,11 +4,11 @@ import Foundation
 public class StreamClient: NSObject {
     // @TODO: We need to figure out how the dependants figure out which address or peer data came from.
 
-    private let input: InputStream
-    private let output: OutputStream
-
     /// The delegate for the StreamClient.
     weak var delegate: StreamClientDelegate?
+
+    private let input: InputStream
+    private let output: OutputStream
 
     /// Initializes a StreamClient with the input and output streams.
     ///
