@@ -43,7 +43,14 @@ public class StreamClient: NSObject {
 
 /// :nodoc:
 extension StreamClient: StreamDelegate {
-    public func stream(_: Stream, handle _: Stream.Event) {}
+    public func stream(_: Stream, handle eventCode: Stream.Event) {
+        switch eventCode {
+        case .hasBytesAvailable:
+            read()
+        default:
+            return
+        }
+    }
 
     fileprivate func read() {
         let length = read(4).withUnsafeBytes {
