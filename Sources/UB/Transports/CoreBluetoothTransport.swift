@@ -12,8 +12,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
-    private static let ubServiceUUID = CBUUID(string: "AAAA")
-    private static let receiveCharacteristicUUID = CBUUID(string: "0002")
+    private static let ubServiceUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000000")
+    private static let receiveCharacteristicUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001")
 
     private static let characteristic = CBMutableCharacteristic(
         type: CoreBluetoothTransport.receiveCharacteristicUUID,
