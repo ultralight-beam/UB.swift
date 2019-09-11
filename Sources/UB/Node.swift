@@ -99,18 +99,18 @@ public class Node {
 
 /// :nodoc:
 extension Node: TransportDelegate {
-    public func transport(_ transport: Transport, didReceiveData data: Data, from: Addr) {
+    public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
         // @todo message should probably be created here
 
         // @todo delegate should return something where we handle retransmission.
 
         // @todo if node delegate doesn't return anything success, send out the message?
-        
+
         guard let packet = try? Packet(serializedData: data) else {
             // @todo
             return
         }
-        
+
         delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
     }
 }
