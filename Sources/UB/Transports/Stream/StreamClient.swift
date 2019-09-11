@@ -30,11 +30,10 @@ public class StreamClient: NSObject {
     /// - Parameters:
     ///     - data: Data to write
     public func write(_ data: Data) {
-        let bytes = NSMutableData()
-
         var length = UInt32(data.count).bigEndian
+        
+        let bytes = NSMutableData()
         bytes.append(&length, length: 4)
-
         bytes.append(data)
 
         output.write([UInt8](bytes), maxLength: bytes.count)
