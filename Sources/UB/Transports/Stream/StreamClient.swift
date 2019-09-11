@@ -31,7 +31,7 @@ public class StreamClient: NSObject {
     ///     - data: Data to write
     public func write(_ data: Data) {
         var length = UInt32(data.count).bigEndian
-        
+
         let bytes = NSMutableData()
         bytes.append(&length, length: 4)
         bytes.append(data)
@@ -43,6 +43,8 @@ public class StreamClient: NSObject {
 /// :nodoc:
 extension StreamClient: StreamDelegate {
     public func stream(_: Stream, handle eventCode: Stream.Event) {
+        // @todo handle all other cases
+
         switch eventCode {
         case .hasBytesAvailable:
             read()
