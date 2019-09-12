@@ -65,7 +65,7 @@ public class Node {
                 }
             }
 
-            // what this does is send a message to anyone that implements a specific service	            /
+            // what this does is send a message to anyone that implements a specific service
             if message.proto.count != 0 {
                 let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
                 if filtered.count > 0 {
