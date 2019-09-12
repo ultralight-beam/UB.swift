@@ -18,6 +18,23 @@ public struct Message: Equatable {
     /// The raw message data.
     public let message: Data
 
+    /// Initializes a message with the passed data.
+    ///
+    /// - Parameters:
+    ///     - proto: The message protocol.
+    ///     - recipient: The recipient of the message.
+    ///     - from: The previous sender of the message.
+    ///     - origin: The origin of the message, or the original sender.
+    ///               Differs from the `sender` as that changes on every hop.
+    ///     - message: The raw message data.
+    public init(proto: UBID, recipient: Addr, from: Addr, origin: Addr, message: Data) {
+        self.proto = proto
+        self.recipient = recipient
+        self.from = from
+        self.origin = origin
+        self.message = message
+    }
+
     /// Initializes a Message from a protocol buffer `msg` and a passed `from`.
     ///
     /// - Parameters
