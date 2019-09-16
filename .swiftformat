@@ -1,4 +1,4 @@
 # file options
 
---exclude Tests/UBTests/XCTestManifests.swift,Snapshots
+--exclude Tests/UBTests/XCTestManifests.swift,Snapshots,Sources/UB/Protobuf/
 

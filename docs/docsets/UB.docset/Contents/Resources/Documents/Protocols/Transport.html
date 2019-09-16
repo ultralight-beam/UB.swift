@@ -14,7 +14,7 @@
     <a title="Transport Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">UB Docs</a> (96% documented)</p>
+        <p><a href="../index.html">UB Docs</a> (97% documented)</p>
         <p class="header-right"><a href="https://github.com/ultralight-beam/UB.swift"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -35,11 +35,10 @@
                 <a href="../Classes/Node.html">Node</a>
               </li>
               <li class="nav-group-task">
-<<<<<<< HEAD
                 <a href="../Classes/Node/Status.html">– Status</a>
-=======
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Peer.html">Peer</a>
->>>>>>> master
               </li>
             </ul>
           </li>
@@ -47,13 +46,13 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/Discovery.html">Discovery</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Protocols/NodeDelegate.html">NodeDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/Transport.html">Transport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/TransportDelegate.html">TransportDelegate</a>
               </li>
             </ul>
           </li>
@@ -70,9 +69,6 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:2UB4Addra">Addr</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:2UB7Handlera">Handler</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:2UB4UBIDa">UBID</a>
@@ -100,15 +96,9 @@
                 <li class="item">
                   <div>
                     <code>
-<<<<<<< HEAD
-                    <a name="/s:2UB9TransportP5peersSaySays5UInt8VGGvp"></a>
-                    <a name="//apple_ref/swift/Property/peers" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB9TransportP5peersSaySays5UInt8VGGvp">peers</a>
-=======
-                    <a name="/s:2UB9TransportP5peersSayAA4PeerCGvp"></a>
-                    <a name="//apple_ref/swift/Property/peers" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB9TransportP5peersSayAA4PeerCGvp">peers</a>
->>>>>>> master
+                    <a name="/s:2UB9TransportP8delegateAA0B8Delegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9TransportP8delegateAA0B8Delegate_pSgvp">delegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -116,22 +106,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-<<<<<<< HEAD
-                        <p>Contains a list of a transports known peers, this does not mean they are connected.</p>
-=======
-                        <p>The peers a specific transport can send messages to.</p>
->>>>>>> master
+                        <p>The transports delegate.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-<<<<<<< HEAD
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">peers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-=======
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">peers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Peer.html">Peer</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
->>>>>>> master
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TransportDelegate.html">TransportDelegate</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -141,15 +123,36 @@
                 <li class="item">
                   <div>
                     <code>
-<<<<<<< HEAD
-                    <a name="/s:2UB9TransportP4send7messageyAA7MessageV_tF"></a>
-                    <a name="//apple_ref/swift/Method/send(message:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB9TransportP4send7messageyAA7MessageV_tF">send(message:)</a>
-=======
-                    <a name="/s:2UB9TransportP4send7message2toyAA7MessageV_Says5UInt8VGtF"></a>
+                    <a name="/s:2UB9TransportP5peersSayAA4PeerCGvp"></a>
+                    <a name="//apple_ref/swift/Property/peers" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9TransportP5peersSayAA4PeerCGvp">peers</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The peers a specific transport can send messages to.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">peers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Peer.html">Peer</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2UB9TransportP4send7message2toy10Foundation4DataV_Says5UInt8VGtF"></a>
                     <a name="//apple_ref/swift/Method/send(message:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB9TransportP4send7message2toyAA7MessageV_Says5UInt8VGtF">send(message:to:)</a>
->>>>>>> master
+                    <a class="token" href="#/s:2UB9TransportP4send7message2toy10Foundation4DataV_Says5UInt8VGtF">send(message:to:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -164,7 +167,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="kt"><a href="../Structs/Message.html">Message</a></span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="kt">Data</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -205,9 +208,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2UB9TransportP6listenyyyAA7MessageVXEF"></a>
-                    <a name="//apple_ref/swift/Method/listen(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB9TransportP6listenyyyAA7MessageVXEF">listen(_:)</a>
+                    <a name="/s:2UB9TransportP6listenyyF"></a>
+                    <a name="//apple_ref/swift/Method/listen()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2UB9TransportP6listenyyF">listen()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -222,28 +225,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">listen</span><span class="p">(</span><span class="n">_</span> <span class="nv">handler</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB7Handlera">Handler</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">listen</span><span class="p">()</span></code></pre>
 
                         </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>handler</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The message handler to handle received messages.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
                       </div>
                     </section>
                   </div>
@@ -253,11 +237,7 @@
           </section>
         </section>
         <section id="footer">
-<<<<<<< HEAD
-          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-08-29)</p>
-=======
-          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-09-04)</p>
->>>>>>> master
+          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-09-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

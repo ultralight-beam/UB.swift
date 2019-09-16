@@ -2,6 +2,7 @@ included:
   - Sources
   - Tests
 excluded:
+  - Sources/UB/Protobuf/
   - Tests/UBTests/stubs
   - Tests/UBTests/XCTestManifests.swift
   - Package.swift
@@ -11,3 +12,5 @@ identifier_name:
     - id
     - to
     - on
+disabled_rules:
+    - trailing_comma

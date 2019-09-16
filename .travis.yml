@@ -4,6 +4,8 @@ osx_image: xcode10.3
 xcode_project: UB.xcodeproj
 xcode_scheme: UB.Package
 
+before_install: make xcode
+
 script: make test
 
 notifications:

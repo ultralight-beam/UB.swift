@@ -49,7 +49,12 @@ final class NodeTests: XCTestCase {
 
         let sent = transport.sent.first!
 
-        if sent.0 != message {
+        guard let encoded = try? message.toProto().serializedData() else {
+            XCTFail("failed to encode message")
+            return
+        }
+
+        if sent.0 != encoded {
             XCTFail("sent message did not match")
         }
 
