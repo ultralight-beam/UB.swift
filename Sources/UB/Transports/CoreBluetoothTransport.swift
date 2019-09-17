@@ -94,7 +94,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
         let client = StreamClient(input: input, output: output)
         client.delegate = self
-        streams[Addr(channel?.peer.identifier.bytes)] = client
+        streams[Addr(channel.peer.identifier.bytes)] = client
     }
 }
 
@@ -131,8 +131,12 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     }
 
     public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didSubscribeTo _: CBCharacteristic) {
+        guard let psm = psm else {
+            return
+        }
+
         add(central: central)
-        update(value: psm?.bytes)
+        update(value: psm.bytes)
     }
 
     public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom _: CBCharacteristic) {
@@ -149,7 +153,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             return
         }
 
-        update(value: psm?.bytes)
+        update(value: PSM.bytes)
     }
 
     public func peripheralManager(_: CBPeripheralManager, didUnpublishL2CAPChannel _: CBL2CAPPSM, error _: Error?) {
@@ -172,7 +176,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         peripheralManager.updateValue(
             value,
             for: CoreBluetoothTransport.characteristic,
-            onSubscribedCentrals: centrals.values
+            onSubscribedCentrals: Array(centrals.values)
         )
     }
 }
@@ -217,13 +221,14 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 
     public func peripheral(
         _ peripheral: CBPeripheral,
-        didDiscoverCharacteristicsFor _: CBService,
+        didDiscoverCharacteristicsFor service: CBService,
         error: Error?
     ) {
         if error != nil {
             // @todo
         }
 
+        let characteristics = service.characteristics
         if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
             peripheral.setNotifyValue(true, for: char)
         }
