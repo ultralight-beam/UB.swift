@@ -69,18 +69,18 @@ public class Node {
             if message.proto.count != 0 {
                 let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
                 if filtered.count > 0 {
-                    let sends = send(message, data: data, transport: transport, peers: filtered)
+                    let sends = flood(message, data: data, transport: transport, peers: filtered)
                     if sends > 0 {
                         return
                     }
                 }
             }
 
-            _ = send(message, data: data, transport: transport, peers: peers)
+            _ = flood(message, data: data, transport: transport, peers: peers)
         }
     }
 
-    private func send(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
+    private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
         var sends = 0
         peers.forEach {
             if $0.id == message.from || $0.id == message.origin {
