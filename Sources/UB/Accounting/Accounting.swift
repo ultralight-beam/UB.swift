@@ -1,5 +1,8 @@
 import Foundation
 
+// @todo maybe rename recieved / sent to up and down or in and outbound
+// @todo we need a quota system
+
 /// The accounting protocol handles bandwidth accounting for peers.
 public protocol Accounting {
     /// Adds a sent message to the accounting for a specific peer.
