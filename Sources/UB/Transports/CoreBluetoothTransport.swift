@@ -111,7 +111,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         }
     }
 
-    public func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error _: Error?) {
         peripheral.startAdvertising([
             CBAdvertisementDataServiceUUIDsKey: [service.uuid],
             CBAdvertisementDataLocalNameKey: nil,
@@ -142,7 +142,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         peers.removeAll(where: { $0.id == id })
     }
 
-    public func peripheralManager(_ peripheral: CBPeripheralManager, didPublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
+    public func peripheralManager(_: CBPeripheralManager, didPublishL2CAPChannel PSM: CBL2CAPPSM, error _: Error?) {
         psm = PSM
 
         guard centrals.count > 0 else {
@@ -152,11 +152,11 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         update(value: psm?.bytes)
     }
 
-    public func peripheralManager(_ peripheral: CBPeripheralManager, didUnpublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
+    public func peripheralManager(_: CBPeripheralManager, didUnpublishL2CAPChannel _: CBL2CAPPSM, error _: Error?) {
         // @todo
     }
 
-    public func peripheralManager(_ peripheral: CBPeripheralManager, didOpen channel: CBL2CAPChannel?, error: Error?) {
+    public func peripheralManager(_: CBPeripheralManager, didOpen channel: CBL2CAPChannel?, error: Error?) {
         if error != nil {
             // @todo handle
         }
@@ -175,7 +175,6 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             onSubscribedCentrals: centrals.values
         )
     }
-
 }
 
 /// :nodoc:
@@ -218,10 +217,9 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 
     public func peripheral(
         _ peripheral: CBPeripheral,
-        didDiscoverCharacteristicsFor service: CBService,
+        didDiscoverCharacteristicsFor _: CBService,
         error: Error?
     ) {
-
         if error != nil {
             // @todo
         }
@@ -276,7 +274,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         // @todo figure out exactly what we will want to do here.
     }
 
-    public func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
+    public func peripheral(_: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
         if error != nil {
             // @todo handle
         }
@@ -291,7 +289,6 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 
 /// :nodoc:
 extension CoreBluetoothTransport: StreamClientDelegate {
-
     public func client(_ client: StreamClient, didReceiveData data: Data) {
         guard let peer = streams.first(where: { $0.value == client })?.key else {
             return // @todo log?
@@ -299,5 +296,4 @@ extension CoreBluetoothTransport: StreamClientDelegate {
 
         delegate?.transport(self, didReceiveData: data, from: peer)
     }
-
 }
