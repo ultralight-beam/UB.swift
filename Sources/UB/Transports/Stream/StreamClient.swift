@@ -32,6 +32,7 @@ public class StreamClient: NSObject {
     public func write(_ data: Data) {
         guard output.hasSpaceAvailable else {
             // @todo error out or some shit?
+            return
         }
 
         var length = UInt32(data.count).bigEndian

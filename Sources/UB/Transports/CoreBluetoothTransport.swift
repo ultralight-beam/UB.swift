@@ -29,6 +29,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     private var streams = [Addr: StreamClient]()
 
+    private var psm: CBL2CAPPSM?
+
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
@@ -56,17 +58,11 @@ public class CoreBluetoothTransport: NSObject, Transport {
     ///     - message: The message to send.
     ///     - to: The recipient address of the message.
     public func send(message: Data, to: Addr) {
-        if let peer = peripherals[to] {
-            return peer.peripheral.writeValue(
-                message,
-                for: peer.characteristic,
-                type: CBCharacteristicWriteType.withoutResponse
-            )
+        guard let stream = streams[to] else {
+            return
         }
 
-        if let central = streams[to] {
-            central.write(message)
-        }
+        stream.write(message)
     }
 
     /// Listen implements a function to receive messages being sent to a node.
@@ -75,7 +71,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     }
 
     fileprivate func remove(peer: Addr) {
-        peripherals.removeValue(forKey: peer)
+        streams.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
     }
 
@@ -91,7 +87,13 @@ public class CoreBluetoothTransport: NSObject, Transport {
     }
 
     fileprivate func add(channel: CBL2CAPChannel) {
-        let client = StreamClient(input: channel?.inputStream, output: channel?.outputStream)
+        guard let input = channel.inputStream, let output = channel.outputStream else {
+            // @todo error?
+            return
+        }
+
+        let client = StreamClient(input: input, output: output)
+        client.delegate = self
         streams[Addr(channel?.peer.identifier.bytes)] = client
     }
 }
@@ -109,7 +111,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         }
     }
 
-    func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
         peripheral.startAdvertising([
             CBAdvertisementDataServiceUUIDsKey: [service.uuid],
             CBAdvertisementDataLocalNameKey: nil,
@@ -130,6 +132,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 
     public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didSubscribeTo _: CBCharacteristic) {
         add(central: central)
+        update(value: psm?.bytes)
     }
 
     public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom _: CBCharacteristic) {
@@ -140,7 +143,13 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     }
 
     public func peripheralManager(_ peripheral: CBPeripheralManager, didPublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
-        // @todo
+        psm = PSM
+
+        guard centrals.count > 0 else {
+            return
+        }
+
+        update(value: psm?.bytes)
     }
 
     public func peripheralManager(_ peripheral: CBPeripheralManager, didUnpublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
@@ -152,7 +161,19 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             // @todo handle
         }
 
+        guard let channel = channel else {
+            return
+        }
+
         add(channel: channel)
+    }
+
+    private func update(value: Data) {
+        peripheralManager.updateValue(
+            value,
+            for: CoreBluetoothTransport.characteristic,
+            onSubscribedCentrals: centrals.values
+        )
     }
 
 }
@@ -198,20 +219,29 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(
         _ peripheral: CBPeripheral,
         didDiscoverCharacteristicsFor service: CBService,
-        error _: Error?
+        error: Error?
     ) {
-        let id = Addr(peripheral.identifier.bytes)
-        if peripherals[id] != nil {
-            return
+
+        if error != nil {
+            // @todo
         }
 
-        let characteristics = service.characteristics
         if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
-            peripherals[id] = (peripheral, char)
-            peripherals[id]?.peripheral.setNotifyValue(true, for: char)
-            // @todo we may need to do some handshake to obtain services from a peer.
-            peers.append(Peer(id: id, services: [UBID]()))
+            peripheral.setNotifyValue(true, for: char)
         }
+
+//        let id = Addr(peripheral.identifier.bytes)
+//        if peripherals[id] != nil {
+//            return
+//        }
+//
+//        let characteristics = service.characteristics
+//        if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
+//            peripherals[id] = (peripheral, char)
+//            peripherals[id]?.peripheral.setNotifyValue(true, for: char)
+//            // @todo we may need to do some handshake to obtain services from a peer.
+//            peers.append(Peer(id: id, services: [UBID]()))
+//        }
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
@@ -223,10 +253,19 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(
         _ peripheral: CBPeripheral,
         didUpdateValueFor characteristic: CBCharacteristic,
-        error _: Error?
+        error: Error?
     ) {
+        if error != nil {
+            // @todo
+        }
+
         guard let value = characteristic.value else { return }
-        delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
+
+        let psm = value.withUnsafeBytes {
+            $0.load(as: UInt16.self)
+        }
+
+        peripheral.openL2CAPChannel(psm)
     }
 
     public func peripheral(
@@ -242,6 +281,10 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             // @todo handle
         }
 
+        guard let channel = channel else {
+            return
+        }
+
         add(channel: channel)
     }
 }
@@ -250,9 +293,11 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 extension CoreBluetoothTransport: StreamClientDelegate {
 
     public func client(_ client: StreamClient, didReceiveData data: Data) {
-        guard let peer = streams.first(where: { $0.value == client })? else {
+        guard let peer = streams.first(where: { $0.value == client })?.key else {
             return // @todo log?
         }
+
+        delegate?.transport(self, didReceiveData: data, from: peer)
     }
 
 }
