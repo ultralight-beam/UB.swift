@@ -27,6 +27,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     private var centrals = [Addr: CBCentral]()
     private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
 
+    private var streams = [Addr: StreamClient]()
+
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
@@ -62,12 +64,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
             )
         }
 
-        if let central = centrals[to] {
-            peripheralManager.updateValue(
-                message,
-                for: CoreBluetoothTransport.characteristic,
-                onSubscribedCentrals: [central]
-            )
+        if let central = streams[to] {
+            central.write(message)
         }
     }
 
@@ -91,6 +89,11 @@ public class CoreBluetoothTransport: NSObject, Transport {
         centrals[id] = central
         peers.append(Peer(id: id, services: [UBID]()))
     }
+
+    fileprivate func add(channel: CBL2CAPChannel) {
+        let client = StreamClient(input: channel?.inputStream, output: channel?.outputStream)
+        streams[Addr(channel?.peer.identifier.bytes)] = client
+    }
 }
 
 /// :nodoc:
@@ -102,11 +105,15 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
             service.characteristics = [CoreBluetoothTransport.characteristic]
             peripheral.add(service)
 
-            peripheral.startAdvertising([
-                CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-                CBAdvertisementDataLocalNameKey: nil,
-            ])
+            peripheral.publishL2CAPChannel(withEncryption: false)
         }
+    }
+
+    func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
+        peripheral.startAdvertising([
+            CBAdvertisementDataServiceUUIDsKey: [service.uuid],
+            CBAdvertisementDataLocalNameKey: nil,
+        ])
     }
 
     public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
@@ -121,24 +128,33 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         }
     }
 
-    public func peripheralManager(
-        _: CBPeripheralManager,
-        central: CBCentral,
-        didSubscribeTo _: CBCharacteristic
-    ) {
+    public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didSubscribeTo _: CBCharacteristic) {
         add(central: central)
     }
 
-    public func peripheralManager(
-        _: CBPeripheralManager,
-        central: CBCentral,
-        didUnsubscribeFrom _: CBCharacteristic
-    ) {
+    public func peripheralManager(_: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom _: CBCharacteristic) {
         // @todo check that this is the characteristic
         let id = Addr(central.identifier.bytes)
         centrals.removeValue(forKey: id)
         peers.removeAll(where: { $0.id == id })
     }
+
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didPublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
+        // @todo
+    }
+
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didUnpublishL2CAPChannel PSM: CBL2CAPPSM, error: Error?) {
+        // @todo
+    }
+
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didOpen channel: CBL2CAPChannel?, error: Error?) {
+        if error != nil {
+            // @todo handle
+        }
+
+        add(channel: channel)
+    }
+
 }
 
 /// :nodoc:
@@ -220,4 +236,23 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     ) {
         // @todo figure out exactly what we will want to do here.
     }
+
+    public func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
+        if error != nil {
+            // @todo handle
+        }
+
+        add(channel: channel)
+    }
+}
+
+/// :nodoc:
+extension CoreBluetoothTransport: StreamClientDelegate {
+
+    public func client(_ client: StreamClient, didReceiveData data: Data) {
+        guard let peer = streams.first(where: { $0.value == client })? else {
+            return // @todo log?
+        }
+    }
+
 }

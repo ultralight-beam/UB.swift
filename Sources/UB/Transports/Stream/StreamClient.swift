@@ -30,6 +30,10 @@ public class StreamClient: NSObject {
     /// - Parameters:
     ///     - data: Data to write
     public func write(_ data: Data) {
+        guard output.hasSpaceAvailable else {
+            // @todo error out or some shit?
+        }
+
         var length = UInt32(data.count).bigEndian
 
         let bytes = NSMutableData()
