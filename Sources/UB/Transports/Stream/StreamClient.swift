@@ -2,8 +2,6 @@ import Foundation
 
 /// The StreamClient implements generic stream handling for Ultralight Beam transports.
 public class StreamClient: NSObject {
-    // @TODO: We need to figure out how the dependants figure out which address or peer data came from.
-
     /// The delegate for the StreamClient.
     weak var delegate: StreamClientDelegate?
 
