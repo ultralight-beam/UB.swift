@@ -25,7 +25,6 @@ public class CoreBluetoothTransport: NSObject, Transport {
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
     private var centrals = [Addr: CBCentral]()
-    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
 
     private var streams = [Addr: StreamClient]()
 
@@ -87,12 +86,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
     }
 
     fileprivate func add(channel: CBL2CAPChannel) {
-        guard let input = channel.inputStream, let output = channel.outputStream else {
-            // @todo error?
-            return
-        }
-
-        let client = StreamClient(input: input, output: output)
+        let client = L2CAPStreamClient(channel: channel)
         client.delegate = self
         streams[Addr(channel.peer.identifier.bytes)] = client
     }
