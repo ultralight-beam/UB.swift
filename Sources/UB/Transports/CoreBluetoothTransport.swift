@@ -71,6 +71,7 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     fileprivate func remove(peer: Addr) {
         streams.removeValue(forKey: peer)
+        centrals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
     }
 
