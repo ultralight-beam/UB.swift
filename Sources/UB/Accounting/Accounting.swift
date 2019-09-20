@@ -9,13 +9,13 @@ public protocol Accounting {
     ///
     /// - Parameters:
     ///     - message: The message to account for.
-    func account(sentMessage message: Message);
+    func account(sentMessage message: Message)
 
     /// Adds a received message to the accounting for a specific peer.
     ///
     /// - Parameters:
     ///     - message: The message to account for.
-    func account(receivedMessage message: Message);
+    func account(receivedMessage message: Message)
 
     /// Returns how many messages were sent for a given peer.
     ///
@@ -23,7 +23,7 @@ public protocol Accounting {
     ///     - sentMessagesForPeer: The peer id to check.
     ///
     /// - Returns: The amount of messages accounted for.
-    func accounted(sentMessagesForPeer peer: Peer) -> UInt;
+    func accounted(sentMessagesForPeer peer: Peer) -> UInt
 
     /// Returns how many messages were received from a given peer.
     ///
@@ -31,5 +31,5 @@ public protocol Accounting {
     ///     - receivedMessagesForPeer: The peer id to check.
     ///
     /// - Returns: The amount of messages accounted for.
-    func accounted(receivedMessagesForPeer peer: Peer) -> UInt;
+    func accounted(receivedMessagesForPeer peer: Peer) -> UInt
 }
