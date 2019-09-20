@@ -11,6 +11,8 @@ public class Node {
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    private let accounting: Accounting
+
     public init() {}
 
     /// Adds a new transport to the list of known transports.
@@ -111,6 +113,9 @@ extension Node: TransportDelegate {
             return
         }
 
-        delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+        let message = Message(protobuf: packet, from: from)
+
+        accounting.account(receivedMessage: message)
+        delegate?.node(self, didReceiveMessage: message)
     }
 }
