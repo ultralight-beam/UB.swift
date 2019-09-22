@@ -55,8 +55,11 @@ public class Node {
     ///     - proto: The protocol required.
     ///
     /// - Throws: Error if both the to address and proto are empty.
-    public func send(data: Data, to: Addr = Addr(repeating: 0, count: 0), proto: UBID = UBID(repeating: 0, count: 0)) throws {
-
+    public func send(
+        data: Data,
+        to: Addr? = Addr(repeating: 0, count: 0),
+        proto: UBID? = UBID(repeating: 0, count: 0)
+    ) throws {
         if to.count == 0, proto.count == 0 {
             throw NodeError.noTarget
         }
