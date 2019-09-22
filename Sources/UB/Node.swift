@@ -47,6 +47,8 @@ public class Node {
         transports.removeValue(forKey: transport)
     }
 
+    // @todo maybe we need convinience functions where you send to a proto, a to or one for both.
+
     /// Sends a message through the current transports.
     ///
     /// - Parameters:
