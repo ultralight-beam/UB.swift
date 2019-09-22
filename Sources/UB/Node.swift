@@ -11,12 +11,13 @@ public class Node {
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    /// Initializes a node.
     public init() {}
 
     /// Adds a new transport to the list of known transports.
     ///
     /// - Parameters:
-    ///     - transport: The new *Transport* to add.
+    ///     - transport: The transport to be added.
     public func add(transport: Transport) {
         let id = String(describing: transport)
 
@@ -32,7 +33,7 @@ public class Node {
     /// Removes a transport from the list of known transports.
     ///
     /// - Parameters:
-    ///     - transport: The identifier of the *Transport* to remove.
+    ///     - transport: The identifier of the transport to remove.
     public func remove(transport: String) {
         guard transports[transport] != nil else {
             return

@@ -14,7 +14,7 @@
     <a title="CoreBluetoothTransport Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">UB Docs</a> (97% documented)</p>
+        <p><a href="../index.html">UB Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/ultralight-beam/UB.swift"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -83,7 +83,7 @@
             <h1>CoreBluetoothTransport</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CoreBluetoothTransport</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Transport.html">Transport</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CoreBluetoothTransport</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
 
                 </div>
               </div>
@@ -93,60 +93,6 @@
           <section class="section task-group-section">
             <div class="task-group">
               <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB22CoreBluetoothTransportC8delegateAA0D8Delegate_pSgvp"></a>
-                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC8delegateAA0D8Delegate_pSgvp">delegate</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The transports delegate.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TransportDelegate.html">TransportDelegate</a></span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB22CoreBluetoothTransportC5peersSayAA4PeerCGvp"></a>
-                    <a name="//apple_ref/swift/Property/peers" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC5peersSayAA4PeerCGvp">peers</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The peers a specific transport can send messages to.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">fileprivate</span><span class="p">(</span><span class="k">set</span><span class="p">)</span> <span class="k">var</span> <span class="nv">peers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Peer.html">Peer</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -210,7 +156,7 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The CoreBluetooth Central Manager to use.</p>
+                                  <p>The CBCentralManager to use.</p>
                                 </div>
                               </td>
                             </tr>
@@ -222,97 +168,12 @@
                               </td>
                               <td>
                                 <div>
-                                  <p>The CoreBluetooth Peripheral Manager to use.</p>
+                                  <p>The CBPeripheralManager to use.</p>
                                 </div>
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB22CoreBluetoothTransportC4send7message2toy10Foundation4DataV_Says5UInt8VGtF"></a>
-                    <a name="//apple_ref/swift/Method/send(message:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC4send7message2toy10Foundation4DataV_Says5UInt8VGtF">send(message:to:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Send implements a function to send messages between nodes using Bluetooth</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">message</span><span class="p">:</span> <span class="kt">Data</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:2UB4Addra">Addr</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>message</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The message to send.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>to</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The recipient address of the message.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:2UB22CoreBluetoothTransportC6listenyyF"></a>
-                    <a name="//apple_ref/swift/Method/listen()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2UB22CoreBluetoothTransportC6listenyyF">listen()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Listen implements a function to receive messages being sent to a node.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">listen</span><span class="p">()</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -322,8 +183,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-09-10)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="http://ultralightbeam.io" target="_blank" rel="external">Ultralight Beam</a>. All rights reserved. (Last updated: 2019-09-22)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
