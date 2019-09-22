@@ -2,11 +2,10 @@ import CoreBluetooth
 import Foundation
 
 /// CoreBluetoothTransport is used to send and receive message over Bluetooth
-public class CoreBluetoothTransport: NSObject {
+public class CoreBluetoothTransport: NSObject, Transport {
     /// The transports delegate.
     public weak var delegate: TransportDelegate?
 
-    ///  :nodoc:
     public fileprivate(set) var peers = [Peer]()
 
     private let centralManager: CBCentralManager
@@ -38,7 +37,7 @@ public class CoreBluetoothTransport: NSObject {
     /// Initializes a CoreBluetoothTransport.
     ///
     /// - Parameters:
-    ///     - centralManager: The CoreBluetooth Central Manager to use.
+    ///     - centralManager: The [`CBPeripheralManager`](https://developer.apple.com/documentation/corebluetooth/cbperipheralmanager) to use.
     ///     - peripheralManager: The CoreBluetooth Peripheral Manager to use.
     public init(centralManager: CBCentralManager, peripheralManager: CBPeripheralManager) {
         self.centralManager = centralManager
@@ -48,25 +47,6 @@ public class CoreBluetoothTransport: NSObject {
         self.peripheralManager.delegate = self
     }
 
-    private func remove(peer: Addr) {
-        peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
-    }
-
-    private func add(central: CBCentral) {
-        let id = Addr(central.identifier.bytes)
-
-        if centrals[id] != nil {
-            return
-        }
-
-        centrals[id] = central
-        peers.append(Peer(id: id, services: [UBID]()))
-    }
-}
-
-/// :nodoc:
-extension CoreBluetoothTransport: Transport {
     public func send(message: Data, to: Addr) {
         if let peer = peripherals[to] {
             return peer.peripheral.writeValue(
@@ -87,6 +67,22 @@ extension CoreBluetoothTransport: Transport {
 
     public func listen() {
         // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
+    }
+
+    private func remove(peer: Addr) {
+        peripherals.removeValue(forKey: peer)
+        peers.removeAll(where: { $0.id == peer })
+    }
+
+    private func add(central: CBCentral) {
+        let id = Addr(central.identifier.bytes)
+
+        if centrals[id] != nil {
+            return
+        }
+
+        centrals[id] = central
+        peers.append(Peer(id: id, services: [UBID]()))
     }
 }
 
