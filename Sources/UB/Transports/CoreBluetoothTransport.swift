@@ -37,8 +37,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
     /// Initializes a CoreBluetoothTransport.
     ///
     /// - Parameters:
-    ///     - centralManager: The [`CBPeripheralManager`](https://developer.apple.com/documentation/corebluetooth/cbperipheralmanager) to use.
-    ///     - peripheralManager: The CoreBluetooth Peripheral Manager to use.
+    ///     - centralManager: The CBCentralManager to use.
+    ///     - peripheralManager: The CBPeripheralManager to use.
     public init(centralManager: CBCentralManager, peripheralManager: CBPeripheralManager) {
         self.centralManager = centralManager
         self.peripheralManager = peripheralManager
