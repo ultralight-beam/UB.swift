@@ -2,10 +2,11 @@ import CoreBluetooth
 import Foundation
 
 /// CoreBluetoothTransport is used to send and receive message over Bluetooth
-public class CoreBluetoothTransport: NSObject, Transport {
-    /// The transports delegate.
+public class CoreBluetoothTransport: NSObject {
+    /// :nodoc:
     public weak var delegate: TransportDelegate?
 
+    /// :nodoc:
     public fileprivate(set) var peers = [Peer]()
 
     private let centralManager: CBCentralManager
@@ -47,6 +48,25 @@ public class CoreBluetoothTransport: NSObject, Transport {
         self.peripheralManager.delegate = self
     }
 
+    private func remove(peer: Addr) {
+        peripherals.removeValue(forKey: peer)
+        peers.removeAll(where: { $0.id == peer })
+    }
+
+    private func add(central: CBCentral) {
+        let id = Addr(central.identifier.bytes)
+
+        if centrals[id] != nil {
+            return
+        }
+
+        centrals[id] = central
+        peers.append(Peer(id: id, services: [UBID]()))
+    }
+}
+
+/// :nodoc:
+extension CoreBluetoothTransport: Transport {
     public func send(message: Data, to: Addr) {
         if let peer = peripherals[to] {
             return peer.peripheral.writeValue(
@@ -67,22 +87,6 @@ public class CoreBluetoothTransport: NSObject, Transport {
 
     public func listen() {
         // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
-    }
-
-    private func remove(peer: Addr) {
-        peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
-    }
-
-    private func add(central: CBCentral) {
-        let id = Addr(central.identifier.bytes)
-
-        if centrals[id] != nil {
-            return
-        }
-
-        centrals[id] = central
-        peers.append(Peer(id: id, services: [UBID]()))
     }
 }
 
