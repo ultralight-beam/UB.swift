@@ -5,6 +5,12 @@ import SwiftProtobuf
 
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
+    /// Represents errors that can be encountered when interacting with a node.
+    public enum NodeError: Error {
+        /// This error is thrown when send is called without a recipient and proto.
+        case noTarget
+    }
+
     /// The known transports for the node.
     public private(set) var transports = [String: Transport]()
 
@@ -44,8 +50,32 @@ public class Node {
     /// Sends a message through the current transports.
     ///
     /// - Parameters:
-    ///     - message: The message to send.
-    public func send(_ message: Message) {
+    ///     - data: The data to send.
+    ///     - to: The address to send to.
+    ///     - proto: The protocol required.
+    ///
+    /// - Throws: Error if both the to address and proto are empty.
+    public func send(data: Data, to: Addr = Addr(repeating: 0, count: 0), proto: UBID = UBID(repeating: 0, count: 0)) throws {
+
+        if to.count == 0, proto.count == 0 {
+            throw NodeError.noTarget
+        }
+
+        // @todo think about message, makes no sense to have the entire from part.
+        // we only need that when we receive a message to determine where we retransmit it to.
+
+        send(
+            Message(
+                proto: proto,
+                recipient: to,
+                from: Addr(repeating: 0, count: 0),
+                origin: Addr(repeating: 0, count: 0), // @todo, figure out how best to set this. Nodes need an identity
+                message: data
+            )
+        )
+    }
+
+    private func send(_ message: Message) {
         if message.recipient.count == 0, message.proto.count == 0 {
             return
         }
