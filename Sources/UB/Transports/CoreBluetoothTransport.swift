@@ -2,11 +2,11 @@ import CoreBluetooth
 import Foundation
 
 /// CoreBluetoothTransport is used to send and receive message over Bluetooth
-public class CoreBluetoothTransport: NSObject, Transport {
+public class CoreBluetoothTransport: NSObject {
     /// The transports delegate.
     public weak var delegate: TransportDelegate?
 
-    ///  The peers a specific transport can send messages to.
+    ///  :nodoc:
     public fileprivate(set) var peers = [Peer]()
 
     private let centralManager: CBCentralManager
@@ -48,11 +48,25 @@ public class CoreBluetoothTransport: NSObject, Transport {
         self.peripheralManager.delegate = self
     }
 
-    /// Send implements a function to send messages between nodes using Bluetooth
-    ///
-    /// - Parameters:
-    ///     - message: The message to send.
-    ///     - to: The recipient address of the message.
+    private func remove(peer: Addr) {
+        peripherals.removeValue(forKey: peer)
+        peers.removeAll(where: { $0.id == peer })
+    }
+
+    private func add(central: CBCentral) {
+        let id = Addr(central.identifier.bytes)
+
+        if centrals[id] != nil {
+            return
+        }
+
+        centrals[id] = central
+        peers.append(Peer(id: id, services: [UBID]()))
+    }
+}
+
+/// :nodoc:
+extension CoreBluetoothTransport: Transport {
     public func send(message: Data, to: Addr) {
         if let peer = peripherals[to] {
             return peer.peripheral.writeValue(
@@ -71,25 +85,8 @@ public class CoreBluetoothTransport: NSObject, Transport {
         }
     }
 
-    /// Listen implements a function to receive messages being sent to a node.
     public func listen() {
         // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
-    }
-
-    fileprivate func remove(peer: Addr) {
-        peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
-    }
-
-    fileprivate func add(central: CBCentral) {
-        let id = Addr(central.identifier.bytes)
-
-        if centrals[id] != nil {
-            return
-        }
-
-        centrals[id] = central
-        peers.append(Peer(id: id, services: [UBID]()))
     }
 }
 
