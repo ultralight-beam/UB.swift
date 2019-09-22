@@ -1,2 +1,2 @@
 gem 'xcpretty'
-gem 'jazzy'
+gem 'jazzy', '0.11.1'
