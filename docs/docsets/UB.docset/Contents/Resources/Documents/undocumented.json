@@ -1,16 +1,6 @@
 {
   "warnings": [
-<<<<<<< HEAD
-    {
-      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
-      "line": 14,
-      "symbol": "Node.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    }
-=======
 
->>>>>>> master
   ],
-  "source_directory": "/Users/deaneigenmann/Documents/ub/UB.swift"
+  "source_directory": "/Users/erictu/git-repos/ultralight-beam/UB.swift"
 }

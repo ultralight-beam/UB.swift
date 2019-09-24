@@ -18,19 +18,11 @@
     <text x="475" y="140" transform="scale(.1)" textLength="830">
       documentation
     </text>
-<<<<<<< HEAD
-    <text x="1095" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="250">
-      97%
-    </text>
-    <text x="1095" y="140" transform="scale(.1)" textLength="250">
-      97%
-=======
     <text x="1135" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="330">
       100%
     </text>
     <text x="1135" y="140" transform="scale(.1)" textLength="330">
       100%
->>>>>>> master
     </text>
   </g>
 </svg>
