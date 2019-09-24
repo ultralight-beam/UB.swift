@@ -1,5 +1,6 @@
 {
   "warnings": [
+<<<<<<< HEAD
     {
       "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
       "line": 14,
@@ -7,6 +8,9 @@
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }
+=======
+
+>>>>>>> master
   ],
   "source_directory": "/Users/deaneigenmann/Documents/ub/UB.swift"
 }

@@ -1,8 +1,9 @@
 import Foundation
 
-/// TransportDelegate is used to handle the receiving data.
+
+/// An interface used to handle events on the Transport.
 public protocol TransportDelegate: AnyObject {
-    /// Called when a transport receives new data.
+    /// This method is called when a transport receives new data.
     ///
     /// - Parameters:
     ///     - transport: The transport that received a data.

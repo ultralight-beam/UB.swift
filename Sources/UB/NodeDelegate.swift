@@ -1,8 +1,8 @@
 import Foundation
 
-/// NodeDelegate is used to handle the receiving of messages.
+/// An interface used to handle events on the Node.
 public protocol NodeDelegate: AnyObject {
-    /// Called when a node receives a message.
+    /// This method is called when a node receives a message.
     ///
     /// - Parameters:
     ///     - node: The node that received the message.
