@@ -204,6 +204,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             remove(peer: Addr(peripheral.identifier.bytes))
         }
     }
+
     public func peripheral(
         _ peripheral: CBPeripheral,
         didUpdateValueFor characteristic: CBCharacteristic,

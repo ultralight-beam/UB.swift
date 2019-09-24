@@ -70,7 +70,6 @@ public class Node {
             if message.proto.count != 0 {
                 let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
                 if filtered.count > 0 {
-
                     let sends = flood(message, data: data, transport: transport, peers: filtered)
                     if sends > 0 {
                         return
@@ -100,7 +99,6 @@ public class Node {
 
 /// :nodoc:
 extension Node: TransportDelegate {
-
     public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
         // @todo message should probably be created here
 
