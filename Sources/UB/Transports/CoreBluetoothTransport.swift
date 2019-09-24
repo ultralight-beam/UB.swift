@@ -115,11 +115,11 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 // @todo
                 return
             }
-            
+
             DispatchQueue.main.async { () -> Void in
                 self.delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
             }
-            
+
             add(central: request.central)
         }
     }
