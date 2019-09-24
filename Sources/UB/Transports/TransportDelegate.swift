@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// An interface used to handle events on the Transport.
 public protocol TransportDelegate: AnyObject {
     /// This method is called when a transport receives new data.

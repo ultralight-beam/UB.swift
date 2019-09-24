@@ -11,7 +11,7 @@ public class CoreBluetoothTransport: NSObject {
 
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
-    
+
     private static let centralQueue = DispatchQueue(label: "com.UB.centralQueue", attributes: .concurrent)
     private static let peripheralQueue = DispatchQueue(label: "com.UB.peripheralQueue", attributes: .concurrent)
 
