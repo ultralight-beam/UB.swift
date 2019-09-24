@@ -35,11 +35,11 @@ public struct Message: Equatable {
         self.message = message
     }
 
-    /// Initializes a Message from a protocol buffer `msg` and a passed `from`.
+    /// Initializes a Message with a packet and a from addr.
     ///
     /// - Parameters
     ///     - protobuf: The protocol buffer.
-    ///     - from: The protocol buffer.
+    ///     - from: The from address.
     init(protobuf: Packet, from: Addr) {
         proto = UBID(protobuf.protocol)
         recipient = Addr(protobuf.recipient)
