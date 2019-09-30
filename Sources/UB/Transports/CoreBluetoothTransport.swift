@@ -71,6 +71,11 @@ public class CoreBluetoothTransport: NSObject {
         }
 
         centrals[id] = central
+
+        if peers.filter({ $0.id == id }).count != 0 {
+            return
+        }
+
         peers.append(Peer(id: id, services: [UBID]()))
     }
 }
