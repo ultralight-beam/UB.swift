@@ -191,6 +191,11 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             peripherals[id] = (peripheral, char)
             peripherals[id]?.peripheral.setNotifyValue(true, for: char)
             // @todo we may need to do some handshake to obtain services from a peer.
+
+            if peers.filter({ $0.id == id }).count != 0 {
+                return
+            }
+
             peers.append(Peer(id: id, services: [UBID]()))
         }
     }
