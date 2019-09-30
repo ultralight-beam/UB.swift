@@ -13,7 +13,7 @@ public class CoreBluetoothTransport: NSObject {
     private let peripheralManager: CBPeripheralManager
 
     private static let centralQueue = DispatchQueue(label: "com.ultralight-beam.bluetooth.centralQueue", attributes: .concurrent)
-    private static let peripheralQueue = DispatchQueue(label: "com.UB.peripheralQueue", attributes: .concurrent)
+    private static let peripheralQueue = DispatchQueue(label: "com.ultralight-beam.bluetooth.peripheralQueue", attributes: .concurrent)
 
     private static let ubServiceUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000000")
     private static let receiveCharacteristicUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001")
