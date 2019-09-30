@@ -1,5 +1,6 @@
 import Foundation
 import SwiftProtobuf
+import os
 
 // @todo figure out architecture to support new forwarding algorithm.
 
@@ -28,6 +29,7 @@ public class Node {
         transports[id] = transport
         transports[id]?.delegate = self
         transport.listen()
+        os_log("added transport %{public}@", log: .node, type: .info, id)
     }
 
     /// Removes a transport from the list of known transports.
@@ -101,14 +103,13 @@ public class Node {
 /// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
-        // @todo message should probably be created here
-
+        os_log("received data from %{public}@", log: .node, type: .info, from)
         // @todo delegate should return something where we handle retransmission.
 
         // @todo if node delegate doesn't return anything success, send out the message?
 
         guard let packet = try? Packet(serializedData: data) else {
-            // @todo
+            os_log("failed to decode packet <todo maybe add data?>", log: .node, type: .error)
             return
         }
 
