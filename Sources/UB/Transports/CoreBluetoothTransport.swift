@@ -12,6 +12,16 @@ public class CoreBluetoothTransport: NSObject {
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
 
+    private static let centralQueue = DispatchQueue(
+        label: "com.ultralight-beam.bluetooth.centralQueue",
+        attributes: .concurrent
+    )
+
+    private static let peripheralQueue = DispatchQueue(
+        label: "com.ultralight-beam.bluetooth.peripheralQueue",
+        attributes: .concurrent
+    )
+
     private static let ubServiceUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000000")
     private static let receiveCharacteristicUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001")
 
@@ -30,8 +40,8 @@ public class CoreBluetoothTransport: NSObject {
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
         self.init(
-            centralManager: CBCentralManager(delegate: nil, queue: nil),
-            peripheralManager: CBPeripheralManager(delegate: nil, queue: nil)
+            centralManager: CBCentralManager(delegate: nil, queue: CoreBluetoothTransport.centralQueue),
+            peripheralManager: CBPeripheralManager(delegate: nil, queue: CoreBluetoothTransport.peripheralQueue)
         )
     }
 
@@ -212,6 +222,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         error _: Error?
     ) {
         guard let value = characteristic.value else { return }
+
         delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
     }
 
