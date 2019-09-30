@@ -154,10 +154,6 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         advertisementData _: [String: Any],
         rssi _: NSNumber
     ) {
-        if peers.filter({ $0.id == Addr(peripheral.identifier.bytes) }).count != 0 {
-            return
-        }
-
         perp = peripheral
         peripheral.delegate = self
         centralManager.connect(peripheral)
