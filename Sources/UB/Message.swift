@@ -2,8 +2,8 @@ import Foundation
 
 /// Message represents the message sent between nodes.
 public struct Message: Equatable {
-    /// The message protocol.
-    public let proto: UBID
+    /// The message service.
+    public let service: UBID
 
     /// The recipient of the message.
     public let recipient: Addr
@@ -21,14 +21,14 @@ public struct Message: Equatable {
     /// Initializes a message with the passed data.
     ///
     /// - Parameters:
-    ///     - proto: The message protocol.
+    ///     - service: The message service.
     ///     - recipient: The recipient of the message.
     ///     - from: The previous sender of the message.
     ///     - origin: The origin of the message, or the original sender.
     ///               Differs from the `sender` as that changes on every hop.
     ///     - message: The raw message data.
-    public init(proto: UBID, recipient: Addr, from: Addr, origin: Addr, message: Data) {
-        self.proto = proto
+    public init(service: UBID, recipient: Addr, from: Addr, origin: Addr, message: Data) {
+        self.service = service
         self.recipient = recipient
         self.from = from
         self.origin = origin
@@ -41,7 +41,7 @@ public struct Message: Equatable {
     ///     - protobuf: The protocol buffer.
     ///     - from: The from address.
     init(protobuf: Packet, from: Addr) {
-        proto = UBID(protobuf.protocol)
+        service = UBID(protobuf.service)
         recipient = Addr(protobuf.recipient)
         self.from = from
         origin = Addr(protobuf.origin)
@@ -50,7 +50,7 @@ public struct Message: Equatable {
 
     func toProto() -> Packet {
         return Packet.with {
-            $0.protocol = Data(proto)
+            $0.service = Data(service)
             $0.recipient = Data(recipient)
             $0.origin = Data(origin)
             $0.body = message

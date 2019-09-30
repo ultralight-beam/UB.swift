@@ -47,7 +47,7 @@ public class Node {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(_ message: Message) {
-        if message.recipient.count == 0, message.proto.count == 0 {
+        if message.recipient.count == 0, message.service.count == 0 {
             return
         }
 
@@ -67,8 +67,8 @@ public class Node {
             }
 
             // what this does is send a message to anyone that implements a specific service
-            if message.proto.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.proto } }
+            if message.service.count != 0 {
+                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
                 if filtered.count > 0 {
                     let sends = flood(message, data: data, transport: transport, peers: filtered)
                     if sends > 0 {

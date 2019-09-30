@@ -24,7 +24,7 @@ struct Packet {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var `protocol`: Data = SwiftProtobuf.Internal.emptyData
+  var service: Data = SwiftProtobuf.Internal.emptyData
 
   var origin: Data = SwiftProtobuf.Internal.emptyData
 
@@ -42,7 +42,7 @@ struct Packet {
 extension Packet: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "Packet"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "protocol"),
+    1: .same(proto: "service"),
     2: .same(proto: "origin"),
     3: .same(proto: "recipient"),
     4: .same(proto: "body"),
@@ -51,7 +51,7 @@ extension Packet: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBas
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBytesField(value: &self.`protocol`)
+      case 1: try decoder.decodeSingularBytesField(value: &self.service)
       case 2: try decoder.decodeSingularBytesField(value: &self.origin)
       case 3: try decoder.decodeSingularBytesField(value: &self.recipient)
       case 4: try decoder.decodeSingularBytesField(value: &self.body)
@@ -61,8 +61,8 @@ extension Packet: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBas
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.`protocol`.isEmpty {
-      try visitor.visitSingularBytesField(value: self.`protocol`, fieldNumber: 1)
+    if !self.service.isEmpty {
+      try visitor.visitSingularBytesField(value: self.service, fieldNumber: 1)
     }
     if !self.origin.isEmpty {
       try visitor.visitSingularBytesField(value: self.origin, fieldNumber: 2)
@@ -77,7 +77,7 @@ extension Packet: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBas
   }
 
   static func ==(lhs: Packet, rhs: Packet) -> Bool {
-    if lhs.`protocol` != rhs.`protocol` {return false}
+    if lhs.service != rhs.service {return false}
     if lhs.origin != rhs.origin {return false}
     if lhs.recipient != rhs.recipient {return false}
     if lhs.body != rhs.body {return false}
