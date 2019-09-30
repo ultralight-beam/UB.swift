@@ -112,10 +112,6 @@ public class Node {
 /// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
-        // @todo message should probably be created here
-
-        // @todo delegate should return something where we handle retransmission.
-
         // @todo if node delegate doesn't return anything success, send out the message?
 
         guard let packet = try? Packet(serializedData: data) else {
@@ -124,12 +120,23 @@ extension Node: TransportDelegate {
         }
 
         let message = Message(protobuf: packet, from: from)
-        if let service = services[message.service] {
-            return service.node(self, didReceiveMessage: message)
+
+        if message.service.count > 0 {
+            if let service = services[message.service] {
+                return service.node(self, didReceiveMessage: message) // @todo maybe status check?
+            }
         }
+
+        // @todo check if we are the recipient else retransmit
+//        if node.identity == message.recipient {
+//            return delegate?.node(self, didReceiveMessage: message) // @todo maybe status check
+//        }
+
 
         // @todo retransmit if we don't have the service
 
-        delegate?.node(self, didReceiveMessage: message)
+
+        return send(message)
+
     }
 }
