@@ -116,10 +116,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 return
             }
 
-            DispatchQueue.main.async { () -> Void in
-                self.delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
-            }
-
+            self.delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
             add(central: request.central)
         }
     }
@@ -213,9 +210,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         error _: Error?
     ) {
         guard let value = characteristic.value else { return }
-        DispatchQueue.main.async { () -> Void in
-            self.delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
-        }
+
+        self.delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
     }
 
     public func peripheral(
