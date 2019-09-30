@@ -16,6 +16,7 @@ public class CoreBluetoothTransport: NSObject {
         label: "com.ultralight-beam.bluetooth.centralQueue",
         attributes: .concurrent
     )
+
     private static let peripheralQueue = DispatchQueue(
         label: "com.ultralight-beam.bluetooth.peripheralQueue",
         attributes: .concurrent
