@@ -76,7 +76,6 @@ public class Node {
                     }
                 }
             }
-
             _ = flood(message, data: data, transport: transport, peers: peers)
         }
     }
