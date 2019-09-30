@@ -8,6 +8,9 @@ public class Node {
     /// The known transports for the node.
     public private(set) var transports = [String: Transport]()
 
+    /// The known services for the node.
+    public private(set) var services = [UBID: Service]()
+
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
@@ -35,11 +38,20 @@ public class Node {
     /// - Parameters:
     ///     - transport: The identifier of the transport to remove.
     public func remove(transport: String) {
-        guard transports[transport] != nil else {
+        transports.removeValue(forKey: transport)
+    }
+
+    public func add(service: Service) {
+        let id = service.identifier
+        if services[id] != nil {
             return
         }
 
-        transports.removeValue(forKey: transport)
+        services[id] = service
+    }
+
+    public func remove(service: UBID) {
+        services.removeValue(forKey: service)
     }
 
     /// Sends a message through the current transports.
@@ -111,6 +123,11 @@ extension Node: TransportDelegate {
             return
         }
 
-        delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+        let message = Message(protobuf: packet, from: from)
+        if let service = services[message.service] {
+            return service.node(self, didReceiveMessage: message)
+        }
+
+        delegate?.node(self, didReceiveMessage: message)
     }
 }
