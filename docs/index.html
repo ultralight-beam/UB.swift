@@ -110,6 +110,18 @@
 <h3 id='a-href-https-cocoapods-org-pods-ub-cocoapods-a' class='heading'><a href="https://cocoapods.org/pods/UB">Cocoapods</a></h3>
 <pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'UB'</span>
 </code></pre>
+<h2 id='usage' class='heading'>Usage</h2>
+
+<p>Using the UB within your own project is kept simple, it requires initializing a <code><a href="Classes/Node.html">Node</a></code> that requires a <code>delegate</code>. Various transports can be added to a <code><a href="Classes/Node.html">Node</a></code> enabling sending and receiving messages through them.</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">UB</span>
+
+<span class="k">let</span> <span class="nv">node</span> <span class="o">=</span> <span class="kt">Node</span><span class="p">()</span>
+<span class="n">node</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+
+<span class="n">node</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">transport</span><span class="p">:</span> <span class="kt">CoreBluetoothTransport</span><span class="p">())</span>
+
+<span class="n">node</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre>
 
 <!--
 ## Developing

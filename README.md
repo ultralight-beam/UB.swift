@@ -35,6 +35,21 @@ targets: [
 pod 'UB'
 ```
 
+## Usage
+
+Using the UB within your own project is kept simple, it requires initializing a `Node` that requires a `delegate`. Various transports can be added to a `Node` enabling sending and receiving messages through them.
+
+```swift
+import UB
+
+let node = Node()
+node.delegate = self
+
+node.add(transport: CoreBluetoothTransport())
+
+node.send(...)
+```
+
 <!--
 ## Developing
 @todo
