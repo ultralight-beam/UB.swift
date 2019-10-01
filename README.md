@@ -9,8 +9,8 @@ UB.swift is the swift implementation of the Ultralight Beam protocol, its primar
 
 ## Requirements
 
-- **iOS9** or later
-- **OSX10.13** or later
+- **iOS 9** or later
+- **OSX 10.13** or later
 - **Swift 5.0** or later
 
 ## Installation
