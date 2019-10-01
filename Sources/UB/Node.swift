@@ -82,7 +82,7 @@ public class Node {
 
     private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
         var sends = 0
-        peers.forEach {
+        peers.forEach 
             if $0.id == message.from || $0.id == message.origin {
                 return
             }
