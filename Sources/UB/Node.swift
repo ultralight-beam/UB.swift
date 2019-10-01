@@ -132,11 +132,8 @@ extension Node: TransportDelegate {
 //            return delegate?.node(self, didReceiveMessage: message) // @todo maybe status check
 //        }
 
-
         // @todo retransmit if we don't have the service
 
-
         return send(message)
-
     }
 }
