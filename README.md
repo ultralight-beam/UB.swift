@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/github/license/ultralight-beam/UB.swift.svg)](LICENSE)
 [![Maintainability](https://api.codeclimate.com/v1/badges/25933a4b71183e31a899/maintainability)](https://codeclimate.com/github/ultralight-beam/UB.swift/maintainability)
 [![Pod](https://img.shields.io/cocoapods/v/UB)](https://cocoapods.org/pods/UB)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ultralight-beam/UB.swift)
 
 UB.swift is the swift implementation of the Ultralight Beam protocol, its primary focus is to provide an SDK for **iOS** and **OSX** devices.
 
