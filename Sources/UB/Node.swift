@@ -41,6 +41,10 @@ public class Node {
         transports.removeValue(forKey: transport)
     }
 
+    /// Adds a new service to the list of known service.
+    ///
+    /// - Parameters:
+    ///     - service: The service to be added.
     public func add(service: Service) {
         let id = service.identifier
         if services[id] != nil {
@@ -50,6 +54,10 @@ public class Node {
         services[id] = service
     }
 
+    /// Removes a service from the list of known service.
+    ///
+    /// - Parameters:
+    ///     - service: The identifier of the service to remove.
     public func remove(service: UBID) {
         services.removeValue(forKey: service)
     }
