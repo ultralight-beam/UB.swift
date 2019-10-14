@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/github/license/ultralight-beam/UB.swift.svg)](LICENSE)
 [![Maintainability](https://api.codeclimate.com/v1/badges/25933a4b71183e31a899/maintainability)](https://codeclimate.com/github/ultralight-beam/UB.swift/maintainability)
 [![Pod](https://img.shields.io/cocoapods/v/UB)](https://cocoapods.org/pods/UB)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ultralight-beam/UB.swift?include_prereleases)
 
 UB.swift is the swift implementation of the Ultralight Beam protocol, its primary focus is to provide an SDK for **iOS** and **OSX** devices.
 
@@ -37,7 +38,7 @@ pod 'UB'
 
 ## Usage
 
-Using the UB within your own project is kept simple, it requires initializing a `Node` that requires a `delegate`. Various transports can be added to a `Node` enabling sending and receiving messages through them.
+Using the UB within your own project is kept simple. Initialize a `Node`, and assign [`delegate`](https://swift.ultralightbeam.io/Protocols/NodeDelegate.html) which will then be notified of received messages. Various `transport`s can be added to a `Node` enabling sending and receiving messages through them.
 
 ```swift
 import UB
