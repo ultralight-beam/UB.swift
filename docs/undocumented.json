@@ -1,6 +1,19 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
+      "line": 44,
+      "symbol": "Node.add(service:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/deaneigenmann/Documents/ub/UB.swift/Sources/UB/Node.swift",
+      "line": 53,
+      "symbol": "Node.remove(service:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/deaneigenmann/Documents/ub/UB.swift"
 }
