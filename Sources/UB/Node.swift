@@ -8,6 +8,9 @@ public class Node {
     /// The known transports for the node.
     public private(set) var transports = [String: Transport]()
 
+    /// The known peers for a node.
+    public private(set) var peers = [Addr: Peer]()
+
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
@@ -27,7 +30,7 @@ public class Node {
 
         transports[id] = transport
         transports[id]?.delegate = self
-        transport.listen()
+        transport.listen(identity: UBID(repeating: 0, count: 0)) // @TODO
     }
 
     /// Removes a transport from the list of known transports.
@@ -55,29 +58,31 @@ public class Node {
             return
         }
 
-        transports.forEach { _, transport in
-            let peers = transport.peers
-
-            // @todo ensure that messages are delivered?
-            // what this does is try to send a message to an exact target or broadcast it to all peers
-            if message.recipient.count != 0 {
-                if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: data, to: message.recipient)
+        if message.recipient.count != 0 {
+            if let peer = peers[message.recipient] {
+                // @todo ensure we actually had > 0 transports to send to.
+                return peer.transports.forEach { id, addr in
+                    guard let transport = transports[id] else { return }
+                    transport.send(message: data, to: addr)
                 }
             }
-
-            // what this does is send a message to anyone that implements a specific service
-            if message.service.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
-                if filtered.count > 0 {
-                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-                    if sends > 0 {
-                        return
-                    }
-                }
-            }
-            _ = flood(message, data: data, transport: transport, peers: peers)
         }
+
+        // @todo figure this out
+//        transports.forEach { _, transport in
+//            let peers = transport.peers
+//            // what this does is send a message to anyone that implements a specific service
+//            if message.service.count != 0 {
+//                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
+//                if filtered.count > 0 {
+//                    let sends = flood(message, data: data, transport: transport, peers: filtered)
+//                    if sends > 0 {
+//                        return
+//                    }
+//                }
+//            }
+//            _ = flood(message, data: data, transport: transport, peers: peers)
+//        }
     }
 
     private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
@@ -97,6 +102,7 @@ public class Node {
     // @todo create a message send loop with retransmissions and shit
 }
 
+c
 /// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
@@ -112,5 +118,18 @@ extension Node: TransportDelegate {
         }
 
         delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+    }
+
+    public func transport(_ transport: Transport, didConnectToPeer id: Addr, withAddr addr: Addr) {
+        guard let peer = peers[id] else {
+            peer = Peer(id: id, services: [UBID]())
+            peers[id] = peer
+        } cx12vbh3 jn4m
+
+        peer.transports[String(describing: transport)] = addr
+    }
+
+    public func transport(_ transport: Transport, didDisconnectFromPeer id: Addr) {
+        peers[peer].transports.removeValue(forKey: String(describing: transport))
     }
 }
