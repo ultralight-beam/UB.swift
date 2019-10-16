@@ -102,7 +102,6 @@ public class Node {
     // @todo create a message send loop with retransmissions and shit
 }
 
-c
 /// :nodoc:
 extension Node: TransportDelegate {
     public func transport(_: Transport, didReceiveData data: Data, from: Addr) {
@@ -121,15 +120,17 @@ extension Node: TransportDelegate {
     }
 
     public func transport(_ transport: Transport, didConnectToPeer id: Addr, withAddr addr: Addr) {
-        guard let peer = peers[id] else {
-            peer = Peer(id: id, services: [UBID]())
-            peers[id] = peer
+        if peers[id] == nil {
+            peers[id] = Peer(id: id, services: [UBID]())
         }
+
+        guard let peer = peers[id] else { return }
 
         peer.transports[String(describing: transport)] = addr
     }
 
     public func transport(_ transport: Transport, didDisconnectFromPeer id: Addr) {
-        peers[peer].transports.removeValue(forKey: String(describing: transport))
+        guard let peer = peers[id] else { return }
+        peer.transports.removeValue(forKey: String(describing: transport))
     }
 }
