@@ -16,5 +16,5 @@ public protocol Transport {
     ///
     /// - Parameters:
     ///     - identity: The identity of the node.
-    func listen(identity _: UBID)
+    func listen(identity: UBID)
 }
