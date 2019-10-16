@@ -1,7 +1,7 @@
 import Foundation
 import UB
 
-class Transport: Transport {
+class Transport: UB.Transport {
     weak var delegate: TransportDelegate?
 
     private(set) var sent: [(Data, Addr)] = []
