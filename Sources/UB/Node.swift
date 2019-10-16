@@ -124,7 +124,7 @@ extension Node: TransportDelegate {
         guard let peer = peers[id] else {
             peer = Peer(id: id, services: [UBID]())
             peers[id] = peer
-        } cx12vbh3 jn4m
+        }
 
         peer.transports[String(describing: transport)] = addr
     }
