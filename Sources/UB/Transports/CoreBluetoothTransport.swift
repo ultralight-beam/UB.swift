@@ -58,6 +58,7 @@ public class CoreBluetoothTransport: NSObject {
     private func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
+        centrals.removeValue(forKey: peer)
     }
 
     private func add(central: CBCentral) {
@@ -185,6 +186,12 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
         if let service = peripheral.services?.first(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
             peripheral.discoverCharacteristics([CoreBluetoothTransport.receiveCharacteristic.uuid], for: service)
+        }
+    }
+
+    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        if error != nil {
+            remove(peer: Addr(peripheral.identifier.bytes))
         }
     }
 
