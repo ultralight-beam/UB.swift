@@ -31,10 +31,8 @@ public class CoreBluetoothTransport: NSObject {
         permissions: [.writeable, .readable]
     )
 
-    // make this nicer, we need this cause we need a reference to the peripheral?
-    private var perp: CBPeripheral?
     private var centrals = [Addr: CBCentral]()
-    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
+    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic?)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
@@ -85,7 +83,7 @@ extension CoreBluetoothTransport: Transport {
         if let peer = peripherals[to] {
             return peer.peripheral.writeValue(
                 message,
-                for: peer.characteristic,
+                for: peer.characteristic!,
                 type: CBCharacteristicWriteType.withoutResponse
             )
         }
@@ -167,7 +165,8 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         advertisementData _: [String: Any],
         rssi _: NSNumber
     ) {
-        perp = peripheral
+        let id = Addr(peripheral.identifier.bytes)
+        peripherals[id] = (peripheral, nil)
         peripheral.delegate = self
         centralManager.connect(peripheral)
     }
@@ -195,7 +194,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         error _: Error?
     ) {
         let id = Addr(peripheral.identifier.bytes)
-        if peripherals[id] != nil {
+
+        if peripherals[id]?.characteristic != nil {
             return
         }
 
