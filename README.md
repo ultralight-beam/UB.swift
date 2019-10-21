@@ -43,7 +43,7 @@ Using the UB within your own project is kept simple. Initialize a `Node`, and as
 ```swift
 import UB
 
-let node = Node()
+let node = Node(key: Curve25519.Signing.PrivateKey())
 node.delegate = self
 
 node.add(transport: CoreBluetoothTransport())

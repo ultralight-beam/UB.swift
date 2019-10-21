@@ -1,5 +1,6 @@
 import Foundation
 import SwiftProtobuf
+import CryptoKit
 
 // @todo figure out architecture to support new forwarding algorithm.
 
@@ -14,8 +15,16 @@ public class Node {
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    /// The nodes private key.
+    private let key: Curve25519.Signing.PrivateKey
+
     /// Initializes a node.
-    public init() {}
+    ///
+    /// - Parameters:
+    ///     - key: The private key for the node.
+    public init(key: Curve25519.Signing.PrivateKey) {
+        self.key = key
+    }
 
     /// Adds a new transport to the list of known transports.
     ///
@@ -30,7 +39,7 @@ public class Node {
 
         transports[id] = transport
         transports[id]?.delegate = self
-        transport.listen(identity: UBID(repeating: 0, count: 0)) // @TODO
+        transport.listen(identity: UBID(key.publicKey.rawRepresentation))
     }
 
     /// Removes a transport from the list of known transports.
