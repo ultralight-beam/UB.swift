@@ -177,6 +177,10 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
         remove(peer: Addr(peripheral.identifier.bytes))
     }
+
+    public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
+        remove(peer: Addr(peripheral.identifier.bytes))
+    }
 }
 
 /// :nodoc:
