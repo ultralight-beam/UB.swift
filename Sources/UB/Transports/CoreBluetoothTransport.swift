@@ -144,9 +144,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         didUnsubscribeFrom _: CBCharacteristic
     ) {
         // @todo check that this is the characteristic
-        let id = Addr(central.identifier.bytes)
-        centrals.removeValue(forKey: id)
-        peers.removeAll(where: { $0.id == id })
+        remove(peer: Addr(central.identifier.bytes))
     }
 }
 
