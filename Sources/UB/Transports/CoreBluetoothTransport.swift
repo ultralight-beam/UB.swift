@@ -25,8 +25,15 @@ public class CoreBluetoothTransport: NSObject {
 
     private static let ubServiceUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000000")
 
-    private static let receiveCharacteristic = CBMutableCharacteristic(
+    private static let identityCharacteristic = CBMutableCharacteristic(
         type: CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001"),
+        properties: [.read, .writeWithoutResponse, .notify],
+        value: nil,
+        permissions:  [.writeable, .readable]
+    )
+
+    private static let receiveCharacteristic = CBMutableCharacteristic(
+        type: CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000002"),
         properties: [.read, .writeWithoutResponse, .notify],
         value: nil,
         permissions: [.writeable, .readable]
@@ -109,6 +116,8 @@ extension CoreBluetoothTransport: Transport {
     public func listen(identity: UBID) {
         state = .listening
 
+        identityCharacteristic.value = identity
+
         if peripheralManager.state == .poweredOn {
             startAdvertising()
         }
@@ -161,7 +170,11 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     fileprivate func startAdvertising() {
         let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
-        service.characteristics = [CoreBluetoothTransport.receiveCharacteristic]
+        service.characteristics = [
+            CoreBluetoothTransport.identityCharacteristic,
+            CoreBluetoothTransport.receiveCharacteristic,
+        ]
+
         peripheral.add(service)
 
         peripheral.startAdvertising([
@@ -206,7 +219,10 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
         if let service = peripheral.services?.first(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
-            peripheral.discoverCharacteristics([CoreBluetoothTransport.receiveCharacteristic.uuid], for: service)
+            peripheral.discoverCharacteristics(
+                [CoreBluetoothTransport.identityCharacteristic.uuid, CoreBluetoothTransport.receiveCharacteristic.uuid],
+                for: service
+            )
         }
     }
 
