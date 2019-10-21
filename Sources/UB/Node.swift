@@ -82,7 +82,7 @@ public class Node {
             let transportPeers = peers.filter { $1.transports[id] != nil }
 
             if message.service.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
+                let filtered = transportPeers.filter { $1.services.contains { $0 == message.service } }
                 if filtered.count > 0 {
                     let sends = flood(message, data: data, transport: transport, peers: filtered)
                     if sends > 0 {
