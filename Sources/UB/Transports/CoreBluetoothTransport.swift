@@ -3,6 +3,7 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receive message over Bluetooth
 public class CoreBluetoothTransport: NSObject {
+
     /// :nodoc:
     public weak var delegate: TransportDelegate?
 
@@ -31,6 +32,12 @@ public class CoreBluetoothTransport: NSObject {
         value: nil,
         permissions: [.writeable, .readable]
     )
+
+    private enum State {
+        case off, listening
+    }
+
+    private var state = State.off
 
     // make this nicer, we need this cause we need a reference to the peripheral?
     private var perp: CBPeripheral?
@@ -101,22 +108,23 @@ extension CoreBluetoothTransport: Transport {
     }
 
     public func listen(identity: UBID) {
-        // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
+        state = .listening
+
+        if peripheralManager.state == .poweredOn {
+            startAdvertising()
+        }
+
+        if centralManager.state == .poweredOn {
+            startScanning()
+        }
     }
 }
 
 /// :nodoc:
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        if peripheral.state == .poweredOn {
-            let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
-
-            service.characteristics = [CoreBluetoothTransport.characteristic]
-            peripheral.add(service)
-
-            peripheral.startAdvertising([
-                CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
-            ])
+        if peripheral.state == .poweredOn && state == .listening {
+            startAdvertising()
         }
     }
 
@@ -150,16 +158,25 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         centrals.removeValue(forKey: id)
         peers.removeAll(where: { $0.id == id })
     }
+
+    fileprivate func startAdvertising() {
+        let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
+
+        service.characteristics = [CoreBluetoothTransport.characteristic]
+        peripheralManager.add(service)
+
+        peripheralManager.startAdvertising([
+            CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
+        ])
+    }
 }
 
 /// :nodoc:
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
+        if central.state == .poweredOn && state == .listening {
+            startScanning()
         }
-
-        // @todo handling for other states
     }
 
     public func centralManager(
@@ -179,6 +196,10 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
         remove(peer: Addr(peripheral.identifier.bytes))
+    }
+
+    fileprivate func startScanning() {
+        centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
     }
 }
 
