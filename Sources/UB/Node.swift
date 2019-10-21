@@ -77,21 +77,22 @@ public class Node {
             }
         }
 
-        // @todo figure this out
-//        transports.forEach { _, transport in
-//            let peers = transport.peers
-//            // what this does is send a message to anyone that implements a specific service
-//            if message.service.count != 0 {
-//                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
-//                if filtered.count > 0 {
-//                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-//                    if sends > 0 {
-//                        return
-//                    }
-//                }
-//            }
-//            _ = flood(message, data: data, transport: transport, peers: peers)
-//        }
+        // @todo: there is probably some better way of doing this
+        transports.forEach { id, transport in
+            let transportPeers = peers.filter { $1.transports[id] != nil }
+
+            if message.service.count != 0 {
+                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
+                if filtered.count > 0 {
+                    let sends = flood(message, data: data, transport: transport, peers: filtered)
+                    if sends > 0 {
+                        return
+                    }
+                }
+            }
+
+            _ = flood(message, data: data, transport: transport, peers: transportPeers)
+        }
     }
 
     private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
