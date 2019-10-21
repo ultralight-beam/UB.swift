@@ -24,10 +24,9 @@ public class CoreBluetoothTransport: NSObject {
     )
 
     private static let ubServiceUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000000")
-    private static let receiveCharacteristicUUID = CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001")
 
-    private static let characteristic = CBMutableCharacteristic(
-        type: CoreBluetoothTransport.receiveCharacteristicUUID,
+    private static let receiveCharacteristic = CBMutableCharacteristic(
+        type: CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001"),
         properties: [.read, .writeWithoutResponse, .notify],
         value: nil,
         permissions: [.writeable, .readable]
@@ -101,7 +100,7 @@ extension CoreBluetoothTransport: Transport {
         if let central = centrals[to] {
             peripheralManager.updateValue(
                 message,
-                for: CoreBluetoothTransport.characteristic,
+                for: CoreBluetoothTransport.receiveCharacteristic,
                 onSubscribedCentrals: [central]
             )
         }
@@ -162,10 +161,10 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     fileprivate func startAdvertising() {
         let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
-        service.characteristics = [CoreBluetoothTransport.characteristic]
-        peripheralManager.add(service)
+        service.characteristics = [CoreBluetoothTransport.receiveCharacteristic]
+        peripheral.add(service)
 
-        peripheralManager.startAdvertising([
+        peripheral.startAdvertising([
             CBAdvertisementDataServiceUUIDsKey: [CoreBluetoothTransport.ubServiceUUID],
         ])
     }
@@ -207,7 +206,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
 extension CoreBluetoothTransport: CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices _: Error?) {
         if let service = peripheral.services?.first(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
-            peripheral.discoverCharacteristics([CoreBluetoothTransport.receiveCharacteristicUUID], for: service)
+            peripheral.discoverCharacteristics([CoreBluetoothTransport.receiveCharacteristic.uuid], for: service)
         }
     }
 
@@ -222,7 +221,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         }
 
         let characteristics = service.characteristics
-        if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristicUUID }) {
+        if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid }) {
             peripherals[id] = (peripheral, char)
             peripherals[id]?.peripheral.setNotifyValue(true, for: char)
             // @todo we may need to do some handshake to obtain services from a peer.
@@ -236,7 +235,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
-        if invalidatedServices.contains(where: { $0.uuid == CoreBluetoothTransport.ubServiceUUID }) {
+        if invalidatedServices.contains(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid }) {
             remove(peer: Addr(peripheral.identifier.bytes))
         }
     }
