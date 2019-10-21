@@ -8,7 +8,7 @@ public class CoreBluetoothTransport: NSObject {
     public weak var delegate: TransportDelegate?
 
     /// :nodoc:
-    public fileprivate(set) var peers = [Peer]()
+    public fileprivate(set) var peers = [Addr: Addr]()
 
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
@@ -73,7 +73,7 @@ public class CoreBluetoothTransport: NSObject {
 
     private func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
+        peers.removeValue(forKey: peer)
     }
 
     private func add(central: CBCentral) {
@@ -85,11 +85,7 @@ public class CoreBluetoothTransport: NSObject {
 
         centrals[id] = central
 
-        if peers.filter({ $0.id == id }).count != 0 {
-            return
-        }
-
-        peers.append(Peer(id: id, services: [UBID]()))
+        // @todo figure out identity for centrals
     }
 }
 
@@ -143,12 +139,17 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 continue
             }
 
+            let id = Addr(request.central.identifier.bytes)
+
             if request.characteristic.uuid == identityCharacteristic.uuid {
-                delegate?.transport(self, didConnectToPeer: Addr(data), withAddr: Addr(request.central.identifier.bytes))
+                let addr = Addr(data)
+                peers[id] = addr
+                delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
                 continue
             }
 
-            delegate?.transport(self, didReceiveData: data, from: Addr(request.central.identifier.bytes))
+            guard let peer = peers[id] else { continue }
+            delegate?.transport(self, didReceiveData: data, from: peer)
             add(central: request.central)
         }
     }
@@ -169,7 +170,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         // @todo check that this is the characteristic
         let id = Addr(central.identifier.bytes)
         centrals.removeValue(forKey: id)
-        peers.removeAll(where: { $0.id == id })
+        peers.removeValue(forKey: id)
     }
 
     fileprivate func startAdvertising() {
@@ -241,24 +242,23 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             return
         }
 
-        let characteristics = service.characteristics
+        guard let characteristics = service.characteristics else { return }
+        for characteristic in characteristics {
+            if characteristic.uuid == identityCharacteristic.uuid {
+                if let data = characteristic.value {
+                    let addr = Addr(data)
+                    peers[id] = addr;
+                    delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
+                }
+            }
 
-        if let identity = characteristics?.first(where: { $0.uuid == identityCharacteristic.uuid }) {
-            if let data = identity.value {
-                delegate?.transport(self, didConnectToPeer: Addr(data), withAddr: id)
+            if characteristic.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid {
+                peripherals[id] = (peripheral, characteristic)
             }
         }
 
-        if let char = characteristics?.first(where: { $0.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid }) {
-            peripherals[id] = (peripheral, char)
-            peripherals[id]?.peripheral.setNotifyValue(true, for: char)
-            // @todo we may need to do some handshake to obtain services from a peer.
-
-            if peers.filter({ $0.id == id }).count != 0 {
-                return
-            }
-
-            peers.append(Peer(id: id, services: [UBID]()))
+        if peers[id] != nil, let characteristic = peripherals[id]?.characteristic {
+            peripherals[id]?.peripheral.setNotifyValue(true, for: characteristic)
         }
     }
 
@@ -273,9 +273,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didUpdateValueFor characteristic: CBCharacteristic,
         error _: Error?
     ) {
-        guard let value = characteristic.value else { return }
-
-        delegate?.transport(self, didReceiveData: value, from: Addr(peripheral.identifier.bytes))
+        guard let value = characteristic.value, let peer = peers[Addr(peripheral.identifier.bytes)] else { return }
+        delegate?.transport(self, didReceiveData: value, from: peer)
     }
 
     public func peripheral(
