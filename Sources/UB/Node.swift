@@ -79,38 +79,27 @@ public class Node {
 
         // @todo: there is probably some better way of doing this
         transports.forEach { id, transport in
-            let transportPeers = Array(peers.filter({ $1.transports[id] != nil }).values)
+            let transportPeers = Array(
+                peers.filter({
+                    $1.transports[id] != nil && $1.id != message.from && $1.id != message.origin
+                }).values
+            )
 
             if message.service.count != 0 {
                 let filtered = transportPeers.filter { $0.services.contains { $0 == message.service } }
                 if filtered.count > 0 {
-                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-                    if sends > 0 {
-                        return
+                    return filtered.forEach {
+                        transport.send(message: data, to: $0.id)
                     }
                 }
             }
 
-            _ = flood(message, data: data, transport: transport, peers: transportPeers)
+            transportPeers.forEach { transport.send(message: data, to: $0.id) }
         }
     }
-
-    private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
-        var sends = 0
-        peers.forEach {
-            if $0.id == message.from || $0.id == message.origin {
-                return
-            }
-
-            sends += 1
-            transport.send(message: data, to: $0.id)
-        }
-
-        return sends
-    }
+}
 
     // @todo create a message send loop with retransmissions and shit
-}
 
 /// :nodoc:
 extension Node: TransportDelegate {
