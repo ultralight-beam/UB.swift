@@ -29,7 +29,7 @@ public class CoreBluetoothTransport: NSObject {
         type: CBUUID(string: "BEA3B031-76FB-4889-B3C7-000000000001"),
         properties: [.read, .writeWithoutResponse, .notify],
         value: nil,
-        permissions:  [.writeable, .readable]
+        permissions: [.writeable, .readable]
     )
 
     private static let receiveCharacteristic = CBMutableCharacteristic(
@@ -247,7 +247,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             if characteristic.uuid == identityCharacteristic.uuid {
                 if let data = characteristic.value {
                     let addr = Addr(data)
-                    peers[id] = addr;
+                    peers[id] = addr
                     delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
                 }
             }
