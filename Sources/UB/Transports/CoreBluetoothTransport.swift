@@ -84,8 +84,6 @@ public class CoreBluetoothTransport: NSObject {
         }
 
         centrals[id] = central
-
-        // @todo figure out identity for centrals
     }
 }
 
