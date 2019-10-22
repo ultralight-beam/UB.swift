@@ -29,7 +29,7 @@ jobs:
     - stage: Docs
       name: Deploy Docs
       if: tag IS present
-      script: ./scripts/deploy-docs
+      script: ./scripts/deploy-docs.sh
 
 notifications:
   email: false
