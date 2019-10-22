@@ -23,6 +23,12 @@ jobs:
     - stage: Test
       name: Run Tests
       script: make test
+
+   - stage: Build Docs
+     name: Build docs
+     script: make docs
+     if:
+         tag IS present
      
 deploy: 
     provider: pages
