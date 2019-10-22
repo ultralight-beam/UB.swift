@@ -138,7 +138,6 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         requests
             .filter { $0.characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid }
             .forEach { request in
-
                 guard let data = request.value else {
                     return
                 }
@@ -146,9 +145,8 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 let id = Addr(request.central.identifier.bytes)
                 add(central: request.central)
 
-                let addr = Addr(data)
                 peers[id] = addr
-                delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
+                delegate?.transport(self, didConnectToPeer: Addr(data), withAddr: id)
             }
 
         for request in requests {
@@ -160,8 +158,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 continue
             }
 
-            let id = Addr(request.central.identifier.bytes)
-            guard let peer = peers[id] else { continue }
+            guard let peer = peers[Addr(request.central.identifier.bytes)] else { continue }
             delegate?.transport(self, didReceiveData: data, from: peer)
         }
     }
