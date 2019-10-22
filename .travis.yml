@@ -22,7 +22,7 @@ jobs:
   include:
     - stage: Test
       name: Run Tests
-      script: make tet
+      script: make test
      
 deploy: 
     provider: pages
