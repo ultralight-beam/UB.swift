@@ -145,8 +145,14 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
                 let id = Addr(request.central.identifier.bytes)
                 add(central: request.central)
 
+                let addr = Addr(data)
                 peers[id] = addr
-                delegate?.transport(self, didConnectToPeer: Addr(data), withAddr: id)
+                peripheralManager.updateValue(
+                    Data(identity),
+                    for: CoreBluetoothTransport.identityCharacteristic,
+                    onSubscribedCentrals: [request.central]
+                )
+                delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
             }
 
         for request in requests {
