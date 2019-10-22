@@ -1,6 +1,6 @@
+import CryptoKit
 import Foundation
 import SwiftProtobuf
-import CryptoKit
 
 // @todo figure out architecture to support new forwarding algorithm.
 
@@ -80,9 +80,9 @@ public class Node {
         // @todo: there is probably some better way of doing this
         transports.forEach { id, transport in
             let transportPeers = Array(
-                peers.filter({
+                peers.filter {
                     $1.transports[id] != nil && $1.id != message.from && $1.id != message.origin
-                }).values
+                }.values
             )
 
             if message.service.count != 0 {
@@ -94,12 +94,14 @@ public class Node {
                 }
             }
 
-            transportPeers.forEach { transport.send(message: data, to: $0.id) }
+            transportPeers.forEach {
+                transport.send(message: data, to: $0.id)
+            }
         }
     }
 }
 
-    // @todo create a message send loop with retransmissions and shit
+// @todo create a message send loop with retransmissions and shit
 
 /// :nodoc:
 extension Node: TransportDelegate {

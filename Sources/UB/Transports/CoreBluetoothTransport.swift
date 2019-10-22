@@ -3,6 +3,8 @@ import Foundation
 
 /// CoreBluetoothTransport is used to send and receive message over Bluetooth
 public class CoreBluetoothTransport: NSObject {
+    /// :nodoc:
+    fileprivate var identity: UBID!
 
     /// :nodoc:
     public weak var delegate: TransportDelegate?
@@ -90,7 +92,9 @@ public class CoreBluetoothTransport: NSObject {
 /// :nodoc:
 extension CoreBluetoothTransport: Transport {
     public func send(message: Data, to: Addr) {
-        if let peer = peripherals[to] {
+        guard let id = peers.first(where: { $0.value == to })?.key else { return }
+
+        if let peer = peripherals[id] {
             return peer.peripheral.writeValue(
                 message,
                 for: peer.characteristic,
@@ -98,7 +102,7 @@ extension CoreBluetoothTransport: Transport {
             )
         }
 
-        if let central = centrals[to] {
+        if let central = centrals[id] {
             peripheralManager.updateValue(
                 message,
                 for: CoreBluetoothTransport.receiveCharacteristic,
@@ -109,6 +113,8 @@ extension CoreBluetoothTransport: Transport {
 
     public func listen(identity: UBID) {
         state = .listening
+
+        self.identity = identity
 
         if peripheralManager.state == .poweredOn {
             startAdvertising()
@@ -123,39 +129,65 @@ extension CoreBluetoothTransport: Transport {
 /// :nodoc:
 extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
-        if peripheral.state == .poweredOn && state == .listening {
+        if peripheral.state == .poweredOn, state == .listening {
             startAdvertising()
         }
     }
 
     public func peripheralManager(_: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+        requests
+            .filter { $0.characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid }
+            .forEach { request in
+
+                guard let data = request.value else {
+                    return
+                }
+
+                let id = Addr(request.central.identifier.bytes)
+                add(central: request.central)
+
+                let addr = Addr(data)
+                peers[id] = addr
+                delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
+            }
+
         for request in requests {
+            if request.characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
+                continue
+            }
+
             guard let data = request.value else {
-                // @todo
                 continue
             }
 
             let id = Addr(request.central.identifier.bytes)
-
-            if request.characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
-                let addr = Addr(data)
-                peers[id] = addr
-                delegate?.transport(self, didConnectToPeer: addr, withAddr: id)
-                continue
-            }
-
             guard let peer = peers[id] else { continue }
             delegate?.transport(self, didReceiveData: data, from: peer)
+        }
+    }
+
+    public func peripheralManager(_: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
+        if request.characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
+            peripheralManager.updateValue(
+                Data(identity),
+                for: CoreBluetoothTransport.identityCharacteristic,
+                onSubscribedCentrals: [request.central]
+            )
+
             add(central: request.central)
         }
     }
 
     public func peripheralManager(
-        _: CBPeripheralManager,
+        _ peripheral: CBPeripheralManager,
         central: CBCentral,
-        didSubscribeTo _: CBCharacteristic
+        didSubscribeTo characteristic: CBCharacteristic
     ) {
         add(central: central)
+        if characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
+            peripheral.updateValue(Data(identity), for: CoreBluetoothTransport.identityCharacteristic, onSubscribedCentrals: [central])
+            return
+        }
     }
 
     public func peripheralManager(
@@ -170,6 +202,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
     }
 
     fileprivate func startAdvertising() {
+        if peripheralManager.isAdvertising { return }
         let service = CBMutableService(type: CoreBluetoothTransport.ubServiceUUID, primary: true)
 
         service.characteristics = [
@@ -188,7 +221,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
 /// :nodoc:
 extension CoreBluetoothTransport: CBCentralManagerDelegate {
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn && state == .listening {
+        if central.state == .poweredOn, state == .listening {
             startScanning()
         }
     }
@@ -213,6 +246,7 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     }
 
     fileprivate func startScanning() {
+        if centralManager.isScanning { return }
         centralManager.scanForPeripherals(withServices: [CoreBluetoothTransport.ubServiceUUID])
     }
 }
@@ -241,7 +275,9 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         guard let characteristics = service.characteristics else { return }
         for characteristic in characteristics {
             if characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
+                peripheral.setNotifyValue(true, for: characteristic)
                 peripheral.readValue(for: characteristic)
+                peripheral.writeValue(Data(identity), for: characteristic, type: .withoutResponse)
             }
 
             if characteristic.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid {
@@ -249,7 +285,7 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             }
         }
 
-        if peers[id] != nil, let characteristic = peripherals[id]?.characteristic {
+        if let characteristic = peripherals[id]?.characteristic {
             peripherals[id]?.peripheral.setNotifyValue(true, for: characteristic)
         }
     }
@@ -265,7 +301,6 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         didUpdateValueFor characteristic: CBCharacteristic,
         error _: Error?
     ) {
-
         let id = Addr(peripheral.identifier.bytes)
         if characteristic.uuid == CoreBluetoothTransport.identityCharacteristic.uuid {
             guard let data = characteristic.value else { return }

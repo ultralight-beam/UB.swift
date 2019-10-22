@@ -7,12 +7,12 @@ class Transport: UB.Transport {
     private(set) var sent: [(Data, Addr)] = []
 
     var peers: [Peer] = []
-    
-    init() { }
+
+    init() {}
 
     func send(message: Data, to: Addr) {
         sent.append((message, to))
     }
 
-    func listen(identity: UBID) {}
+    func listen(identity _: UBID) {}
 }
