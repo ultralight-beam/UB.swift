@@ -12,12 +12,24 @@ before_install:
   - |
       if ! git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(.md)|(.html)|^(LICENSE)|^(docs)'
       then
-        echo "Only docs were updated, not running the CI."
+        echo "Only docs were updated, not running the full CI."
         exit
       fi
-  - make xcode
 
-script: make test
+jobs:
+  include:
+    - stage: Build
+      name: Build xcode
+      script: make xcode
+      
+    - stage: Test
+      name: Run Tests
+      script: make tet
+     
+    - stage: Docs
+      name: Deploy Docs
+      if: tag IS present
+      script: ./scripts/deploy-docs
 
 notifications:
   email: false
