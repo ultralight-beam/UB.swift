@@ -24,10 +24,14 @@ jobs:
       name: Run Tests
       script: make tet
      
-    - stage: Docs
-      name: Deploy Docs
-      if: tag IS present
-      script: ./scripts/deploy-docs.sh
+deploy: 
+    provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    keep_history: true
+    local_dir: ./docs
+    on:
+        tag: true
 
 notifications:
   email: false
