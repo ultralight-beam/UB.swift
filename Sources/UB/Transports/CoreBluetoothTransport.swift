@@ -279,11 +279,8 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
 
             if characteristic.uuid == CoreBluetoothTransport.receiveCharacteristic.uuid {
                 peripherals[id] = (peripheral, characteristic)
+                peripheral.setNotifyValue(true, for: characteristic)
             }
-        }
-
-        if let characteristic = peripherals[id]?.characteristic {
-            peripherals[id]?.peripheral.setNotifyValue(true, for: characteristic)
         }
     }
 
