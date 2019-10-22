@@ -11,8 +11,8 @@ UB.swift is the swift implementation of the Ultralight Beam protocol, its primar
 ## Requirements
 
 - **iOS 9** or later
-- **OSX 10.13** or later
-- **Swift 5.0** or later
+- **OSX 10.15** or later
+- **Swift 5.1** or later
 
 ## Installation
 
@@ -43,7 +43,7 @@ Using the UB within your own project is kept simple. Initialize a `Node`, and as
 ```swift
 import UB
 
-let node = Node()
+let node = Node(key: Curve25519.Signing.PrivateKey())
 node.delegate = self
 
 node.add(transport: CoreBluetoothTransport())

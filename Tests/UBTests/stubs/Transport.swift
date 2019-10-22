@@ -8,9 +8,11 @@ class Transport: UB.Transport {
 
     var peers: [Peer] = []
 
+    init() {}
+
     func send(message: Data, to: Addr) {
         sent.append((message, to))
     }
 
-    func listen() {}
+    func listen(identity _: UBID) {}
 }

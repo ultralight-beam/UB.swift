@@ -5,9 +5,6 @@ public protocol Transport {
     /// The transports delegate.
     var delegate: TransportDelegate? { get set }
 
-    ///  The peers a specific transport can send messages to.
-    var peers: [Peer] { get }
-
     /// Send implements a function to send messages between nodes using the transport.
     ///
     /// - Parameters:
@@ -16,5 +13,8 @@ public protocol Transport {
     func send(message: Data, to: Addr)
 
     /// Listen implements a function to receive messages being sent to a node.
-    func listen()
+    ///
+    /// - Parameters:
+    ///     - identity: The identity of the node.
+    func listen(identity: UBID)
 }

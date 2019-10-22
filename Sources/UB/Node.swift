@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftProtobuf
 
@@ -8,11 +9,22 @@ public class Node {
     /// The known transports for the node.
     public private(set) var transports = [String: Transport]()
 
+    /// The known peers for a node.
+    public private(set) var peers = [Addr: Peer]()
+
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    /// The nodes private key.
+    private let key: Curve25519.Signing.PrivateKey
+
     /// Initializes a node.
-    public init() {}
+    ///
+    /// - Parameters:
+    ///     - key: The private key for the node.
+    public init(key: Curve25519.Signing.PrivateKey) {
+        self.key = key
+    }
 
     /// Adds a new transport to the list of known transports.
     ///
@@ -27,7 +39,7 @@ public class Node {
 
         transports[id] = transport
         transports[id]?.delegate = self
-        transport.listen()
+        transport.listen(identity: UBID(key.publicKey.rawRepresentation))
     }
 
     /// Removes a transport from the list of known transports.
@@ -55,47 +67,41 @@ public class Node {
             return
         }
 
-        transports.forEach { _, transport in
-            let peers = transport.peers
-
-            // @todo ensure that messages are delivered?
-            // what this does is try to send a message to an exact target or broadcast it to all peers
-            if message.recipient.count != 0 {
-                if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: data, to: message.recipient)
+        if message.recipient.count != 0 {
+            if let peer = peers[message.recipient] {
+                // @todo ensure we actually had > 0 transports to send to.
+                return peer.transports.forEach { id, addr in
+                    guard let transport = transports[id] else { return }
+                    transport.send(message: data, to: addr)
                 }
             }
+        }
 
-            // what this does is send a message to anyone that implements a specific service
+        // @todo: there is probably some better way of doing this
+        transports.forEach { id, transport in
+            let transportPeers = Array(
+                peers.filter {
+                    $1.transports[id] != nil && $1.id != message.from && $1.id != message.origin
+                }.values
+            )
+
             if message.service.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
+                let filtered = transportPeers.filter { $0.services.contains { $0 == message.service } }
                 if filtered.count > 0 {
-                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-                    if sends > 0 {
-                        return
+                    return filtered.forEach {
+                        transport.send(message: data, to: $0.id)
                     }
                 }
             }
-            _ = flood(message, data: data, transport: transport, peers: peers)
-        }
-    }
 
-    private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
-        var sends = 0
-        peers.forEach {
-            if $0.id == message.from || $0.id == message.origin {
-                return
+            transportPeers.forEach {
+                transport.send(message: data, to: $0.id)
             }
-
-            sends += 1
-            transport.send(message: data, to: $0.id)
         }
-
-        return sends
     }
-
-    // @todo create a message send loop with retransmissions and shit
 }
+
+// @todo create a message send loop with retransmissions and shit
 
 /// :nodoc:
 extension Node: TransportDelegate {
@@ -112,5 +118,20 @@ extension Node: TransportDelegate {
         }
 
         delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+    }
+
+    public func transport(_ transport: Transport, didConnectToPeer id: Addr, withAddr addr: Addr) {
+        if peers[id] == nil {
+            peers[id] = Peer(id: id, services: [UBID]())
+        }
+
+        guard let peer = peers[id] else { return }
+
+        peer.transports[String(describing: transport)] = addr
+    }
+
+    public func transport(_ transport: Transport, didDisconnectFromPeer id: Addr) {
+        guard let peer = peers[id] else { return }
+        peer.transports.removeValue(forKey: String(describing: transport))
     }
 }
