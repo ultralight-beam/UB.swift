@@ -16,12 +16,10 @@ before_install:
         exit
       fi
 
+install: make xcode
+
 jobs:
   include:
-    - stage: Build
-      name: Build xcode
-      script: make xcode
-      
     - stage: Test
       name: Run Tests
       script: make tet
