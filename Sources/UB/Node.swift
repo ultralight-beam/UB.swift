@@ -11,6 +11,15 @@ public class Node {
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    /// The current subscribed to topic.
+    public private(set) var topics = [UBID]()
+
+    /// The parent for a specific topic for the given peer.
+    public private(set) var parents = [UBID: Peer]()
+
+    /// The children for a specific topic for the given peer.
+    public private(set) var children = [UBID: [Peer]]()
+
     /// Initializes a node.
     public init() {}
 
@@ -47,54 +56,45 @@ public class Node {
     /// - Parameters:
     ///     - message: The message to send.
     public func send(_ message: Message) {
-        if message.recipient.count == 0, message.service.count == 0 {
-            return
-        }
-
-        guard let data = try? message.toProto().serializedData() else {
-            return
-        }
-
-        transports.forEach { _, transport in
-            let peers = transport.peers
-
-            // @todo ensure that messages are delivered?
-            // what this does is try to send a message to an exact target or broadcast it to all peers
-            if message.recipient.count != 0 {
-                if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: data, to: message.recipient)
-                }
-            }
-
-            // what this does is send a message to anyone that implements a specific service
-            if message.service.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
-                if filtered.count > 0 {
-                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-                    if sends > 0 {
-                        return
-                    }
-                }
-            }
-            _ = flood(message, data: data, transport: transport, peers: peers)
+        if message.topic.count == 0 {
+            return // @todo throw error
         }
     }
 
-    private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
-        var sends = 0
-        peers.forEach {
-            if $0.id == message.from || $0.id == message.origin {
-                return
-            }
-
-            sends += 1
-            transport.send(message: data, to: $0.id)
+    /// Subscribes a to a specific topic.
+    ///
+    /// - Parameter
+    ///     - topic: The topic to subscribe to.
+    public func subscribe(_ topic: UBID) {
+        if topics.contains(topic) {
+            return
         }
 
-        return sends
+        topics.append(topic)
+        subscribeTo(topic)
     }
 
-    // @todo create a message send loop with retransmissions and shit
+    /// Unsubscribe from a specific topic.
+    ///
+    /// - Parameter
+    ///     - topic: The topic to unsubscribe from.
+    public func unsubscribe(_ topic: UBID) {
+        topics.removeAll(where: { $0 == topic })
+
+        if children[topic] != nil && children[topic]!.count > 0 {
+            return
+        }
+
+        unsubscribeFrom(topic)
+    }
+
+    func subscribeTo(_ topic: UBID) {
+        // @todo find parent and send subscription message
+    }
+
+    func unsubscribeFrom(_ topic: UBID) {
+        // @todo unsubscribe from parent
+    }
 }
 
 /// :nodoc:
@@ -111,6 +111,35 @@ extension Node: TransportDelegate {
             return
         }
 
+        // @todo we need to check the messages and see what they are
+        //     - if unsubscribe message call didReceiveUnsubscribe
+        //     - if subscribe call didReceiveSubscribe
+
         delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+    }
+
+    public func transport(_ transport: Transport, peerDidDisconnect peer: Addr) {
+        // @todo check if child is peer or parent
+        //     if it is a child, remove it from children, if children is now empty unsubscribe
+        //     if it is a parent, find a new parent to subscribe to the topic to recreate the broadcast tree.
+    }
+
+    func didReceiveSubscribe(from: Addr, topic: UBID) {
+        // @todo check if we are subscribed, else do
+        // @todo check if we don't already have this dude as a child
+    }
+
+    func didReceiveUnsubscribe(from: Addr, topic: UBID) {
+        guard children[topic] != nil else {
+            return
+        }
+
+        children[topic]!.removeAll(where: { $0.id == from })
+
+        if children[topic]!.count > 0 {
+            return
+        }
+
+        unsubscribeFrom(topic)
     }
 }

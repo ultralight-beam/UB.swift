@@ -1,4 +1,4 @@
-.PHONY: docs format test lint xcode linuxmain autocorrect clean test build
+.PHONY: docs format test lint xcode linuxmain autocorrect clean test build protobuf
 
 APP="UB"
 
@@ -48,3 +48,6 @@ linuxmain:
 
 format:
 	swiftformat .
+
+protobuf:
+	protoc --swift_out=Sources/UB/Protobuf/ --proto_path=../protobufs/ Packet.proto

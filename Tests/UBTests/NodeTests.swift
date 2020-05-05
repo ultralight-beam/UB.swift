@@ -38,7 +38,7 @@ final class NodeTests: XCTestCase {
         transport.peers.append(peer)
 
         let message = Message(
-            service: UBID(repeating: 1, count: 1),
+            topic: UBID(repeating: 1, count: 1),
             recipient: id,
             from: Addr(repeating: 2, count: 3),
             origin: Addr(repeating: 2, count: 3),
@@ -73,7 +73,7 @@ final class NodeTests: XCTestCase {
         transport.peers.append(peer)
 
         let message = Message(
-            service: UBID(repeating: 0, count: 0),
+            topic: UBID(repeating: 0, count: 0),
             recipient: Addr(repeating: 1, count: 0),
             from: Addr(repeating: 2, count: 3),
             origin: Addr(repeating: 2, count: 3),
@@ -97,7 +97,7 @@ final class NodeTests: XCTestCase {
         transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
 
         let message = Message(
-            service: UBID(repeating: 1, count: 1),
+            topic: UBID(repeating: 1, count: 1),
             recipient: Addr(repeating: 1, count: 3),
             from: Addr(repeating: 4, count: 3),
             origin: Addr(repeating: 3, count: 3),
@@ -123,7 +123,7 @@ final class NodeTests: XCTestCase {
         transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
 
         let message = Message(
-            service: id,
+            topic: id,
             recipient: Addr(repeating: 1, count: 3),
             from: Addr(repeating: 4, count: 3),
             origin: Addr(repeating: 5, count: 3),
@@ -152,7 +152,7 @@ final class NodeTests: XCTestCase {
         transport.peers.append(Peer(id: Addr(repeating: 5, count: 3), services: []))
 
         let message = Message(
-            service: id,
+            topic: id,
             recipient: Addr(repeating: 1, count: 3),
             from: origin,
             origin: origin,
