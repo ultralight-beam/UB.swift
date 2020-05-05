@@ -7,7 +7,7 @@ public class CoreBluetoothTransport: NSObject {
     public weak var delegate: TransportDelegate?
 
     /// :nodoc:
-    public fileprivate(set) var peers = [Peer]()
+    public fileprivate(set) var peers = [Addr]()
 
     private let centralManager: CBCentralManager
     private let peripheralManager: CBPeripheralManager
@@ -59,7 +59,7 @@ public class CoreBluetoothTransport: NSObject {
 
     private func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
-        peers.removeAll(where: { $0.id == peer })
+        peers.removeAll(where: { $0 == peer })
     }
 
     private func add(central: CBCentral) {
@@ -71,11 +71,11 @@ public class CoreBluetoothTransport: NSObject {
 
         centrals[id] = central
 
-        if peers.filter({ $0.id == id }).count != 0 {
+        if peers.filter({ $0 == id }).count != 0 {
             return
         }
 
-        peers.append(Peer(id: id, services: [UBID]()))
+        peers.append(id)
     }
 }
 
@@ -147,7 +147,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         // @todo check that this is the characteristic
         let id = Addr(central.identifier.bytes)
         centrals.removeValue(forKey: id)
-        peers.removeAll(where: { $0.id == id })
+        peers.removeAll(where: { $0 == id })
     }
 }
 
@@ -205,11 +205,11 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
             peripherals[id]?.peripheral.setNotifyValue(true, for: char)
             // @todo we may need to do some handshake to obtain services from a peer.
 
-            if peers.filter({ $0.id == id }).count != 0 {
+            if peers.filter({ $0 == id }).count != 0 {
                 return
             }
 
-            peers.append(Peer(id: id, services: [UBID]()))
+            peers.append(id)
         }
     }
 

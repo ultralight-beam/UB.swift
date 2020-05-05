@@ -56,7 +56,7 @@ public class Node {
     /// - Parameters:
     ///     - topic: The topic to send the data to.
     ///     - data: The data to send.
-    public func send(to: UBID, data: Data) {
+    public func send(to: UBID, data _: Data) {
         if to.count == 0 {
             return
         }
@@ -120,7 +120,7 @@ extension Node: TransportDelegate {
 
         let message = Message(protobuf: packet, from: from)
 
-        // @todo we may need to forward the message to our children
+        forwardToChildren(topic: message.topic, message: data)
 
         if !topics.contains(message.topic) {
             return
@@ -133,6 +133,17 @@ extension Node: TransportDelegate {
         // @todo check if child is peer or parent
         //     if it is a child, remove it from children, if children is now empty unsubscribe
         //     if it is a parent, find a new parent to subscribe to the topic to recreate the broadcast tree.
+    }
+
+    func forwardToChildren(topic: UBID, message: Data) {
+        guard let child = children[topic] else { return }
+
+        let peers = Set(child)
+        transports.forEach { _, transport in
+            peers.intersection(Set(transport.peers)).forEach {
+                transport.send(message: message, to: $0)
+            }
+        }
     }
 
     func didReceiveSubscribe(from: Addr, topic: UBID) {

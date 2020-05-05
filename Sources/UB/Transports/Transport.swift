@@ -6,7 +6,7 @@ public protocol Transport {
     var delegate: TransportDelegate? { get set }
 
     ///  The peers a specific transport can send messages to.
-    var peers: [Peer] { get }
+    var peers: [Addr] { get }
 
     /// Send implements a function to send messages between nodes using the transport.
     ///
