@@ -7,7 +7,7 @@ extension Array where Element == Addr {
         var distance = 0;
         var addr: Addr?
 
-        for peer in self {
+        forEach { peer in
             let dist = peer.distance(to: to)
             if distance > dist {
                 distance = dist
