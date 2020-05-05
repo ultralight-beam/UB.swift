@@ -114,24 +114,24 @@ extension Node: TransportDelegate {
             return
         }
 
+        let topic = UBID(packet.topic)
+
         switch packet.type {
         case .subscribe:
-            return didReceiveSubscribe(from: from, topic: UBID(packet.topic))
+            return didReceiveSubscribe(from: from, topic: topic)
         case .unsubscribe:
-            return didReceiveUnsubscribe(from: from, topic: UBID(packet.topic))
+            return didReceiveUnsubscribe(from: from, topic: topic)
         default:
             break
         }
 
-        let message = Message(protobuf: packet, from: from)
+        forward(topic: topic, message: packet.body, except: from)
 
-        forward(topic: message.topic, message: data, except: from)
-
-        if !topics.contains(message.topic) {
+        if !topics.contains(topic) {
             return
         }
 
-        delegate?.node(self, didReceiveMessage: message)
+        delegate?.node(self, didReceiveData: packet.body)
     }
 
     public func transport(_: Transport, peerDidDisconnect _: Addr) {
