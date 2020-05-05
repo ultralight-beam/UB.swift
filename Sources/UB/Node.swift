@@ -174,7 +174,7 @@ extension Node: TransportDelegate {
         }
     }
 
-    /// This function broadcast a message to the parent and children excluding a specific address.
+    /// Send a message to the parent and children excluding a specific address.
     ///
     /// - Parameters:
     ///     - topic: The topic to send to.
