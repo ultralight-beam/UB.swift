@@ -104,11 +104,9 @@ public class Node {
 
         var potential = [Addr: String]()
         transports.forEach { label, transport in
-            guard let close = transport.peers.closest(to: Addr(topic)) else {
-                return
+            if let close = transport.peers.closest(to: Addr(topic)) {
+                potential[close] = label
             }
-
-            potential[close] = label
         }
 
         var closest = (transport: "", addr: Addr(repeating: 0, count: 0), distance: Int.max)
