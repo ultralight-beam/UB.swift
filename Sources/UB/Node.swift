@@ -120,7 +120,7 @@ extension Node: TransportDelegate {
 
         let message = Message(protobuf: packet, from: from)
 
-        forwardToChildren(topic: message.topic, message: data)
+        forwardToChildren(topic: message.topic, message: data, except: from)
 
         if !topics.contains(message.topic) {
             return
@@ -135,10 +135,10 @@ extension Node: TransportDelegate {
         //     if it is a parent, find a new parent to subscribe to the topic to recreate the broadcast tree.
     }
 
-    func forwardToChildren(topic: UBID, message: Data) {
+    func forwardToChildren(topic: UBID, message: Data, except: Addr) {
         guard let child = children[topic] else { return }
 
-        let peers = Set(child)
+        let peers = Set(child.filter { $0 != except })
         transports.forEach { _, transport in
             peers.intersection(Set(transport.peers)).forEach {
                 transport.send(message: message, to: $0)
