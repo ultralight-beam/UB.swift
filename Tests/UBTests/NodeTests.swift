@@ -26,4 +26,16 @@ final class NodeTests: XCTestCase {
 
         XCTAssert(node.transports.values.isEmpty)
     }
+
+    func testUnsubscribeWorks() {
+        let node = UB.Node()
+
+        let topic = UBID(repeating: 1, count: 10)
+        node.subscribe(topic)
+
+        XCTAssertTrue(node.topics.contains(topic))
+
+        node.unsubscribe(topic)
+        XCTAssertFalse(node.topics.contains(topic))
+    }
 }
