@@ -15,10 +15,10 @@ public class Node {
     public private(set) var topics = [UBID]()
 
     /// The parent for a specific topic for the given peer.
-    public private(set) var parents = [UBID: Peer]()
+    public private(set) var parents = [UBID: Addr]()
 
     /// The children for a specific topic for the given peer.
-    public private(set) var children = [UBID: [Peer]]()
+    public private(set) var children = [UBID: [Addr]]()
 
     /// Initializes a node.
     public init() {}
@@ -115,7 +115,15 @@ extension Node: TransportDelegate {
         //     - if unsubscribe message call didReceiveUnsubscribe
         //     - if subscribe call didReceiveSubscribe
 
-        delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+        let message = Message(protobuf: packet, from: from)
+
+        // @todo we may need to forward the message to our children
+
+        if !topics.contains(message.topic) {
+            return
+        }
+
+        delegate?.node(self, didReceiveMessage: message)
     }
 
     public func transport(_ transport: Transport, peerDidDisconnect peer: Addr) {
@@ -125,8 +133,17 @@ extension Node: TransportDelegate {
     }
 
     func didReceiveSubscribe(from: Addr, topic: UBID) {
-        // @todo check if we are subscribed, else do
-        // @todo check if we don't already have this dude as a child
+        if children[topic] == nil {
+            children[topic] = [Addr]()
+        } else if children[topic]!.contains(from) {
+            return
+        }
+
+        if !topics.contains(topic) {
+            subscribeTo(topic)
+        }
+
+        children[topic]!.append(from)
     }
 
     func didReceiveUnsubscribe(from: Addr, topic: UBID) {
@@ -134,7 +151,7 @@ extension Node: TransportDelegate {
             return
         }
 
-        children[topic]!.removeAll(where: { $0.id == from })
+        children[topic]!.removeAll(where: { $0 == from })
 
         if children[topic]!.count > 0 {
             return
