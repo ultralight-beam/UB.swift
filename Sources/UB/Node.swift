@@ -61,12 +61,7 @@ public class Node {
             return
         }
 
-        let packet = Packet.with {
-            $0.topic = Data(topic)
-            $0.type = .message
-            $0.body = data
-        }
-
+        let packet = Packet.new(topic: Data(topic), type: .message, body: data)
         guard let data = try? packet.serializedData() else {
             // @todo error
             return
@@ -102,12 +97,7 @@ public class Node {
             return
         }
 
-        let packet = Packet.with {
-            $0.topic = Data(topic)
-            $0.type = .subscribe
-            $0.body = Data(count: 0)
-        }
-
+        let packet = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
         guard let data = try? packet.serializedData() else {
             return // @todo error
         }
@@ -121,12 +111,16 @@ public class Node {
             potential[close] = label
         }
 
-        var closest: (transport: String, addr: Addr, distance: Int)
+        var closest = (transport: "", addr: Addr(repeating: 0, count: 0), distance: Int.max)
         potential.forEach { peer, transport in
             let dist = peer.distance(to: Addr(topic))
             if dist < closest.distance {
                 closest = (transport: transport, addr: peer, distance: dist)
             }
+        }
+
+        if closest.transport == "" {
+            return // @todo this would imply we found none error
         }
 
         transports[closest.transport]?.send(message: data, to: closest.addr)
@@ -138,12 +132,7 @@ public class Node {
             return
         }
 
-        let packet = Packet.with {
-            $0.topic = Data(topic)
-            $0.type = .unsubscribe
-            $0.body = Data(count: 0)
-        }
-
+        let packet = Packet.new(topic: Data(topic), type: .unsubscribe, body: Data(count: 0))
         guard let data = try? packet.serializedData() else {
             // @todo error
             return
