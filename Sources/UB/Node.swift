@@ -150,10 +150,17 @@ extension Node: TransportDelegate {
         delegate?.node(self, didReceiveData: packet.body)
     }
 
-    public func transport(_: Transport, peerDidDisconnect _: Addr) {
-        // @todo check if child is peer or parent
-        //     if it is a child, remove it from children, if children is now empty unsubscribe
-        //     if it is a parent, find a new parent to subscribe to the topic to recreate the broadcast tree.
+    public func transport(_: Transport, peerDidDisconnect peer: Addr) {
+        let childTopics = children.filter { $0.value.contains(peer) }
+        childTopics.forEach { topic, _ in
+            didReceiveUnsubscribe(from: peer, topic: topic)
+        }
+
+        let topics = parents.filter { $0.value == peer }
+        topics.forEach { topic, _ in
+            parents.removeValue(forKey: topic)
+            subscribeTo(topic)
+        }
     }
 
     func forward(topic: UBID, message: Data, except: Addr) {
