@@ -81,18 +81,18 @@ public class Node {
     public func unsubscribe(_ topic: UBID) {
         topics.removeAll(where: { $0 == topic })
 
-        if children[topic] != nil && children[topic]!.count > 0 {
+        if children[topic] != nil, children[topic]!.count > 0 {
             return
         }
 
         unsubscribeFrom(topic)
     }
 
-    func subscribeTo(_ topic: UBID) {
+    func subscribeTo(_: UBID) {
         // @todo find parent and send subscription message
     }
 
-    func unsubscribeFrom(_ topic: UBID) {
+    func unsubscribeFrom(_: UBID) {
         // @todo unsubscribe from parent
     }
 }
@@ -126,7 +126,7 @@ extension Node: TransportDelegate {
         delegate?.node(self, didReceiveMessage: message)
     }
 
-    public func transport(_ transport: Transport, peerDidDisconnect peer: Addr) {
+    public func transport(_: Transport, peerDidDisconnect _: Addr) {
         // @todo check if child is peer or parent
         //     if it is a child, remove it from children, if children is now empty unsubscribe
         //     if it is a parent, find a new parent to subscribe to the topic to recreate the broadcast tree.
