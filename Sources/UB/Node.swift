@@ -102,27 +102,17 @@ public class Node {
             return // @todo error
         }
 
-        var potential = [Addr: String]()
-        transports.forEach { label, transport in
-            if let close = transport.peers.closest(to: Addr(topic)) {
-                potential[close] = label
-            }
+        let potential = closest(toTopic: topic)
+        let sort = potential.sorted {
+            $0.key.distance(to: Addr(topic)) < $1.key.distance(to: Addr(topic))
         }
 
-        var closest = (transport: "", addr: Addr(repeating: 0, count: 0), distance: Int.max)
-        potential.forEach { peer, transport in
-            let dist = peer.distance(to: Addr(topic))
-            if dist < closest.distance {
-                closest = (transport: transport, addr: peer, distance: dist)
-            }
+        guard let closest = sort.first else {
+            return
         }
 
-        if closest.transport == "" {
-            return // @todo this would imply we found none error
-        }
-
-        transports[closest.transport]?.send(message: data, to: closest.addr)
-        parents[topic] = closest.addr
+        transports[closest.value]?.send(message: data, to: closest.key)
+        parents[topic] = closest.key
     }
 
     private func unsubscribeFrom(_ topic: UBID) {
@@ -142,6 +132,17 @@ public class Node {
                 transport.send(message: data, to: parent)
             }
         }
+    }
+
+    private func closest(toTopic to: UBID) -> [Addr: String] {
+        var potential = [Addr: String]()
+        transports.forEach { label, transport in
+            if let close = transport.peers.closest(to: Addr(to)) {
+                potential[close] = label
+            }
+        }
+
+        return potential
     }
 }
 
