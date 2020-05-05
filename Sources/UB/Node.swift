@@ -51,14 +51,17 @@ public class Node {
         transports.removeValue(forKey: transport)
     }
 
-    /// Sends a message through the current transports.
+    /// Sends data through the current transports.
     ///
     /// - Parameters:
-    ///     - message: The message to send.
-    public func send(_ message: Message) {
-        if message.topic.count == 0 {
-            return // @todo throw error
+    ///     - topic: The topic to send the data to.
+    ///     - data: The data to send.
+    public func send(to: UBID, data: Data) {
+        if to.count == 0 {
+            return
         }
+
+        // @todo send the message
     }
 
     /// Subscribes a to a specific topic.
