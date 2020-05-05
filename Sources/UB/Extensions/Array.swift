@@ -1,9 +1,8 @@
 import Foundation
 
 extension Array where Element == Addr {
-
     func closest(to: Addr) -> Addr? {
-        var distance = 0;
+        var distance = 0
         var addr: Addr?
 
         forEach { peer in
