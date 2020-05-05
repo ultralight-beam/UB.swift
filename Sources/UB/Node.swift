@@ -56,12 +56,23 @@ public class Node {
     /// - Parameters:
     ///     - topic: The topic to send the data to.
     ///     - data: The data to send.
-    public func send(to: UBID, data _: Data) {
-        if to.count == 0 {
+    public func send(topic: UBID, data: Data) {
+        if topic.count == 0 {
             return
         }
 
-        // @todo send the message
+        let packet = Packet.with {
+            $0.topic = Data(topic)
+            $0.type = .message
+            $0.body = data
+        }
+
+        guard let data = try? packet.serializedData() else {
+            // @todo error
+            return
+        }
+
+        send(topic: topic, data: data)
     }
 
     /// Subscribes a to a specific topic.
@@ -141,7 +152,7 @@ extension Node: TransportDelegate {
             break
         }
 
-        forward(topic: topic, message: packet.body, except: from)
+        send(topic: topic, message: packet.body, except: from)
 
         if !topics.contains(topic) {
             return
@@ -163,7 +174,13 @@ extension Node: TransportDelegate {
         }
     }
 
-    func forward(topic: UBID, message: Data, except: Addr) {
+    /// This function broadcast a message to the parent and children excluding a specific address.
+    ///
+    /// - Parameters:
+    ///     - topic: The topic to send to.
+    ///     - message: The message to send.
+    ///     - except: The address to exclude. (Optional)
+    func send(topic: UBID, message: Data, except: Addr?) {
         var forwarding = [Addr]()
         if let parent = parents[topic] {
             forwarding.append(parent)
@@ -173,7 +190,11 @@ extension Node: TransportDelegate {
             forwarding.append(contentsOf: child)
         }
 
-        let peers = Set(forwarding.filter { $0 != except })
+        if except != nil {
+            forwarding = forwarding.filter { $0 != except }
+        }
+
+        let peers = Set(forwarding)
         transports.forEach { _, transport in
             peers.intersection(Set(transport.peers)).forEach {
                 transport.send(message: message, to: $0)
