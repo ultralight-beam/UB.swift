@@ -97,9 +97,40 @@ public class Node {
         unsubscribeFrom(topic)
     }
 
-    private func subscribeTo(_: UBID) {
-        // @todo ensure we don't already own a parent
-        // @todo find parent and send subscription message
+    private func subscribeTo(_ topic: UBID) {
+        if parents[topic] != nil {
+            return
+        }
+
+        let packet = Packet.with {
+            $0.topic = Data(topic)
+            $0.type = .subscribe
+            $0.body = Data(count: 0)
+        }
+
+        guard let data = try? packet.serializedData() else {
+            return // @todo error
+        }
+
+        var potential = [Addr: String]()
+        transports.forEach { label, transport in
+            guard let close = transport.peers.closest(to: Addr(topic)) else {
+                return
+            }
+
+            potential[close] = label
+        }
+
+        var closest: (transport: String, addr: Addr, distance: Int)
+        potential.forEach { peer, transport in
+            let dist = peer.distance(to: Addr(topic))
+            if dist < closest.distance {
+                closest = (transport: transport, addr: peer, distance: dist)
+            }
+        }
+
+        transports[closest.transport]?.send(message: data, to: closest.addr)
+        parents[topic] = closest.addr
     }
 
     private func unsubscribeFrom(_ topic: UBID) {
