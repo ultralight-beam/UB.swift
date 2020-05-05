@@ -114,9 +114,14 @@ extension Node: TransportDelegate {
             return
         }
 
-        // @todo we need to check the messages and see what they are
-        //     - if unsubscribe message call didReceiveUnsubscribe
-        //     - if subscribe call didReceiveSubscribe
+        switch packet.type {
+        case .subscribe:
+            return didReceiveSubscribe(from: from, topic: UBID(packet.topic))
+        case .unsubscribe:
+            return didReceiveUnsubscribe(from: from, topic: UBID(packet.topic))
+        default:
+            break
+        }
 
         let message = Message(protobuf: packet, from: from)
 
