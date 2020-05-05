@@ -83,20 +83,36 @@ public class Node {
     ///     - topic: The topic to unsubscribe from.
     public func unsubscribe(_ topic: UBID) {
         topics.removeAll(where: { $0 == topic })
+        unsubscribeFrom(topic)
+    }
 
+    private func subscribeTo(_: UBID) {
+        // @todo ensure we don't already own a parent
+        // @todo find parent and send subscription message
+    }
+
+    private func unsubscribeFrom(_ topic: UBID) {
         if children[topic] != nil, children[topic]!.count > 0 {
             return
         }
 
-        unsubscribeFrom(topic)
-    }
+        let packet = Packet.with {
+            $0.topic = Data(topic)
+            $0.type = .unsubscribe
+            $0.body = Data(count: 0)
+        }
 
-    func subscribeTo(_: UBID) {
-        // @todo find parent and send subscription message
-    }
+        guard let data = try? packet.serializedData() else {
+            // @todo error
+            return
+        }
 
-    func unsubscribeFrom(_: UBID) {
-        // @todo unsubscribe from parent
+        guard let parent = parents[topic] else { return }
+        transports.forEach { _, transport in
+            if transport.peers.contains(parent) {
+                transport.send(message: data, to: parent)
+            }
+        }
     }
 }
 
@@ -178,10 +194,6 @@ extension Node: TransportDelegate {
         }
 
         children[topic]!.removeAll(where: { $0 == from })
-
-        if children[topic]!.count > 0 {
-            return
-        }
 
         unsubscribeFrom(topic)
     }
