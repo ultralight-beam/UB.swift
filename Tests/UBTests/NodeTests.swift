@@ -48,10 +48,7 @@ final class NodeTests: XCTestCase {
 
         let packet = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
 
-        guard let data = try? packet.serializedData() else {
-            return XCTFail()
-        }
-
+        let data = try! packet.serializedData()
         node.transport(transport, didReceiveData: data, from: addr)
         XCTAssertTrue(node.children[topic]!.contains(addr))
     }
@@ -65,19 +62,13 @@ final class NodeTests: XCTestCase {
 
         let subscribe = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
 
-        guard let subscription = try? subscribe.serializedData() else {
-            return XCTFail()
-        }
-
+        let subscription = try! subscribe.serializedData()
         node.transport(transport, didReceiveData: subscription, from: addr)
         XCTAssertTrue(node.children[topic]!.contains(addr))
 
         let unsubscribe = Packet.new(topic: Data(topic), type: .unsubscribe, body: Data(count: 0))
 
-        guard let data = try? unsubscribe.serializedData() else {
-            return XCTFail()
-        }
-
+        let data = try! unsubscribe.serializedData()
         node.transport(transport, didReceiveData: data, from: addr)
         XCTAssertFalse(node.children[topic]!.contains(addr))
     }
@@ -93,16 +84,14 @@ final class NodeTests: XCTestCase {
         transport.peers.append(addr)
 
         let subscribe = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
-        guard let subscription = try? subscribe.serializedData() else {
-            return XCTFail()
-        }
 
+        let subscription = try! subscribe.serializedData()
         node.transport(transport, didReceiveData: subscription, from: addr)
 
         node.send(topic: topic, data: Data(repeating: 3, count: 1))
 
         guard let sent = transport.sent.first else {
-            return XCTFail()
+            return XCTFail("no messages sent")
         }
 
         XCTAssert(sent.1 == addr)
