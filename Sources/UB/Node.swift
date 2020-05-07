@@ -116,8 +116,8 @@ public class Node {
 //            return
 //        }
 
-//        transports[closest.value]?.send(message: data, to: closest.key)
-//        parents[topic] = closest.key
+        transports[closest.value]?.send(message: data, to: closest.key)
+        parents[topic] = closest.key
     }
 
     private func unsubscribeFrom(_ topic: UBID) {
