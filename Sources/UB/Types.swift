@@ -9,7 +9,7 @@ public typealias UBID = [UInt8] // @todo might be data?
 extension Addr {
     func distance(to: Addr) -> Int {
         let value = self ^ to
-        return value.withUnsafeBytes { $0.load(as: Int.self) }
+        return Int(value.reversed().reduce(0) { $0 << 8 + UInt64($1) })
     }
 
     static func ^ (left: Addr, right: UBID) -> [UInt8] {

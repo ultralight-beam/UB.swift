@@ -38,4 +38,73 @@ final class NodeTests: XCTestCase {
         node.unsubscribe(topic)
         XCTAssertFalse(node.topics.contains(topic))
     }
+
+    func testChildIsAddedWhenSubscribing() {
+        let node = UB.Node()
+        let transport = Transport()
+
+        let addr = Addr(repeating: 2, count: 3)
+        let topic = UBID(repeating: 3, count: 3)
+
+        let packet = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
+
+        guard let data = try? packet.serializedData() else {
+            return XCTFail()
+        }
+
+        node.transport(transport, didReceiveData: data, from: addr)
+        XCTAssertTrue(node.children[topic]!.contains(addr))
+    }
+
+    func testChildIsRemovedOnUnsubscribe() {
+        let node = UB.Node()
+        let transport = Transport()
+
+        let addr = Addr(repeating: 2, count: 3)
+        let topic = UBID(repeating: 3, count: 3)
+
+        let subscribe = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
+
+        guard let subscription = try? subscribe.serializedData() else {
+            return XCTFail()
+        }
+
+        node.transport(transport, didReceiveData: subscription, from: addr)
+        XCTAssertTrue(node.children[topic]!.contains(addr))
+
+        let unsubscribe = Packet.new(topic: Data(topic), type: .unsubscribe, body: Data(count: 0))
+
+        guard let data = try? unsubscribe.serializedData() else {
+            return XCTFail()
+        }
+
+        node.transport(transport, didReceiveData: data, from: addr)
+        XCTAssertFalse(node.children[topic]!.contains(addr))
+    }
+
+    func testMessageIsSentToChildren() {
+        let node = UB.Node()
+        let transport = Transport()
+        node.add(transport: transport)
+
+        let addr = Addr(repeating: 2, count: 3)
+        let topic = UBID(repeating: 3, count: 3)
+
+        transport.peers.append(addr)
+
+        let subscribe = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
+        guard let subscription = try? subscribe.serializedData() else {
+            return XCTFail()
+        }
+
+        node.transport(transport, didReceiveData: subscription, from: addr)
+
+        node.send(topic: topic, data: Data(repeating: 3, count: 1))
+
+        guard let sent = transport.sent.first else {
+            return XCTFail()
+        }
+
+        XCTAssert(sent.1 == addr)
+    }
 }

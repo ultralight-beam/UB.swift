@@ -67,7 +67,7 @@ public class Node {
             return
         }
 
-        send(topic: topic, data: data)
+        send(topic: topic, message: data, except: nil)
     }
 
     /// Subscribes a to a specific topic.
@@ -102,17 +102,22 @@ public class Node {
             return // @todo error
         }
 
+        let topicAddr = Addr(topic)
         let potential = closest(toTopic: topic)
         let sort = potential.sorted {
-            $0.key.distance(to: Addr(topic)) < $1.key.distance(to: Addr(topic))
+            $0.key.distance(to: topicAddr) < $1.key.distance(to: topicAddr)
         }
 
         guard let closest = sort.first else {
             return
         }
 
-        transports[closest.value]?.send(message: data, to: closest.key)
-        parents[topic] = closest.key
+//        if closest.key.distance(to: topicAddr) > self.id.distance(to: topicAddr) {
+//            return
+//        }
+
+//        transports[closest.value]?.send(message: data, to: closest.key)
+//        parents[topic] = closest.key
     }
 
     private func unsubscribeFrom(_ topic: UBID) {
@@ -221,7 +226,7 @@ extension Node: TransportDelegate {
         }
     }
 
-    func didReceiveSubscribe(from: Addr, topic: UBID) {
+    private func didReceiveSubscribe(from: Addr, topic: UBID) {
         if children[topic] == nil {
             children[topic] = [Addr]()
         } else if children[topic]!.contains(from) {
@@ -235,7 +240,7 @@ extension Node: TransportDelegate {
         children[topic]!.append(from)
     }
 
-    func didReceiveUnsubscribe(from: Addr, topic: UBID) {
+    private func didReceiveUnsubscribe(from: Addr, topic: UBID) {
         guard children[topic] != nil else {
             return
         }
