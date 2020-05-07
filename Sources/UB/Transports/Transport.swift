@@ -16,5 +16,8 @@ public protocol Transport {
     func send(message: Data, to: Addr)
 
     /// Listen implements a function to receive messages being sent to a node.
-    func listen()
+    ///
+    /// - Parameters:
+    ///     - id: The nodes id.
+    func listen(id: UBID)
 }

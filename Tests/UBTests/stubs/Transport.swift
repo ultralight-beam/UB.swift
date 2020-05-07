@@ -12,5 +12,5 @@ class Transport: UB.Transport {
         sent.append((message, to))
     }
 
-    func listen() {}
+    func listen(id _: UBID) {}
 }

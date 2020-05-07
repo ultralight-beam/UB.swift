@@ -99,7 +99,7 @@ extension CoreBluetoothTransport: Transport {
         }
     }
 
-    public func listen() {
+    public func listen(id: UBID) {
         // @todo mark as listening, only turn on peripheral characteristic at this point, etc.
     }
 }

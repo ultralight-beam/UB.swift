@@ -3,8 +3,13 @@ import SwiftProtobuf
 
 // @todo figure out architecture to support new forwarding algorithm.
 
+// @todo add cryptography for id
+
 /// An ultralight beam node, handles the interaction with transports and services.
 public class Node {
+    /// The nodes address.
+    public let id: Addr
+
     /// The known transports for the node.
     public private(set) var transports = [String: Transport]()
 
@@ -21,7 +26,9 @@ public class Node {
     public private(set) var children = [UBID: [Addr]]()
 
     /// Initializes a node.
-    public init() {}
+    public init(id: Addr) {
+        self.id = id
+    }
 
     /// Adds a new transport to the list of known transports.
     ///
@@ -36,7 +43,7 @@ public class Node {
 
         transports[id] = transport
         transports[id]?.delegate = self
-        transport.listen()
+        transport.listen(id: self.id)
     }
 
     /// Removes a transport from the list of known transports.
