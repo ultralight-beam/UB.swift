@@ -35,8 +35,7 @@ autocorrect:
 	swiftlint autocorrect
 
 docs:
-	rm -rf docs/
-	jazzy --module UB --author "Ultralight Beam" --author_url http://ultralightbeam.io --github_url https://github.com/ultralight-beam/UB.swift
+	jazzy --clean --module UB --swift-build-tool spm --build-tool-arguments -Xswiftc,-swift-version,-Xswiftc,5 --author "Ultralight Beam" --author_url http://ultralightbeam.io --github_url https://github.com/ultralight-beam/UB.swift
 	echo "swift.ultralightbeam.io" > docs/CNAME
 	rm -rf build/
 
