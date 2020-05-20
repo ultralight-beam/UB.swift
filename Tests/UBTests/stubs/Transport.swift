@@ -6,7 +6,7 @@ class Transport: UB.Transport {
 
     private(set) var sent: [(Data, Addr)] = []
 
-    var peers: [Peer] = []
+    var peers: [Addr] = []
 
     func send(message: Data, to: Addr) {
         sent.append((message, to))

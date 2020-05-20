@@ -11,6 +11,15 @@ public class Node {
     /// The nodes delegate.
     public weak var delegate: NodeDelegate?
 
+    /// The current subscribed to topic.
+    public private(set) var topics = [UBID]()
+
+    /// The parent for a specific topic for the given peer.
+    public private(set) var parents = [UBID: Addr]()
+
+    /// The children for a specific topic for the given peer.
+    public private(set) var children = [UBID: [Addr]]()
+
     /// Initializes a node.
     public init() {}
 
@@ -42,59 +51,104 @@ public class Node {
         transports.removeValue(forKey: transport)
     }
 
-    /// Sends a message through the current transports.
+    /// Sends data through the current transports.
     ///
     /// - Parameters:
-    ///     - message: The message to send.
-    public func send(_ message: Message) {
-        if message.recipient.count == 0, message.service.count == 0 {
+    ///     - topic: The topic to send the data to.
+    ///     - data: The data to send.
+    public func send(topic: UBID, data: Data) {
+        if topic.count == 0 {
             return
         }
 
-        guard let data = try? message.toProto().serializedData() else {
+        let packet = Packet.new(topic: Data(topic), type: .message, body: data)
+        guard let data = try? packet.serializedData() else {
+            // @todo error
             return
         }
 
+        send(topic: topic, message: data, except: nil)
+    }
+
+    /// Subscribes a to a specific topic.
+    ///
+    /// - Parameter
+    ///     - topic: The topic to subscribe to.
+    public func subscribe(_ topic: UBID) {
+        if topics.contains(topic) {
+            return
+        }
+
+        topics.append(topic)
+        subscribeTo(topic)
+    }
+
+    /// Unsubscribe from a specific topic.
+    ///
+    /// - Parameter
+    ///     - topic: The topic to unsubscribe from.
+    public func unsubscribe(_ topic: UBID) {
+        topics.removeAll(where: { $0 == topic })
+        unsubscribeFrom(topic)
+    }
+
+    private func subscribeTo(_ topic: UBID) {
+        if parents[topic] != nil {
+            return
+        }
+
+        let packet = Packet.new(topic: Data(topic), type: .subscribe, body: Data(count: 0))
+        guard let data = try? packet.serializedData() else {
+            return // @todo error
+        }
+
+        let topicAddr = Addr(topic)
+        let potential = closest(toTopic: topic)
+        let sort = potential.sorted {
+            $0.key.distance(to: topicAddr) < $1.key.distance(to: topicAddr)
+        }
+
+        guard let closest = sort.first else {
+            return
+        }
+
+//        if closest.key.distance(to: topicAddr) > self.id.distance(to: topicAddr) {
+//            return
+//        }
+
+        transports[closest.value]?.send(message: data, to: closest.key)
+        parents[topic] = closest.key
+    }
+
+    private func unsubscribeFrom(_ topic: UBID) {
+        if children[topic] != nil, children[topic]!.count > 0 {
+            return
+        }
+
+        let packet = Packet.new(topic: Data(topic), type: .unsubscribe, body: Data(count: 0))
+        guard let data = try? packet.serializedData() else {
+            // @todo error
+            return
+        }
+
+        guard let parent = parents[topic] else { return }
         transports.forEach { _, transport in
-            let peers = transport.peers
-
-            // @todo ensure that messages are delivered?
-            // what this does is try to send a message to an exact target or broadcast it to all peers
-            if message.recipient.count != 0 {
-                if peers.contains(where: { $0.id == message.recipient }) {
-                    return transport.send(message: data, to: message.recipient)
-                }
+            if transport.peers.contains(parent) {
+                transport.send(message: data, to: parent)
             }
-
-            // what this does is send a message to anyone that implements a specific service
-            if message.service.count != 0 {
-                let filtered = peers.filter { $0.services.contains { $0 == message.service } }
-                if filtered.count > 0 {
-                    let sends = flood(message, data: data, transport: transport, peers: filtered)
-                    if sends > 0 {
-                        return
-                    }
-                }
-            }
-            _ = flood(message, data: data, transport: transport, peers: peers)
         }
     }
 
-    private func flood(_ message: Message, data: Data, transport: Transport, peers: [Peer]) -> Int {
-        var sends = 0
-        peers.forEach {
-            if $0.id == message.from || $0.id == message.origin {
-                return
+    private func closest(toTopic to: UBID) -> [Addr: String] {
+        var potential = [Addr: String]()
+        transports.forEach { label, transport in
+            if let close = transport.peers.closest(to: Addr(to)) {
+                potential[close] = label
             }
-
-            sends += 1
-            transport.send(message: data, to: $0.id)
         }
 
-        return sends
+        return potential
     }
-
-    // @todo create a message send loop with retransmissions and shit
 }
 
 /// :nodoc:
@@ -111,6 +165,88 @@ extension Node: TransportDelegate {
             return
         }
 
-        delegate?.node(self, didReceiveMessage: Message(protobuf: packet, from: from))
+        let topic = UBID(packet.topic)
+
+        switch packet.type {
+        case .subscribe:
+            return didReceiveSubscribe(from: from, topic: topic)
+        case .unsubscribe:
+            return didReceiveUnsubscribe(from: from, topic: topic)
+        default:
+            break
+        }
+
+        send(topic: topic, message: packet.body, except: from)
+
+        if !topics.contains(topic) {
+            return
+        }
+
+        delegate?.node(self, didReceiveData: packet.body)
+    }
+
+    public func transport(_: Transport, peerDidDisconnect peer: Addr) {
+        let childTopics = children.filter { $0.value.contains(peer) }
+        childTopics.forEach { topic, _ in
+            didReceiveUnsubscribe(from: peer, topic: topic)
+        }
+
+        let topics = parents.filter { $0.value == peer }
+        topics.forEach { topic, _ in
+            parents.removeValue(forKey: topic)
+            subscribeTo(topic)
+        }
+    }
+
+    /// Send a message to the parent and children excluding a specific address.
+    ///
+    /// - Parameters:
+    ///     - topic: The topic to send to.
+    ///     - message: The message to send.
+    ///     - except: The address to exclude. (Optional)
+    func send(topic: UBID, message: Data, except: Addr?) {
+        var forwarding = [Addr]()
+        if let parent = parents[topic] {
+            forwarding.append(parent)
+        }
+
+        if let child = children[topic] {
+            forwarding.append(contentsOf: child)
+        }
+
+        if except != nil {
+            forwarding = forwarding.filter { $0 != except }
+        }
+
+        let peers = Set(forwarding)
+        transports.forEach { _, transport in
+            peers.intersection(Set(transport.peers)).forEach {
+                transport.send(message: message, to: $0)
+            }
+        }
+    }
+
+    private func didReceiveSubscribe(from: Addr, topic: UBID) {
+        if children[topic] == nil {
+            children[topic] = [Addr]()
+        } else if children[topic]!.contains(from) {
+            return
+        }
+
+        if !topics.contains(topic) {
+            subscribeTo(topic)
+        }
+
+        children[topic]!.append(from)
+    }
+
+    private func didReceiveUnsubscribe(from: Addr, topic: UBID) {
+        guard children[topic] != nil else {
+            return
+        }
+
+        children[topic]!.removeAll(where: { $0 == from })
+
+        unsubscribeFrom(topic)
     }
 }

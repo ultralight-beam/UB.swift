@@ -24,64 +24,108 @@ struct Packet {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var service: Data = SwiftProtobuf.Internal.emptyData
+  var type: Packet.TypeEnum = .message
 
-  var origin: Data = SwiftProtobuf.Internal.emptyData
-
-  var recipient: Data = SwiftProtobuf.Internal.emptyData
+  var topic: Data = SwiftProtobuf.Internal.emptyData
 
   var body: Data = SwiftProtobuf.Internal.emptyData
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
+  enum TypeEnum: SwiftProtobuf.Enum {
+    typealias RawValue = Int
+    case message // = 0
+    case subscribe // = 1
+    case unsubscribe // = 2
+    case UNRECOGNIZED(Int)
+
+    init() {
+      self = .message
+    }
+
+    init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .message
+      case 1: self = .subscribe
+      case 2: self = .unsubscribe
+      default: self = .UNRECOGNIZED(rawValue)
+      }
+    }
+
+    var rawValue: Int {
+      switch self {
+      case .message: return 0
+      case .subscribe: return 1
+      case .unsubscribe: return 2
+      case .UNRECOGNIZED(let i): return i
+      }
+    }
+
+  }
+
   init() {}
 }
+
+#if swift(>=4.2)
+
+extension Packet.TypeEnum: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  static var allCases: [Packet.TypeEnum] = [
+    .message,
+    .subscribe,
+    .unsubscribe,
+  ]
+}
+
+#endif  // swift(>=4.2)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension Packet: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = "Packet"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "service"),
-    2: .same(proto: "origin"),
-    3: .same(proto: "recipient"),
-    4: .same(proto: "body"),
+    1: .same(proto: "type"),
+    2: .same(proto: "topic"),
+    3: .same(proto: "body"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
-      case 1: try decoder.decodeSingularBytesField(value: &self.service)
-      case 2: try decoder.decodeSingularBytesField(value: &self.origin)
-      case 3: try decoder.decodeSingularBytesField(value: &self.recipient)
-      case 4: try decoder.decodeSingularBytesField(value: &self.body)
+      case 1: try decoder.decodeSingularEnumField(value: &self.type)
+      case 2: try decoder.decodeSingularBytesField(value: &self.topic)
+      case 3: try decoder.decodeSingularBytesField(value: &self.body)
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.service.isEmpty {
-      try visitor.visitSingularBytesField(value: self.service, fieldNumber: 1)
+    if self.type != .message {
+      try visitor.visitSingularEnumField(value: self.type, fieldNumber: 1)
     }
-    if !self.origin.isEmpty {
-      try visitor.visitSingularBytesField(value: self.origin, fieldNumber: 2)
-    }
-    if !self.recipient.isEmpty {
-      try visitor.visitSingularBytesField(value: self.recipient, fieldNumber: 3)
+    if !self.topic.isEmpty {
+      try visitor.visitSingularBytesField(value: self.topic, fieldNumber: 2)
     }
     if !self.body.isEmpty {
-      try visitor.visitSingularBytesField(value: self.body, fieldNumber: 4)
+      try visitor.visitSingularBytesField(value: self.body, fieldNumber: 3)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Packet, rhs: Packet) -> Bool {
-    if lhs.service != rhs.service {return false}
-    if lhs.origin != rhs.origin {return false}
-    if lhs.recipient != rhs.recipient {return false}
+    if lhs.type != rhs.type {return false}
+    if lhs.topic != rhs.topic {return false}
     if lhs.body != rhs.body {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension Packet.TypeEnum: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "MESSAGE"),
+    1: .same(proto: "SUBSCRIBE"),
+    2: .same(proto: "UNSUBSCRIBE"),
+  ]
 }

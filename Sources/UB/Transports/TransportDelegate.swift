@@ -9,4 +9,11 @@ public protocol TransportDelegate: AnyObject {
     ///     - data: The received data.
     ///     - from: The peer from which the data was received.
     func transport(_ transport: Transport, didReceiveData data: Data, from: Addr)
+
+    /// This method is called when a peer disconnected.
+    ///
+    /// - Parameters:
+    ///     - transport: The transport with which a peer disconnected.
+    ///     - peer: The peer which disconnected.
+    func transport(_ transport: Transport, peerDidDisconnect peer: Addr)
 }
