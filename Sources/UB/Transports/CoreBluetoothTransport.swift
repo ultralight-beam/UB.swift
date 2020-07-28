@@ -31,10 +31,8 @@ public class CoreBluetoothTransport: NSObject {
         permissions: [.writeable, .readable]
     )
 
-    // make this nicer, we need this cause we need a reference to the peripheral?
-    private var perp: CBPeripheral?
     private var centrals = [Addr: CBCentral]()
-    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic)]()
+    private var peripherals = [Addr: (peripheral: CBPeripheral, characteristic: CBCharacteristic?)]()
 
     /// Initializes a CoreBluetoothTransport with a new CBCentralManager and CBPeripheralManager.
     public convenience override init() {
@@ -60,6 +58,7 @@ public class CoreBluetoothTransport: NSObject {
     private func remove(peer: Addr) {
         peripherals.removeValue(forKey: peer)
         peers.removeAll(where: { $0.id == peer })
+        centrals.removeValue(forKey: peer)
     }
 
     private func add(central: CBCentral) {
@@ -85,7 +84,7 @@ extension CoreBluetoothTransport: Transport {
         if let peer = peripherals[to] {
             return peer.peripheral.writeValue(
                 message,
-                for: peer.characteristic,
+                for: peer.characteristic!,
                 type: CBCharacteristicWriteType.withoutResponse
             )
         }
@@ -145,9 +144,7 @@ extension CoreBluetoothTransport: CBPeripheralManagerDelegate {
         didUnsubscribeFrom _: CBCharacteristic
     ) {
         // @todo check that this is the characteristic
-        let id = Addr(central.identifier.bytes)
-        centrals.removeValue(forKey: id)
-        peers.removeAll(where: { $0.id == id })
+        remove(peer: Addr(central.identifier.bytes))
     }
 }
 
@@ -167,7 +164,8 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
         advertisementData _: [String: Any],
         rssi _: NSNumber
     ) {
-        perp = peripheral
+        let id = Addr(peripheral.identifier.bytes)
+        peripherals[id] = (peripheral, nil)
         peripheral.delegate = self
         centralManager.connect(peripheral)
     }
@@ -177,6 +175,10 @@ extension CoreBluetoothTransport: CBCentralManagerDelegate {
     }
 
     public func centralManager(_: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error _: Error?) {
+        remove(peer: Addr(peripheral.identifier.bytes))
+    }
+
+    public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         remove(peer: Addr(peripheral.identifier.bytes))
     }
 }
@@ -189,13 +191,20 @@ extension CoreBluetoothTransport: CBPeripheralDelegate {
         }
     }
 
+    public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        if error != nil {
+            remove(peer: Addr(peripheral.identifier.bytes))
+        }
+    }
+
     public func peripheral(
         _ peripheral: CBPeripheral,
         didDiscoverCharacteristicsFor service: CBService,
         error _: Error?
     ) {
         let id = Addr(peripheral.identifier.bytes)
-        if peripherals[id] != nil {
+
+        if peripherals[id]?.characteristic != nil {
             return
         }
 
