@@ -4,7 +4,7 @@ import XCTest
 final class NodeTests: XCTestCase {
     func testAddTransport() {
         let transport = Transport()
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
 
         node.add(transport: transport)
 
@@ -15,7 +15,7 @@ final class NodeTests: XCTestCase {
 
     func testRemoveTransport() {
         let transport = Transport()
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
 
         node.add(transport: transport)
 
@@ -28,7 +28,7 @@ final class NodeTests: XCTestCase {
     }
 
     func testUnsubscribeWorks() {
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
 
         let topic = UBID(repeating: 1, count: 10)
         node.subscribe(topic)
@@ -40,7 +40,7 @@ final class NodeTests: XCTestCase {
     }
 
     func testChildIsAddedWhenSubscribing() {
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
         let transport = Transport()
 
         let addr = Addr(repeating: 2, count: 3)
@@ -54,7 +54,7 @@ final class NodeTests: XCTestCase {
     }
 
     func testChildIsRemovedOnUnsubscribe() {
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
         let transport = Transport()
 
         let addr = Addr(repeating: 2, count: 3)
@@ -74,7 +74,7 @@ final class NodeTests: XCTestCase {
     }
 
     func testMessageIsSentToChildren() {
-        let node = UB.Node()
+        let node = UB.Node(id: Addr(repeating: 0, count: 0))
         let transport = Transport()
         node.add(transport: transport)
 
